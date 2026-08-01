@@ -7,7 +7,7 @@ public class UniversalFactory {
 
     public static JMenu createMenuBar(String label) {
         JMenu menu = new JMenu(label);
-        menu.setFont(UniversalThemes.FONT_R);
+        menu.setFont(UniversalThemes.FONT_R_14);
         menu.setForeground(UniversalThemes.TXT_PRIMARY);
         menu.setBackground(UniversalThemes.BG_SIDEBAR);
         menu.setBorder(BorderFactory.createEmptyBorder(4, 8, 4, 8));
@@ -17,7 +17,7 @@ public class UniversalFactory {
 
     public static JMenuItem createMenuBarItem(String label) {
         JMenuItem item = new JMenuItem(label);
-        item.setFont(UniversalThemes.FONT_R);
+        item.setFont(UniversalThemes.FONT_R_14);
         item.setForeground(UniversalThemes.TXT_PRIMARY);
         item.setBackground(UniversalThemes.BG_PANEL);
         item.setBorder(BorderFactory.createCompoundBorder(

@@ -1277,8 +1277,10 @@ public class ArkIVv9 implements ActionListener{
     private void createTask() {
         String text = inputArea.getText().trim();
         if (!text.isEmpty()) {
-            addTaskFromInput(text);
-            inputArea.setText("");
+            boolean added = addTaskFromInput(text);
+            if (added) {
+                inputArea.setText("");
+            }
         }
     }
 
@@ -1300,14 +1302,42 @@ public class ArkIVv9 implements ActionListener{
         taskPanel.repaint();
     }
 
-    private void addTaskFromInput(String text) {
+    private int countMainEntries() {
+        int count = 0;
+        for (TaskItem t : allTasks) {
+            if (!t.isSubtask()) count++;
+        }
+        return count;
+    }
+
+    private int countSubEntries(int parentId) {
+        int count = 0;
+        for (TaskItem t : allTasks) {
+            if (t.isSubtask() && t.getParentId() == parentId) count++;
+        }
+        return count;
+    }
+
+    private boolean addTaskFromInput(String text) {
         text = text.trim();
         if (!text.isEmpty()) {
             TaskItem task;
             if (selectedTask != null && !selectedTask.isSubtask()) {
+                if (countSubEntries(selectedTask.getId()) >= 999) {
+                    UniversalThemes.showPopup(frame,
+                            "This Entry already has 999 sub-Entries, which is the maximum allowed.",
+                            "Sub-Entry Limit Reached");
+                    return false;
+                }
                 task = new TaskItem(taskCounter++, text, false, true, false, selectedTask.getId());
             }
             else {
+                if (countMainEntries() >= 999) {
+                    UniversalThemes.showPopup(frame,
+                            "This register already has 999 Entries, which is the maximum allowed.",
+                            "Entry Limit Reached");
+                    return false;
+                }
                 task = new TaskItem(taskCounter++, text, false, false, false, -1);
             }
             idToTaskMap.put(task.getId(), task);
@@ -1317,7 +1347,9 @@ public class ArkIVv9 implements ActionListener{
             renumberAllTasks();
             saveTasks();
             SwingUtilities.invokeLater(() -> scrollToTaskWithPadding(task));
+            return true;
         }
+        return false;
     }
 
     private void loadTasks() {
@@ -1395,13 +1427,29 @@ public class ArkIVv9 implements ActionListener{
     }
 
     private void renumberAllTasks() {
-        int number = 1;
+        // Main Entries and sub-Entries are numbered in independent 1-999 scopes:
+        // the main counter increments per top-level Entry and resets the sub
+        // counter, which then increments per sub-Entry belonging to that Entry.
+        // This relies on sub-Entries always being rendered as a contiguous block
+        // directly after their parent (guaranteed by showSubEntries/move up/down).
+        int mainNumber = 0;
+        int subNumber = 0;
         for (Component c : taskPanel.getComponents()) {
             if (c instanceof TaskItem) {
-                ((TaskItem) c).setNumberLabel(number++);
+                TaskItem task = (TaskItem) c;
+                if (!task.isSubtask()) {
+                    mainNumber++;
+                    subNumber = 0;
+                    task.setNumberLabel(mainNumber);
+                } else {
+                    subNumber++;
+                    task.setNumberLabel(subNumber);
+                }
             }
         }
     }
+
+
 
     private void scrollToTaskWithPadding(TaskItem task) {
         Rectangle bounds = task.getBounds();
@@ -2007,6 +2055,12 @@ public class ArkIVv9 implements ActionListener{
 
 
         private void createSubEntry() {
+            if (countSubEntries(getId()) >= 999) {
+                UniversalThemes.showPopup(frame,
+                        "This Entry already has 999 sub-Entries, which is the maximum allowed.",
+                        "Sub-Entry Limit Reached");
+                return;
+            }
             UniversalThemes.RoundedDialog rd = UniversalThemes.createRoundedDialogShell(frame, "Create Sub-Entry");
 
             JTextArea field = new JTextArea(4, 70);
