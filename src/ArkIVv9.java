@@ -11,6 +11,7 @@ import javax.swing.Timer;
 import javax.swing.border.Border;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.LineBorder;
+import javax.swing.text.*;
 
 import java.nio.charset.StandardCharsets;
 
@@ -65,6 +66,17 @@ public class ArkIVv9 implements ActionListener{
     private JTextArea inputArea;
 
     private JPanel sidebarPanel;
+
+    // ── Text pane width budget (Phase 1) ────────────────────────────
+    private static final int CHECKBOX_COLUMN_WIDTH = 30;       // checkBox.setPreferredSize width
+    private static final int MAIN_ENTRY_BORDER_INSET = 4;      // outer matte(0,0) + inner line(2+2)
+    private static final int SUB_ENTRY_BORDER_INSET = 64;      // outer matte(30+30) + inner line(2+2)
+    private static final int MAIN_ENTRY_BUTTON_COLUMN_WIDTH = 50; // 40px button + 5+5 FlowLayout hgap
+    private static final int SUB_ENTRY_BUTTON_COLUMN_WIDTH = 0;   // empty buttonPanel for subtasks
+
+    private int mainEntryTextWidth = -1;
+    private int subEntryTextWidth = -1;
+    private Timer widthSettleTimer;
 
     private JMenuBar menuBar;
     private JMenu fileMenu, editMenu, settingsMenu, helpMenu;
@@ -132,13 +144,14 @@ public class ArkIVv9 implements ActionListener{
         frame.setResizable(true);
 
         // ── Task panel + scroll ──────────────────────────────────────────
-        taskPanel = new JPanel();
+        taskPanel = new ScrollableTaskPanel();
         taskPanel.setBackground(UniversalThemes.BG_MAIN);
         taskPanel.setLayout(new BoxLayout(taskPanel, BoxLayout.Y_AXIS));
 
         taskScrollPane = new JScrollPane(taskPanel);
         taskScrollPane.setBorder(BorderFactory.createLineBorder(UniversalThemes.BORDER_COLOR1, 1));
         taskScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        taskScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         taskScrollPane.getVerticalScrollBar().setUnitIncrement(35);
         taskScrollPane.getViewport().setBackground(UniversalThemes.BG_MAIN);
         UniversalThemes.applyScrollbarTheme(taskScrollPane);
@@ -244,6 +257,31 @@ public class ArkIVv9 implements ActionListener{
 
         frame.add(outerSplitPane, BorderLayout.CENTER);
 
+// ── Debounced width capture: waits until layout events stop firing
+        // before trusting the width, since startup maximize can fire multiple
+        // resize events before the split panes fully settle. ──────────────
+        taskPanel.addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentResized(ComponentEvent e) {
+                int width = taskPanel.getWidth();
+                System.out.println("[WidthCalc] componentResized fired, taskPanel width=" + width);
+                if (width <= 0) return;
+
+                if (widthSettleTimer != null && widthSettleTimer.isRunning()) {
+                    System.out.println("[WidthCalc] resize still in progress, resetting settle timer");
+                    widthSettleTimer.stop();
+                }
+
+                widthSettleTimer = new Timer(200, ev -> {
+                    System.out.println("[WidthCalc] layout settled, finalizing capture at width=" + taskPanel.getWidth());
+                    computeTextPaneWidths();
+                    taskPanel.removeComponentListener(this);
+                });
+                widthSettleTimer.setRepeats(false);
+                widthSettleTimer.start();
+            }
+        });
+
         // ── Window close handler ─────────────────────────────────────────
         frame.addWindowListener(new WindowAdapter() {
             @Override
@@ -262,6 +300,33 @@ public class ArkIVv9 implements ActionListener{
     ///==============================================================================================================
     ///== Menu Bar Construction
     ///==============================================================================================================
+
+    private void computeTextPaneWidths() {
+        int panelWidth = taskPanel.getWidth();
+        if (panelWidth <= 0) return; // layout not settled yet, ignore
+
+        mainEntryTextWidth = panelWidth - MAIN_ENTRY_BORDER_INSET - CHECKBOX_COLUMN_WIDTH - MAIN_ENTRY_BUTTON_COLUMN_WIDTH;
+        subEntryTextWidth  = panelWidth - SUB_ENTRY_BORDER_INSET - CHECKBOX_COLUMN_WIDTH - SUB_ENTRY_BUTTON_COLUMN_WIDTH;
+
+        int viewportWidth = taskScrollPane.getViewport().getWidth();
+        System.out.println("[WidthCalc] taskPanel width=" + panelWidth
+                + " | viewport width=" + viewportWidth
+                + (panelWidth == viewportWidth ? " (MATCH ✓)" : " (MISMATCH ✗ — Scrollable clamp not working)")
+                + " | mainEntryTextWidth=" + mainEntryTextWidth
+                + " | subEntryTextWidth=" + subEntryTextWidth);
+
+        // Retroactively fix entries constructed before the cache was ready (initial loadTasks())
+        int reflowedCount = 0;
+        for (TaskItem task : allTasks) {
+            int width = task.isSubtask() ? subEntryTextWidth : mainEntryTextWidth;
+            task.applyFixedTextWidth(width);
+            reflowedCount++;
+        }
+        System.out.println("[WidthCalc] reflowed " + reflowedCount + " existing TaskItem(s)");
+        taskPanel.revalidate();
+        taskPanel.repaint();
+    }
+
     private void createMenuBar() {
         menuBar = new JMenuBar();
         menuBar.setBackground(UniversalThemes.BG_SIDEBAR);
@@ -1581,6 +1646,79 @@ public class ArkIVv9 implements ActionListener{
         return new String(decrypted, "UTF-8");
     }
 
+    private static class ScrollableTaskPanel extends JPanel implements Scrollable {
+        @Override
+        public Dimension getPreferredScrollableViewportSize() {
+            return getPreferredSize();
+        }
+        @Override
+        public int getScrollableUnitIncrement(Rectangle visibleRect, int orientation, int direction) {
+            return 16;
+        }
+        @Override
+        public int getScrollableBlockIncrement(Rectangle visibleRect, int orientation, int direction) {
+            return 100;
+        }
+        @Override
+        public boolean getScrollableTracksViewportWidth() {
+            return true; // ← the actual fix: never let taskPanel exceed the viewport's width
+        }
+        @Override
+        public boolean getScrollableTracksViewportHeight() {
+            return false; // must stay false, or vertical scrolling breaks
+        }
+    }
+
+    // ── Forces mid-word breaks for unbroken long tokens. LabelView's own
+    // breakView() already knows how to break at a character boundary — the
+    // only thing stopping it is getMinimumSpan() reporting "can't shrink,"
+    // which tells FlowView's layout not to bother trying. ──────────────────
+    private static class WrapLabelView extends LabelView {
+        public WrapLabelView(Element elem) { super(elem); }
+
+        @Override
+        public float getMinimumSpan(int axis) {
+            switch (axis) {
+                case View.X_AXIS:
+                    return 0;
+                case View.Y_AXIS:
+                    return super.getMinimumSpan(axis);
+                default:
+                    throw new IllegalStateException("Invalid axis: " + axis);
+            }
+        }
+    }
+
+    private static class WrapColumnFactory implements ViewFactory {
+        @Override
+        public View create(Element elem) {
+            String kind = elem.getName();
+            if (kind != null) {
+                switch (kind) {
+                    case AbstractDocument.ContentElementName:
+                        return new WrapLabelView(elem);
+                    case AbstractDocument.ParagraphElementName:
+                        return new ParagraphView(elem);
+                    case AbstractDocument.SectionElementName:
+                        return new BoxView(elem, View.Y_AXIS);
+                    case StyleConstants.ComponentElementName:
+                        return new ComponentView(elem);
+                    case StyleConstants.IconElementName:
+                        return new IconView(elem);
+                }
+            }
+            return new LabelView(elem);
+        }
+    }
+
+    private static class WrapEditorKit extends StyledEditorKit {
+        private final ViewFactory factory = new WrapColumnFactory();
+        @Override
+        public ViewFactory getViewFactory() {
+            return factory;
+        }
+    }
+
     ///==============================================================================================================
     ///== Entry Point
     ///==============================================================================================================
@@ -1597,7 +1735,8 @@ public class ArkIVv9 implements ActionListener{
         private boolean isSubtask;
         private boolean isCollapsed;
         private JCheckBox checkBox;
-        private JTextArea textArea;
+        private JTextPane textArea;
+        private int fixedTextWidth = -1;
         private Timer flickerTimer;
         private boolean isSelected = false;
         private boolean isSearchHighlighted = false;
@@ -1654,25 +1793,30 @@ public class ArkIVv9 implements ActionListener{
                 }
             });
 
-            textArea = new JTextArea(text) {
+            this.fixedTextWidth = isSubtask ? subEntryTextWidth : mainEntryTextWidth;
+
+            textArea = new JTextPane() {
                 @Override
                 public Dimension getPreferredSize() {
                     Dimension d = super.getPreferredSize();
                     int minHeight = 68;
                     if (d.height < minHeight) d.height = minHeight;
+                    if (fixedTextWidth > 0) d.width = fixedTextWidth;
                     return d;
                 }
             };
+            textArea.setEditorKit(new WrapEditorKit());
+            textArea.setText(text);
             textArea.setFont(UniversalThemes.getCompositeFont(17));
             textArea.setForeground(UniversalThemes.TXT_PRIMARY);
             textArea.setCaretColor(UniversalThemes.ACCENT_COLOR);
             textArea.setOpaque(false);
-
-            textArea.setLineWrap(true);
-            textArea.setWrapStyleWord(true);
             textArea.setEditable(false);
-            textArea.setOpaque(false);
             textArea.setBorder(null);
+
+            if (fixedTextWidth > 0) {
+                textArea.setSize(fixedTextWidth, Short.MAX_VALUE);
+            }
 
             if (done) {
 
@@ -1852,6 +1996,12 @@ public class ArkIVv9 implements ActionListener{
         public boolean isCollapsed() { return isCollapsed; }
         public boolean isDone() { return checkBox.isSelected(); }
         public String getRawText() { return textArea.getText(); }
+
+        public void applyFixedTextWidth(int width) {
+            if (width <= 0) return;
+            this.fixedTextWidth = width;
+            textArea.setSize(width, Short.MAX_VALUE);
+        }
 
         private void selectThisTask() {
             if (selectedTask != null && selectedTask != this) {
