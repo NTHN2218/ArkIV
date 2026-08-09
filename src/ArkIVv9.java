@@ -1514,7 +1514,12 @@ public class ArkIVv9 implements ActionListener{
         }
     }
 
-
+    private int indexOfInPanel(TaskItem task) {
+        for (int i = 0; i < taskPanel.getComponentCount(); i++) {
+            if (taskPanel.getComponent(i) == task) return i;
+        }
+        return -1;
+    }
 
     private void scrollToTaskWithPadding(TaskItem task) {
         Rectangle bounds = task.getBounds();
@@ -1540,6 +1545,8 @@ public class ArkIVv9 implements ActionListener{
     ///== Sub-Entries
     ///==============================================================================================================
     private void hideSubEntries(TaskItem parent) {
+        System.out.println("[Move] hideSubEntries CALLED for entry " + parent.getId());
+        //new Exception("trace").printStackTrace();
         for (TaskItem task : allTasks) {
             if (task.isSubtask() && task.getParentId() == parent.getId()) {
                 taskPanel.remove(task);
@@ -2315,34 +2322,23 @@ public class ArkIVv9 implements ActionListener{
         }
         // New method: Move this task up within its allowed range, allowing repeated moves while selected
         private void moveTaskUp() {
-            int currentIndex = -1;
-            int count = taskPanel.getComponentCount();
-
-            // Find current index in taskPanel
-            for (int i = 0; i < count; i++) {
-                if (taskPanel.getComponent(i) == this) {
-                    currentIndex = i;
-                    break;
-                }
-            }
-
-            if (currentIndex <= 0) return; // Already at top or not found
-
             // If main task and open, collapse it first
             if (!isSubtask && !isCollapsed) {
                 isCollapsed = true;
-                Border newOuter = BorderFactory.createMatteBorder(1, 0, 20, 0, Color.LIGHT_GRAY);
+                Border newOuter = BorderFactory.createMatteBorder(1, 0, 20, 0, UniversalThemes.BORDER_COLOR1);
                 Border currentBorder = getBorder();
                 Border currentInner;
                 if (currentBorder instanceof CompoundBorder) {
                     currentInner = ((CompoundBorder) currentBorder).getInsideBorder();
                 } else {
-                    Color subtaskBgColor = new Color(240, 240, 240);
-                    currentInner = isSubtask ? BorderFactory.createLineBorder(subtaskBgColor, 2) : BorderFactory.createLineBorder(Color.WHITE, 2);
+                    currentInner = BorderFactory.createLineBorder(UniversalThemes.BG_COMPONENT, 2);
                 }
                 setBorder(BorderFactory.createCompoundBorder(newOuter, currentInner));
                 hideSubEntries(this);
             }
+
+            int currentIndex = indexOfInPanel(this);
+            if (currentIndex <= 0) return; // Already at top or not found
 
             // Find the index of the task above to swap with, respecting main/subtask boundaries
             int swapIndex = -1;
@@ -2368,8 +2364,29 @@ public class ArkIVv9 implements ActionListener{
 
             if (swapIndex == -1) return; // No valid task above to swap with
 
-            // Swap components in taskPanel
             Component aboveComp = taskPanel.getComponent(swapIndex);
+
+            // If the swap partner is itself an expanded main entry, collapse it too --
+            // otherwise its sub-entries get left behind at the old panel position.
+            if (aboveComp instanceof TaskItem) {
+                TaskItem aboveTask = (TaskItem) aboveComp;
+                if (!aboveTask.isSubtask() && !aboveTask.isCollapsed) {
+                    aboveTask.isCollapsed = true;
+                    Border newOuter2 = BorderFactory.createMatteBorder(1, 0, 20, 0, UniversalThemes.BORDER_COLOR1);
+                    Border currentBorder2 = aboveTask.getBorder();
+                    Border currentInner2 = (currentBorder2 instanceof CompoundBorder)
+                            ? ((CompoundBorder) currentBorder2).getInsideBorder()
+                            : BorderFactory.createLineBorder(UniversalThemes.BG_COMPONENT, 2);
+                    aboveTask.setBorder(BorderFactory.createCompoundBorder(newOuter2, currentInner2));
+                    hideSubEntries(aboveTask);
+
+                    // hideSubEntries changed the panel's component indices -- recompute both.
+                    currentIndex = indexOfInPanel(this);
+                    swapIndex = indexOfInPanel(aboveTask);
+                }
+            }
+
+            // Swap components in taskPanel
             taskPanel.remove(this);
             taskPanel.remove(aboveComp);
 
@@ -2404,34 +2421,24 @@ public class ArkIVv9 implements ActionListener{
 
         // New method: Move this task down within its allowed range, allowing repeated moves while selected
         private void moveTaskDown() {
-            int currentIndex = -1;
-            int count = taskPanel.getComponentCount();
-
-            // Find current index in taskPanel
-            for (int i = 0; i < count; i++) {
-                if (taskPanel.getComponent(i) == this) {
-                    currentIndex = i;
-                    break;
-                }
-            }
-
-            if (currentIndex == -1 || currentIndex >= count - 1) return; // Already at bottom or not found
-
-            // If main task and open, collapse it first
+// If main task and open, collapse it first
             if (!isSubtask && !isCollapsed) {
                 isCollapsed = true;
-                Border newOuter = BorderFactory.createMatteBorder(1, 0, 20, 0, Color.LIGHT_GRAY);
+                Border newOuter = BorderFactory.createMatteBorder(1, 0, 20, 0, UniversalThemes.BORDER_COLOR1);
                 Border currentBorder = getBorder();
                 Border currentInner;
                 if (currentBorder instanceof CompoundBorder) {
                     currentInner = ((CompoundBorder) currentBorder).getInsideBorder();
                 } else {
-                    Color subtaskBgColor = new Color(240, 240, 240);
-                    currentInner = isSubtask ? BorderFactory.createLineBorder(subtaskBgColor, 2) : BorderFactory.createLineBorder(Color.WHITE, 2);
+                    currentInner = BorderFactory.createLineBorder(UniversalThemes.BG_COMPONENT, 2);
                 }
                 setBorder(BorderFactory.createCompoundBorder(newOuter, currentInner));
                 hideSubEntries(this);
             }
+
+            int currentIndex = indexOfInPanel(this);
+            int count = taskPanel.getComponentCount();
+            if (currentIndex == -1 || currentIndex >= count - 1) return; // Already at bottom or not found
 
             // Find the index of the task below to swap with, respecting main/subtask boundaries
             int swapIndex = -1;
@@ -2457,8 +2464,29 @@ public class ArkIVv9 implements ActionListener{
 
             if (swapIndex == -1) return; // No valid task below to swap with
 
-            // Swap components in taskPanel
             Component belowComp = taskPanel.getComponent(swapIndex);
+
+            // If the swap partner is itself an expanded main entry, collapse it too --
+            // otherwise its sub-entries get left behind at the old panel position.
+            if (belowComp instanceof TaskItem) {
+                TaskItem belowTask = (TaskItem) belowComp;
+                if (!belowTask.isSubtask() && !belowTask.isCollapsed) {
+                    belowTask.isCollapsed = true;
+                    Border newOuter2 = BorderFactory.createMatteBorder(1, 0, 20, 0, UniversalThemes.BORDER_COLOR1);
+                    Border currentBorder2 = belowTask.getBorder();
+                    Border currentInner2 = (currentBorder2 instanceof CompoundBorder)
+                            ? ((CompoundBorder) currentBorder2).getInsideBorder()
+                            : BorderFactory.createLineBorder(UniversalThemes.BG_COMPONENT, 2);
+                    belowTask.setBorder(BorderFactory.createCompoundBorder(newOuter2, currentInner2));
+                    hideSubEntries(belowTask);
+
+                    // hideSubEntries changed the panel's component indices -- recompute both.
+                    currentIndex = indexOfInPanel(this);
+                    swapIndex = indexOfInPanel(belowTask);
+                }
+            }
+
+            // Swap components in taskPanel
             taskPanel.remove(this);
             taskPanel.remove(belowComp);
 
