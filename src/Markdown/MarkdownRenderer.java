@@ -2,6 +2,7 @@ package Markdown;
 
 import org.commonmark.ext.task.list.items.TaskListItemsExtension;
 import org.commonmark.node.Node;
+import org.commonmark.parser.IncludeSourceSpans;
 import org.commonmark.parser.Parser;
 
 import java.util.List;
@@ -23,6 +24,7 @@ public class MarkdownRenderer {
     // and safe to reuse across many render() invocations.
     private static final Parser PARSER = Parser.builder()
             .extensions(List.of(TaskListItemsExtension.create()))
+            .includeSourceSpans(IncludeSourceSpans.BLOCKS)
             .build();
 
     public static void render(StyledDocument doc, String rawText) {
@@ -43,7 +45,7 @@ public class MarkdownRenderer {
         appendTrailingBlankLines(doc, rawText);
 
         long elapsedMicros = (System.nanoTime() - startNanos) / 1000;
-        System.out.println("[Markdown] rendered rawLen=" + rawText.length()
+        MarkdownDebug.summary("[Markdown] rendered rawLen=" + rawText.length()
                 + " -> docLen=" + doc.getLength() + " (" + elapsedMicros + "us)");
     }
 

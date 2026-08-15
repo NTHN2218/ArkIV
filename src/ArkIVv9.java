@@ -42,6 +42,11 @@ import Registers.RegisterContextMenu;
 
 //Package Markdown
 import Markdown.MarkdownRenderer;
+import Markdown.MarkdownDebug;
+
+// Package AutoHotkeys
+import AutoHotkey.Hotstring;
+
 
 //Register System: Navigation Tree
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -169,6 +174,8 @@ public class ArkIVv9 implements ActionListener{
         inputArea.setLineWrap(true);
         inputArea.setWrapStyleWord(true);
         inputArea.setMargin(new Insets(8, 8, 8, 8));
+        Hotstring.attach(inputArea);
+
 
         JScrollPane inputScroll = new JScrollPane(inputArea);
         inputScroll.getViewport().setBackground(UniversalThemes.BG_PANEL);
@@ -472,6 +479,7 @@ public class ArkIVv9 implements ActionListener{
         searchBar.setBackground(UniversalThemes.BG_SIDEBAR);
         searchBar.setForeground(UniversalThemes.TXT_PRIMARY);
         searchBar.setCaretColor(UniversalThemes.ACCENT_COLOR);
+        searchBar.setSelectedTextColor(Color.GREEN);
         searchBar.setFont(UniversalThemes.FONT_R_16);
         searchBar.setBorder(BorderFactory.createMatteBorder(1,1,1,1, UniversalThemes.BORDER_COLOR2));
         searchBar.setMaximumSize(new Dimension(Integer.MAX_VALUE, 30)); // cap searchBar.setMaximumSize(new Dimension(Integer.MAX_VALUE, 30)); // cap height
@@ -1826,7 +1834,7 @@ public class ArkIVv9 implements ActionListener{
             textArea.setBorder(null);
 
             MarkdownRenderer.render(textArea.getStyledDocument(), rawText);
-            System.out.println("[TaskItem] Initial render complete for id=" + id);
+            MarkdownDebug.summary("[TaskItem] Initial render complete for id=" + id);
 
             if (fixedTextWidth > 0) {
                 textArea.setSize(fixedTextWidth, Short.MAX_VALUE);
@@ -2107,6 +2115,7 @@ public class ArkIVv9 implements ActionListener{
             field.setWrapStyleWord(true);
             field.setMargin(new Insets(10, 10, 10, 10));
             field.setBorder(null);
+            Hotstring.attach(field);
 
             // Pre-size rows to fit existing content, capped at 10
             int existingLines = field.getLineCount();
@@ -2154,7 +2163,7 @@ public class ArkIVv9 implements ActionListener{
                 if (!newText.trim().isEmpty()) {
                     rawText = newText;
                     Markdown.MarkdownRenderer.render(textArea.getStyledDocument(), rawText);
-                    System.out.println("[TaskItem] Re-rendered after edit for id=" + id);
+                    MarkdownDebug.summary("[TaskItem] Re-rendered after edit for id=" + id);
                     if (!checkBox.isSelected()) {
                         textArea.setForeground(UniversalThemes.TXT_PRIMARY);
                     }
@@ -2240,6 +2249,7 @@ public class ArkIVv9 implements ActionListener{
             field.setWrapStyleWord(true);
             field.setMargin(new Insets(10, 10, 10, 10));
             field.setBorder(null);
+            Hotstring.attach(field);
 
             JScrollPane scrollPane = new JScrollPane(field);
             scrollPane.setBorder(BorderFactory.createLineBorder(UniversalThemes.BORDER_COLOR1, 1));

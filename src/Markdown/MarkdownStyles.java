@@ -39,8 +39,8 @@ public class MarkdownStyles {
     // Heading sizes, capped within the same 10-20pt range UniversalThemes already defines.
     private static final int[] HEADING_SIZES = {
             0,  // unused index
-            27, // level 1
-            22, // level 2  =  17 + 6
+            26, // level 1
+            23, // level 2  =  17 + 6
             19, // level 3  =  17 + 3
             15, // level 4
             14, // level 5
@@ -85,7 +85,8 @@ public class MarkdownStyles {
         StyleConstants.setBold(attrs, true);
 
         int lvl1 = HEADING_SIZES[1];
-        Color headingColor = (size==lvl1) ? UniversalThemes.MD_COLOR_HEADING : UniversalThemes.TXT_PRIMARY;
+        int lvl2 = HEADING_SIZES[2];
+        Color headingColor = (size==lvl1 || size==lvl2) ? UniversalThemes.MD_COLOR_HEADING : UniversalThemes.TXT_PRIMARY;
         StyleConstants.setForeground(attrs, headingColor);
 
         return attrs;

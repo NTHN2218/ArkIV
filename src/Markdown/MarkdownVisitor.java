@@ -2,6 +2,9 @@ package Markdown;
 
 import org.commonmark.node.*;
 import org.commonmark.ext.task.list.items.TaskListItemMarker;
+import org.commonmark.node.SourceSpan;
+
+import java.util.List;
 
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
@@ -112,7 +115,7 @@ public class MarkdownVisitor extends AbstractVisitor {
         while (item != null) {
             item.accept(this);
             Node next = item.getNext();
-            if (next != null && !bulletList.isTight()) {
+            if (next != null && hasBlankLineBetween(item, next)) {
                 insertText("\n");
             }
             item = next;
@@ -120,6 +123,23 @@ public class MarkdownVisitor extends AbstractVisitor {
         if (bulletList.getNext() != null) {
             insertText("\n");
         }
+    }
+
+    // checks the actual raw source line gap between two specific items, rather than
+// commonmark's isTight() which reports looseness for the WHOLE list if a blank
+// line appears anywhere in it -- we want per-gap accuracy, not a list-wide flag.
+    private boolean hasBlankLineBetween(Node a, Node b) {
+        List<SourceSpan> aSpans = a.getSourceSpans();
+        List<SourceSpan> bSpans = b.getSourceSpans();
+        if (aSpans.isEmpty() || bSpans.isEmpty()) return false;
+
+        int aEndLine = aSpans.get(aSpans.size() - 1).getLineIndex();
+        int bStartLine = bSpans.get(0).getLineIndex();
+        boolean hasBlank = (bStartLine - aEndLine) > 1;
+
+        MarkdownDebug.log("[MD] gap check: itemA endLine=" + aEndLine
+                + " itemB startLine=" + bStartLine + " -> blankLine=" + hasBlank);
+        return hasBlank;
     }
 
     //Checklist
