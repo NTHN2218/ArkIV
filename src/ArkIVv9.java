@@ -40,6 +40,9 @@ import com.google.gson.*;
 import Registers.RegisterManager;
 import Registers.RegisterContextMenu;
 
+//Package Markdown
+import Markdown.MarkdownRenderer;
+
 //Register System: Navigation Tree
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
@@ -264,16 +267,16 @@ public class ArkIVv9 implements ActionListener{
             @Override
             public void componentResized(ComponentEvent e) {
                 int width = taskPanel.getWidth();
-                System.out.println("[WidthCalc] componentResized fired, taskPanel width=" + width);
+                //System.out.println("[WidthCalc] componentResized fired, taskPanel width=" + width);
                 if (width <= 0) return;
 
                 if (widthSettleTimer != null && widthSettleTimer.isRunning()) {
-                    System.out.println("[WidthCalc] resize still in progress, resetting settle timer");
+                    //System.out.println("[WidthCalc] resize still in progress, resetting settle timer");
                     widthSettleTimer.stop();
                 }
 
                 widthSettleTimer = new Timer(200, ev -> {
-                    System.out.println("[WidthCalc] layout settled, finalizing capture at width=" + taskPanel.getWidth());
+                    //System.out.println("[WidthCalc] layout settled, finalizing capture at width=" + taskPanel.getWidth());
                     computeTextPaneWidths();
                     taskPanel.removeComponentListener(this);
                 });
@@ -309,11 +312,11 @@ public class ArkIVv9 implements ActionListener{
         subEntryTextWidth  = panelWidth - SUB_ENTRY_BORDER_INSET - CHECKBOX_COLUMN_WIDTH - SUB_ENTRY_BUTTON_COLUMN_WIDTH;
 
         int viewportWidth = taskScrollPane.getViewport().getWidth();
-        System.out.println("[WidthCalc] taskPanel width=" + panelWidth
-                + " | viewport width=" + viewportWidth
-                + (panelWidth == viewportWidth ? " (MATCH ✓)" : " (MISMATCH ✗ — Scrollable clamp not working)")
-                + " | mainEntryTextWidth=" + mainEntryTextWidth
-                + " | subEntryTextWidth=" + subEntryTextWidth);
+//        System.out.println("[WidthCalc] taskPanel width=" + panelWidth
+//                + " | viewport width=" + viewportWidth
+//                + (panelWidth == viewportWidth ? " (MATCH ✓)" : " (MISMATCH ✗ — Scrollable clamp not working)")
+//                + " | mainEntryTextWidth=" + mainEntryTextWidth
+//                + " | subEntryTextWidth=" + subEntryTextWidth);
 
         // Retroactively fix entries constructed before the cache was ready (initial loadTasks())
         int reflowedCount = 0;
@@ -322,7 +325,7 @@ public class ArkIVv9 implements ActionListener{
             task.applyFixedTextWidth(width);
             reflowedCount++;
         }
-        System.out.println("[WidthCalc] reflowed " + reflowedCount + " existing TaskItem(s)");
+        //System.out.println("[WidthCalc] reflowed " + reflowedCount + " existing TaskItem(s)");
         taskPanel.revalidate();
         taskPanel.repaint();
     }
@@ -1545,7 +1548,7 @@ public class ArkIVv9 implements ActionListener{
     ///== Sub-Entries
     ///==============================================================================================================
     private void hideSubEntries(TaskItem parent) {
-        System.out.println("[Move] hideSubEntries CALLED for entry " + parent.getId());
+        //System.out.println("[Move] hideSubEntries CALLED for entry " + parent.getId());
         //new Exception("trace").printStackTrace();
         for (TaskItem task : allTasks) {
             if (task.isSubtask() && task.getParentId() == parent.getId()) {
@@ -1748,17 +1751,18 @@ public class ArkIVv9 implements ActionListener{
         private boolean isSelected = false;
         private boolean isSearchHighlighted = false;
         private JLabel numberLabel;
+        private String rawText;
 
         public TaskItem(int id, String text, boolean done, boolean isSubtask, boolean isCollapsed, int parentId) {
             this.id = id;
             this.parentId = parentId;
             this.isSubtask = isSubtask;
             this.isCollapsed = isCollapsed;
-
+            this.rawText = text;
 
             setLayout(new BorderLayout());
             Color cardBg = isSubtask
-                    ? UniversalThemes.BG_COMPONENT
+                    ? UniversalThemes.BG_PANEL
                     : UniversalThemes.BG_PANEL;
 
             setBackground(cardBg);
@@ -1821,6 +1825,9 @@ public class ArkIVv9 implements ActionListener{
             textArea.setEditable(false);
             textArea.setBorder(null);
 
+            MarkdownRenderer.render(textArea.getStyledDocument(), rawText);
+            System.out.println("[TaskItem] Initial render complete for id=" + id);
+
             if (fixedTextWidth > 0) {
                 textArea.setSize(fixedTextWidth, Short.MAX_VALUE);
             }
@@ -1828,6 +1835,8 @@ public class ArkIVv9 implements ActionListener{
             if (done) {
 
             }
+
+
 
             numberLabel = new JLabel();
             numberLabel.setFont(UniversalThemes.FONT_R_10);
@@ -2002,7 +2011,7 @@ public class ArkIVv9 implements ActionListener{
         public boolean isSubtask() { return isSubtask; }
         public boolean isCollapsed() { return isCollapsed; }
         public boolean isDone() { return checkBox.isSelected(); }
-        public String getRawText() { return textArea.getText(); }
+        public String getRawText() { return rawText; }
 
         public void applyFixedTextWidth(int width) {
             if (width <= 0) return;
@@ -2143,7 +2152,9 @@ public class ArkIVv9 implements ActionListener{
             Runnable submit = () -> {
                 String newText = field.getText(); // preserve whitespace/newlines, don't trim here
                 if (!newText.trim().isEmpty()) {
-                    textArea.setText(newText);
+                    rawText = newText;
+                    Markdown.MarkdownRenderer.render(textArea.getStyledDocument(), rawText);
+                    System.out.println("[TaskItem] Re-rendered after edit for id=" + id);
                     if (!checkBox.isSelected()) {
                         textArea.setForeground(UniversalThemes.TXT_PRIMARY);
                     }

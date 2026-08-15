@@ -34,6 +34,7 @@ public class UniversalThemes {
     public static final Color ACCENT_COLOR_DARK = new Color(0x2b929d);  //0xC66A1A
     public static final Color SEARCH_HIGHLIGHT_COLOR = new Color(0x2b929d); // distinct from ACCENT_COLOR
 
+
     //Delete Pop-up Colors
     public static final Color BG_CANCEL_BTN = new Color(0x3f3f3f);  //0xE67E22
     public static final Color BG_DELETE_BTN = new Color(0xfb464c); // destructive actions (delete)
@@ -42,7 +43,14 @@ public class UniversalThemes {
     public static final Color BG_LINENUM = new Color(0x858585);
     
     public static final Color DISABLED_TEXT  = new Color(0x6B6B6B);
+    public static final Color DIMMED_TEXT  = new Color(0x1E1E22);
     public static final Color TXT_SELECTED   = Color.BLACK;
+
+    //Markdown Features Colors
+    public static final Color MD_COLOR_HEADING = new Color(0x0fb6d6);
+    public static final Color MD_COLOR_BOLD = new Color(0x94A5F2);
+
+
 
     ///==============================================================================================================
     ///== Fonts
