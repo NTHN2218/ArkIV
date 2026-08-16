@@ -31,6 +31,7 @@ public class MarkdownStyles {
 
     // Matches the body text size already used for entry content (see TaskItem / inputArea).
     private static final int BASE_FONT_SIZE = 17;
+    private static final int UNORDERED_LISTS_FONT_SIZE = 22;
 
     // add alongside BASE_FONT_SIZE / HEADING_SIZES
     private static final int MARKER_FONT_SIZE = 1; // deliberately small
@@ -142,6 +143,19 @@ public class MarkdownStyles {
         StyleConstants.setBold(attrs, false);
         StyleConstants.setItalic(attrs, false);
         StyleConstants.setForeground(attrs, UniversalThemes.DISABLED_TEXT);
+
+        return attrs;
+    }
+
+    // ── Bullet attributes (for unordered list items) ──────────────────────
+
+    public static SimpleAttributeSet getBulletAttributes() {
+        SimpleAttributeSet attrs = new SimpleAttributeSet();
+        StyleConstants.setFontFamily(attrs, FONT_FAMILY);
+        StyleConstants.setFontSize(attrs, UNORDERED_LISTS_FONT_SIZE);
+        StyleConstants.setBold(attrs, false);
+        StyleConstants.setItalic(attrs, false);
+        StyleConstants.setForeground(attrs, UniversalThemes.TXT_SECONDARY);
 
         return attrs;
     }

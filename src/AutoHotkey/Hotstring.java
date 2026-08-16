@@ -28,6 +28,8 @@ public class Hotstring {
     static {
         RULES.add(new HotstringRule("-[", "- [ ] ", true));
         RULES.add(new HotstringRule("-->", "—⟶ ", false));
+        RULES.add(new HotstringRule("<--", "⟵— ", false));
+        RULES.add(new HotstringRule("=/=", "≠ ", false));
     }
 
     public static void attach(JTextComponent textComponent) {

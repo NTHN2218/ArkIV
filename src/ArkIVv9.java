@@ -1776,9 +1776,10 @@ public class ArkIVv9 implements ActionListener{
             setBackground(cardBg);
 
             // Outer border (same as original)
+            int subtaskIndent = 30;
             Border outerBorder;
             if (isSubtask) {
-                outerBorder = BorderFactory.createMatteBorder(5, 30, 2, 30, UniversalThemes.BORDER_COLOR1);
+                outerBorder = BorderFactory.createMatteBorder(5, subtaskIndent, 2, 30, UniversalThemes.BORDER_COLOR1);
             } else {
                 outerBorder = BorderFactory.createMatteBorder(1, 0, isCollapsed ? 10 : 0, 0, UniversalThemes.BORDER_COLOR1);
             }

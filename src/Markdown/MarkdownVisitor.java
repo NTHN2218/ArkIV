@@ -145,10 +145,15 @@ public class MarkdownVisitor extends AbstractVisitor {
     //Checklist
     @Override
     public void visit(ListItem listItem) {
-        boolean checkedTaskItem = isCheckedTaskItem(listItem);
-        MarkdownDebug.log("[MD] ListItem checkedTaskItem=" + checkedTaskItem);
+        boolean taskItem = isTaskItem(listItem);
+        boolean checkedTaskItem = taskItem && ((TaskListItemMarker) listItem.getFirstChild()).isChecked();
+
         if (checkedTaskItem) {
             attributeStack.push(MarkdownStyles.getCheckedTaskTextAttributes());
+        }
+
+        if (!taskItem) {
+            insertText("\u2022 ", MarkdownStyles.getBulletAttributes());
         }
 
         visitChildren(listItem);
@@ -158,9 +163,8 @@ public class MarkdownVisitor extends AbstractVisitor {
         }
     }
 
-    private boolean isCheckedTaskItem(ListItem listItem) {
-        Node first = listItem.getFirstChild();
-        return first instanceof TaskListItemMarker marker && marker.isChecked();
+    private boolean isTaskItem(ListItem listItem) {
+        return listItem.getFirstChild() instanceof TaskListItemMarker;
     }
 
     @Override
@@ -178,4 +182,7 @@ public class MarkdownVisitor extends AbstractVisitor {
             visitChildren(customNode);
         }
     }
+
+
+
 }
