@@ -160,6 +160,19 @@ public class MarkdownStyles {
         return attrs;
     }
 
+    // ── Ordered list marker attributes (numbers, same visual weight as bullets) ──
+
+    public static SimpleAttributeSet getOrderedMarkerAttributes() {
+        SimpleAttributeSet attrs = new SimpleAttributeSet();
+        StyleConstants.setFontFamily(attrs, FONT_FAMILY);
+        StyleConstants.setFontSize(attrs, BASE_FONT_SIZE);
+        StyleConstants.setBold(attrs, false);
+        StyleConstants.setItalic(attrs, false);
+        StyleConstants.setForeground(attrs, UniversalThemes.MD_COLOR_HEADING);
+
+        return attrs;
+    }
+
     // ── Muted attributes (for de-emphasized syntax markers: **, *, #, etc.) ──
 
     public static SimpleAttributeSet getMutedAttributes() {

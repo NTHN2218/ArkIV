@@ -3,6 +3,7 @@ package Markdown;
 import org.commonmark.node.*;
 import org.commonmark.ext.task.list.items.TaskListItemMarker;
 import org.commonmark.node.SourceSpan;
+import org.commonmark.node.OrderedList;
 
 import java.util.List;
 
@@ -111,7 +112,16 @@ public class MarkdownVisitor extends AbstractVisitor {
 
     @Override
     public void visit(BulletList bulletList) {
-        Node item = bulletList.getFirstChild();
+        visitListItems(bulletList);
+    }
+
+    @Override
+    public void visit(OrderedList orderedList) {
+        visitListItems(orderedList);
+    }
+
+    private void visitListItems(ListBlock list) {
+        Node item = list.getFirstChild();
         while (item != null) {
             item.accept(this);
             Node next = item.getNext();
@@ -120,7 +130,7 @@ public class MarkdownVisitor extends AbstractVisitor {
             }
             item = next;
         }
-        if (bulletList.getNext() != null) {
+        if (list.getNext() != null) {
             insertText("\n");
         }
     }
@@ -153,7 +163,12 @@ public class MarkdownVisitor extends AbstractVisitor {
         }
 
         if (!taskItem) {
-            insertText("\u2022 ", MarkdownStyles.getBulletAttributes());
+            if (listItem.getParent() instanceof OrderedList orderedList) {
+                int number = computeOrderedNumber(orderedList, listItem);
+                insertText(number + ". ", MarkdownStyles.getOrderedMarkerAttributes());
+            } else {
+                insertText("\u2022 ", MarkdownStyles.getBulletAttributes());
+            }
         }
 
         visitChildren(listItem);
@@ -161,6 +176,16 @@ public class MarkdownVisitor extends AbstractVisitor {
         if (checkedTaskItem) {
             attributeStack.pop();
         }
+    }
+
+    private int computeOrderedNumber(OrderedList list, ListItem item) {
+        int number = list.getMarkerStartNumber() != null ? list.getMarkerStartNumber() : 1;
+        Node sibling = list.getFirstChild();
+        while (sibling != null && sibling != item) {
+            number++;
+            sibling = sibling.getNext();
+        }
+        return number;
     }
 
     private boolean isTaskItem(ListItem listItem) {
