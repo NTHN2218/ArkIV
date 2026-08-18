@@ -174,6 +174,7 @@ public class ArkIVv9 implements ActionListener{
         inputArea.setLineWrap(true);
         inputArea.setWrapStyleWord(true);
         inputArea.setMargin(new Insets(8, 8, 8, 8));
+        UniversalThemes.applySelectionTheme(inputArea);
         Hotstring.attach(inputArea);
 
 
@@ -482,6 +483,7 @@ public class ArkIVv9 implements ActionListener{
         searchBar.setSelectedTextColor(Color.GREEN);
         searchBar.setFont(UniversalThemes.FONT_R_16);
         searchBar.setBorder(BorderFactory.createMatteBorder(1,1,1,1, UniversalThemes.BORDER_COLOR2));
+        UniversalThemes.applySelectionTheme(searchBar);
         searchBar.setMaximumSize(new Dimension(Integer.MAX_VALUE, 30)); // cap searchBar.setMaximumSize(new Dimension(Integer.MAX_VALUE, 30)); // cap height
         searchBar.setPreferredSize(new Dimension(0, 30)); // match button height; width controlled by BorderLayout.CENTER
 
@@ -1065,6 +1067,7 @@ public class ArkIVv9 implements ActionListener{
         registerRenameField.setBackground(UniversalThemes.BG_COMPONENT);
         registerRenameField.setCaretColor(UniversalThemes.ACCENT_COLOR);
         registerRenameField.setBorder(BorderFactory.createLineBorder(UniversalThemes.ACCENT_COLOR, 1));
+        UniversalThemes.applySelectionTheme(registerRenameField);
 
         int textX = bounds.x + 10; // matches the leaf's left inset from the cell renderer
         int rightMargin = 12;
@@ -1155,6 +1158,7 @@ public class ArkIVv9 implements ActionListener{
                 BorderFactory.createLineBorder(UniversalThemes.BORDER_COLOR1, 1),
                 BorderFactory.createEmptyBorder(6, 8, 6, 8)
         ));
+        UniversalThemes.applySelectionTheme(nameField);
         nameField.setAlignmentX(Component.LEFT_ALIGNMENT);
         nameField.setMaximumSize(new Dimension(Integer.MAX_VALUE, nameField.getPreferredSize().height));
 
@@ -1833,6 +1837,7 @@ public class ArkIVv9 implements ActionListener{
             textArea.setOpaque(false);
             textArea.setEditable(false);
             textArea.setBorder(null);
+            UniversalThemes.applySelectionTheme(textArea);
 
             MarkdownRenderer.render(textArea.getStyledDocument(), rawText);
             MarkdownDebug.summary("[TaskItem] Initial render complete for id=" + id);
@@ -2116,6 +2121,7 @@ public class ArkIVv9 implements ActionListener{
             field.setWrapStyleWord(true);
             field.setMargin(new Insets(10, 10, 10, 10));
             field.setBorder(null);
+            UniversalThemes.applySelectionTheme(field);
             Hotstring.attach(field);
 
             // Pre-size rows to fit existing content, capped at 10
@@ -2250,6 +2256,7 @@ public class ArkIVv9 implements ActionListener{
             field.setWrapStyleWord(true);
             field.setMargin(new Insets(10, 10, 10, 10));
             field.setBorder(null);
+            UniversalThemes.applySelectionTheme(field);
             Hotstring.attach(field);
 
             JScrollPane scrollPane = new JScrollPane(field);

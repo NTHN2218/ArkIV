@@ -586,6 +586,20 @@ public class UniversalThemes {
     }
 
     ///==============================================================================================================
+    ///== Selection Theme
+    ///==============================================================================================================
+    public static final Color SELECTION_COLOR = new Color(255, 255, 255, 40); // translucent grey
+
+    public static void applySelectionTheme(javax.swing.text.JTextComponent comp) {
+        applySelectionTheme(comp, TXT_PRIMARY);
+    }
+
+    public static void applySelectionTheme(javax.swing.text.JTextComponent comp, Color selectedFg) {
+        comp.setSelectionColor(SELECTION_COLOR);
+        comp.setSelectedTextColor(selectedFg);
+    }
+
+    ///==============================================================================================================
     ///== Label Wrapping Helpers
     ///==============================================================================================================
     private static int computeWrapWidth(Font font, String text, int minWidth, int maxWidth) {

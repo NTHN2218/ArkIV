@@ -35,6 +35,7 @@ public class UniversalFactory {
         textfield.setBackground(bgColor);
         textfield.setForeground(fgColor);
         textfield.setCaretColor(caretColor);
+        UniversalThemes.applySelectionTheme(textfield);
         return textfield;
     }
 
