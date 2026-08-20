@@ -1599,13 +1599,17 @@ public class ArkIVv9 implements ActionListener{
 
     private void scrollToTaskWithPadding(TaskItem task) {
         Rectangle bounds = task.getBounds();
-        int padding = 100; // extra space to reveal below the entry
+        int padding = 100; // extra space to reveal above and below the entry
+
+        // Extend upward, clamped so we never request above the panel's top (y=0)
+        int paddedY = Math.max(0, bounds.y - padding);
+        int paddedHeight = (bounds.y - paddedY) + bounds.height + padding;
 
         Rectangle padded = new Rectangle(
                 bounds.x,
-                bounds.y,
+                paddedY,
                 bounds.width,
-                bounds.height + padding
+                paddedHeight
         );
 
         // Clamp so we never request beyond the panel's actual content height
@@ -2506,8 +2510,11 @@ public class ArkIVv9 implements ActionListener{
                 if (isSelected) {
                     textArea.requestFocusInWindow();
                 }
+                scrollToTaskWithPadding(this);
             });
         }
+
+        // New method: Move this task down within its allowed range, allowing repeated moves while selected
 
         // New method: Move this task down within its allowed range, allowing repeated moves while selected
         private void moveTaskDown() {
@@ -2606,6 +2613,7 @@ public class ArkIVv9 implements ActionListener{
                 if (isSelected) {
                     textArea.requestFocusInWindow();
                 }
+                scrollToTaskWithPadding(this);
             });
         }
 
