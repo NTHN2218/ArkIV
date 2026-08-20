@@ -54,6 +54,7 @@ import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.plaf.basic.BasicTreeUI;
+import javax.swing.Icon;
 
 
 public class ArkIVv9 implements ActionListener{
@@ -694,6 +695,57 @@ public class ArkIVv9 implements ActionListener{
     }
 
     ///==============================================================================================================
+    ///== Nerd Font Glyph Icon
+    ///==============================================================================================================
+    private static class NerdGlyphIcon implements Icon {
+        private final char glyph;
+        private final Font font;
+        private final Color color;
+        private final int size;
+
+        NerdGlyphIcon(char glyph, Font font, Color color, int size) {
+            this.glyph = glyph;
+            this.font = font;
+            this.color = color;
+            this.size = size;
+        }
+
+        @Override
+        public void paintIcon(Component c, Graphics g, int x, int y) {
+            Graphics2D g2 = (Graphics2D) g.create();
+            g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+            g2.setFont(font);
+            g2.setColor(color);
+
+            FontMetrics fm = g2.getFontMetrics();
+            int drawX = x;
+            int drawY = y + (size + fm.getAscent() - fm.getDescent()) / 2;
+            g2.drawString(String.valueOf(glyph), drawX, drawY);
+
+            g2.dispose();
+        }
+
+        @Override public int getIconWidth()  { return size; }
+        @Override public int getIconHeight() { return size; }
+    }
+
+    // Register
+    private static final char FOLDER_GLYPH          = '\uf07b'; // fa-folder (closed, solid) — current default
+    private static final char FOLDER_OPEN_GLYPH      = '\uf07c'; // fa-folder-open
+    private static final char FOLDER_OUTLINE_GLYPH    = '\ue5ff'; // md-folder-outline (thinner line style)
+    private static final char FOLDER_MD_GLYPH         = '\uf413'; // md-folder (filled, rounder MDI look)
+    private static final char FOLDER_MD_OPEN_GLYPH     = '\uf76f'; // md-folder-open (MDI variant)
+    private static final char FOLDER_OCT_GLYPH         = '\uf413'; // (same codepoint slot varies by patch set — verify below)
+    private static final char FOLDER_SETI_GLYPH        = '\ue5fe'; // seti-ui folder icon (flat, minimal)
+    private static final char FOLDER_ZIP_GLYPH         = '\uf1c6'; // fa-file-archive-o (in case you want a distinct "closed/archived" look)
+
+    //Unrecognised Register
+    private static final char FOLDER_QUESTION_GLYPH = '\uf29c'; // fa-question-circle-ish folder-adjacent, or...
+    private static final char FOLDER_ALERT_GLYPH     = '\uf071'; // fa-exclamation-triangle (pairs well with "unrecognized")
+    private static final char FOLDER_LOCKED_GLYPH    = '\uf023'; // fa-lock (reserve this one for your future locked-register feature instead)
+    private static final char FILE_QUESTION_GLYPH    = '\uf128'; // fa-question — plain question mark, minimal
+
+    ///==============================================================================================================
     ///== Registers
     ///==============================================================================================================
     private void createRegisterPanel() {
@@ -731,14 +783,22 @@ public class ArkIVv9 implements ActionListener{
                 setBorderSelectionColor(new Color(0, 0, 0, 0));
                 setOpaque(false);
 
+
                 if (isBranch) {
                     setForeground(UniversalThemes.TXT_SECONDARY);
                 } else if (userObj instanceof RegisterManager.UnrecognizedEntry) {
-                    setForeground(UniversalThemes.DISABLED_TEXT);
+                    setForeground(UniversalThemes.TXT_PRIMARY);
+                    setIcon(new NerdGlyphIcon(FOLDER_ALERT_GLYPH, UniversalThemes.FONT_NERD_ICON_SMALL, UniversalThemes.BG_DELETE_BTN, 25));
                 } else if (userObj instanceof RegisterManager.RegisterEntry entry) {
-                    setForeground(entry.id == currentRegisterId
-                            ? UniversalThemes.ACCENT_COLOR
-                            : UniversalThemes.TXT_PRIMARY);
+                    Color rowColor = entry.id == currentRegisterId
+                            ? UniversalThemes.MD_COLOR_HEADING
+                            : UniversalThemes.TXT_PRIMARY;
+                    char FOLDER_GLYPH_CURRENT =  entry.id == currentRegisterId
+                            ? FOLDER_GLYPH  // When register is selected
+                            : FOLDER_MD_GLYPH; // When register is not selected
+
+                    setForeground(rowColor);
+                    setIcon(new NerdGlyphIcon(FOLDER_GLYPH_CURRENT, UniversalThemes.FONT_NERD_ICON_SMALL, rowColor, 25 ));
                 } else {
                     setForeground(UniversalThemes.TXT_PRIMARY);
                 }

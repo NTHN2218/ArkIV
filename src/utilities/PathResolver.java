@@ -12,6 +12,7 @@ public class PathResolver {
     private static Font cachedRegularFont = null;
     private static Font cachedBoldFont = null;
     private static Font cachedItalicFont = null;
+    private static Font cachedNerdFont = null;
 
     /**
      * Returns the absolute path to the assets directory.
@@ -167,5 +168,13 @@ public class PathResolver {
             cachedItalicFont = (loaded != null) ? loaded : new Font("Segoe UI", Font.ITALIC, 12);
         }
         return cachedItalicFont;
+    }
+
+    public static Font getNerdIconBaseFont() {
+        if (cachedNerdFont == null) {
+            Font loaded = loadFontFile("JetBrainsMonoNerdFontMono-Regular.ttf");
+            cachedNerdFont = (loaded != null) ? loaded : new Font("Segoe UI Symbol", Font.PLAIN, 12);
+        }
+        return cachedNerdFont;
     }
 }

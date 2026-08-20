@@ -58,6 +58,7 @@ public class UniversalThemes {
     private static final Font BASE_REGULAR = PathResolver.getRegularBaseFont();
     private static final Font BASE_BOLD    = PathResolver.getBoldBaseFont();
     private static final Font BASE_ITALIC  = PathResolver.getItalicBaseFont();
+    private static final Font BASE_NERD_ICON = PathResolver.getNerdIconBaseFont();
 
     public static final Font FONT_R_10  = BASE_REGULAR.deriveFont(Font.PLAIN, 10f);
     public static final Font FONT_R_11  = BASE_REGULAR.deriveFont(Font.PLAIN, 11f);
@@ -82,6 +83,8 @@ public class UniversalThemes {
     public static final Font FONT_B_18   = BASE_BOLD.deriveFont(Font.BOLD, 18f);
     public static final Font FONT_B_19   = BASE_BOLD.deriveFont(Font.BOLD, 19f);
     public static final Font FONT_B_20   = BASE_BOLD.deriveFont(Font.BOLD, 20f);
+
+    public static final Font FONT_NERD_ICON_SMALL = BASE_NERD_ICON.deriveFont(Font.PLAIN, 25f);
 
 
     public static final Font FONT_EMOJI       = new Font("Segoe UI Emoji", Font.PLAIN, 18);
