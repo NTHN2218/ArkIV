@@ -1,0 +1,802 @@
+[
+    {
+        "ID": 8,
+        "parentID": 5,
+        "TXT": "1.0-   Hacksaw Ridge    [✔]",
+        "isDone": false,
+        "isSub": true,
+        "isCollapsed": false
+    },
+    {
+        "ID": 11,
+        "parentID": 5,
+        "TXT": "2.0-   Interstellar    [✔]",
+        "isDone": false,
+        "isSub": true,
+        "isCollapsed": false
+    },
+    {
+        "ID": 5,
+        "parentID": -1,
+        "TXT": "Movies",
+        "isDone": false,
+        "isSub": false,
+        "isCollapsed": true
+    },
+    {
+        "ID": 48,
+        "parentID": -1,
+        "TXT": "Animated Movies",
+        "isDone": false,
+        "isSub": false,
+        "isCollapsed": false
+    },
+    {
+        "ID": 6,
+        "parentID": -1,
+        "TXT": "Anime Movies",
+        "isDone": false,
+        "isSub": false,
+        "isCollapsed": true
+    },
+    {
+        "ID": 20,
+        "parentID": 6,
+        "TXT": "1.0-   Grave of the fireflies    [✔]\n",
+        "isDone": false,
+        "isSub": true,
+        "isCollapsed": false
+    },
+    {
+        "ID": 21,
+        "parentID": 6,
+        "TXT": "2.0-   A Silent Voice    [✔] [✔] [✔]\n",
+        "isDone": false,
+        "isSub": true,
+        "isCollapsed": false
+    },
+    {
+        "ID": 23,
+        "parentID": 5,
+        "TXT": "3.0-   Oppenheimer    [✔]",
+        "isDone": false,
+        "isSub": true,
+        "isCollapsed": false
+    },
+    {
+        "ID": 28,
+        "parentID": 5,
+        "TXT": "4.1-   John Wick 1\n\n4.2-   John Wick 2\n\n4.3-   John Wick 3\n\n4.4-   John Wick 4\n\n5.5-   John Wick - Ballerina\n_",
+        "isDone": false,
+        "isSub": true,
+        "isCollapsed": false
+    },
+    {
+        "ID": 37,
+        "parentID": 7,
+        "TXT": "1.1-   Violet Evergarden  (Anime)           [✔]\n\n1.2-   Violoet Evergarden - The Movie   [✔]\n___",
+        "isDone": false,
+        "isSub": true,
+        "isCollapsed": false
+    },
+    {
+        "ID": 38,
+        "parentID": 6,
+        "TXT": "3.0-   The tunnel to summer, The exit of goodbyes    [✔] [✔]\n",
+        "isDone": false,
+        "isSub": true,
+        "isCollapsed": false
+    },
+    {
+        "ID": 39,
+        "parentID": 6,
+        "TXT": "4.1-   Your Name                      [✔] [✔]\n\n4.2-   Weathering with you     [✔]\n\n4.3-   Suzume no tojimari       [✔]\n___",
+        "isDone": false,
+        "isSub": true,
+        "isCollapsed": false
+    },
+    {
+        "ID": 43,
+        "parentID": 7,
+        "TXT": "2.0-   Terror in Resonance   [✔]\n",
+        "isDone": false,
+        "isSub": true,
+        "isCollapsed": false
+    },
+    {
+        "ID": 7,
+        "parentID": -1,
+        "TXT": "Animes",
+        "isDone": false,
+        "isSub": false,
+        "isCollapsed": false
+    },
+    {
+        "ID": 49,
+        "parentID": -1,
+        "TXT": "Series",
+        "isDone": false,
+        "isSub": false,
+        "isCollapsed": true
+    },
+    {
+        "ID": 56,
+        "parentID": 49,
+        "TXT": "1.1-   Squid Game s1    [Completed]\n\n1.2-   Squid Game s2    [Completed]\n\n1.3-   Squid Game s3    [Completed]\n___",
+        "isDone": false,
+        "isSub": true,
+        "isCollapsed": false
+    },
+    {
+        "ID": 63,
+        "parentID": -1,
+        "TXT": "Cartoons Series",
+        "isDone": false,
+        "isSub": false,
+        "isCollapsed": true
+    },
+    {
+        "ID": 65,
+        "parentID": 63,
+        "TXT": "1.1-   Teenage Mutant Ninja Turtles s1   [Completed]\n\n1.2-   Teenage Mutant Ninja Turtles s2   [Completed]\n\n1.3-   Teenage Mutant Ninja Turtles s3\n\n1.4-   Teenage Mutant Ninja Turtles s4\n\n1.5-   Teenage Mutant Ninja Turtles s5\n___",
+        "isDone": false,
+        "isSub": true,
+        "isCollapsed": false
+    },
+    {
+        "ID": 70,
+        "parentID": -1,
+        "TXT": "Video Games",
+        "isDone": false,
+        "isSub": false,
+        "isCollapsed": true
+    },
+    {
+        "ID": 71,
+        "parentID": -1,
+        "TXT": "Mobile Games",
+        "isDone": false,
+        "isSub": false,
+        "isCollapsed": true
+    },
+    {
+        "ID": 72,
+        "parentID": 70,
+        "TXT": "1.0-   Sekiro: Shadows die twice",
+        "isDone": false,
+        "isSub": true,
+        "isCollapsed": false
+    },
+    {
+        "ID": 73,
+        "parentID": 71,
+        "TXT": "1.1-   Ninja Arashi 1    [Completed]\n\n1.2-   Ninja Arashi 2    [Completed]\n\n1.3-   Ninja Arashi 3    [Yet to be Released]\n\n1.4-   Ninja Arashi Shadow's Return\n_",
+        "isDone": false,
+        "isSub": true,
+        "isCollapsed": false
+    },
+    {
+        "ID": 76,
+        "parentID": -1,
+        "TXT": "Important Websites",
+        "isDone": false,
+        "isSub": false,
+        "isCollapsed": true
+    },
+    {
+        "ID": 78,
+        "parentID": 76,
+        "TXT": "1.1-   Base64 -> Image                                                                                                     Link:  https://base64.guru/converter/decode/image",
+        "isDone": false,
+        "isSub": true,
+        "isCollapsed": false
+    },
+    {
+        "ID": 79,
+        "parentID": 76,
+        "TXT": "1.2-   Image -> Base64                                                                                                     Link:  https://base64.guru/converter/encode/image",
+        "isDone": false,
+        "isSub": true,
+        "isCollapsed": false
+    },
+    {
+        "ID": 80,
+        "parentID": 71,
+        "TXT": "2.1-   Shadow Fight 2\n\n2.2-   Shadow Fight 3\n_",
+        "isDone": false,
+        "isSub": true,
+        "isCollapsed": false
+    },
+    {
+        "ID": 82,
+        "parentID": 71,
+        "TXT": "3.0-   Swordigo    [Completed]",
+        "isDone": false,
+        "isSub": true,
+        "isCollapsed": false
+    },
+    {
+        "ID": 83,
+        "parentID": 71,
+        "TXT": "4.0-   Darkrise - Pixel Action RPG",
+        "isDone": false,
+        "isSub": true,
+        "isCollapsed": false
+    },
+    {
+        "ID": 84,
+        "parentID": 70,
+        "TXT": "2.1-   Uncharted 1\n\n2.2-   Uncharted 2\n\n2.3-   Uncharted 3\n\n2.4-   Uncharted 4\n___",
+        "isDone": false,
+        "isSub": true,
+        "isCollapsed": false
+    },
+    {
+        "ID": 88,
+        "parentID": 70,
+        "TXT": "3.0-   Warhammer 40,000 : Space Marine 2",
+        "isDone": false,
+        "isSub": true,
+        "isCollapsed": false
+    },
+    {
+        "ID": 93,
+        "parentID": 7,
+        "TXT": "3.1-   Full time magister s1\n\n3.2-   Full time magister s2\n\n3.3-   Full time magister s3\n\n3.4-   Full time magister s4\n\n3.5-   Full time magister s5\n\n3.6-   Full time magister s6\n\n3.7-   Full time magister s7\n___",
+        "isDone": false,
+        "isSub": true,
+        "isCollapsed": false
+    },
+    {
+        "ID": 100,
+        "parentID": 7,
+        "TXT": "4.1-   Swallowed Star 1 (Audio Novel)    [✔]\n\n4.2-   Swallowed Star 2 - Origin Continent (Audio Novel)\n___",
+        "isDone": false,
+        "isSub": true,
+        "isCollapsed": false
+    },
+    {
+        "ID": 102,
+        "parentID": 49,
+        "TXT": "2.1-   Peaky Blinders s1\n\n2.2-   Peaky Blinders s2\n\n2.3-   Peaky Blinders s3\n\n2.4-   Peaky Blinders s4\n\n2.5-   Peaky Blinders s5\n\n2.6-   Peaky Blinders s6\n___",
+        "isDone": false,
+        "isSub": true,
+        "isCollapsed": false
+    },
+    {
+        "ID": 104,
+        "parentID": 5,
+        "TXT": "5.1-   The Accountant 1    [Watched]\n\n5.2-   The Accountant 2    [Watched]\n_",
+        "isDone": false,
+        "isSub": true,
+        "isCollapsed": false
+    },
+    {
+        "ID": 105,
+        "parentID": 70,
+        "TXT": "4.1-   Minecraft\n\n4.2-   Minecraft Story Mode 1\n\n4.3-   Minecraft Story Mode 2\n___",
+        "isDone": false,
+        "isSub": true,
+        "isCollapsed": false
+    },
+    {
+        "ID": 108,
+        "parentID": 7,
+        "TXT": "5.1-   Soul Land 1     [✔]\n\n5.2-   Soul Land 2 : The Peerless Tang clan\n___",
+        "isDone": false,
+        "isSub": true,
+        "isCollapsed": false
+    },
+    {
+        "ID": 109,
+        "parentID": 7,
+        "TXT": "6.0-   Throne of Seal  (Anime and Audio Novel)",
+        "isDone": false,
+        "isSub": true,
+        "isCollapsed": false
+    },
+    {
+        "ID": 110,
+        "parentID": 6,
+        "TXT": "5.0-   Josee, The tiger and the fish    [✔] [✔]\n\n",
+        "isDone": false,
+        "isSub": true,
+        "isCollapsed": false
+    },
+    {
+        "ID": 118,
+        "parentID": 63,
+        "TXT": "2.1-   Slugterra s1\n\n2.2-   Slugterra s2\n\n2.3-   Slugterra s3\n\n2.4-   Slugterra s4\n\n2.5-   Slugterra s5 \n\n2.6-   Slugterra s6\n___",
+        "isDone": false,
+        "isSub": true,
+        "isCollapsed": false
+    },
+    {
+        "ID": 124,
+        "parentID": 7,
+        "TXT": "7.0-   Battle Through the Heavens",
+        "isDone": false,
+        "isSub": true,
+        "isCollapsed": false
+    },
+    {
+        "ID": 125,
+        "parentID": -1,
+        "TXT": "Pirated Websites",
+        "isDone": false,
+        "isSub": false,
+        "isCollapsed": true
+    },
+    {
+        "ID": 126,
+        "parentID": 125,
+        "TXT": "PRECAUTIONS\n\n- Use Firefox instead Chrome\n\n-Use DuckDuckGo app for mobile or tablets(built in blockers)\n\n- Use filtering extensions : uBlock Origin (for Firefox) or uBlock Origin lite (for                 Chrome) \n\n- NOTE : Do NOT use uBlock (fake version - unsafe)\n_",
+        "isDone": false,
+        "isSub": true,
+        "isCollapsed": false
+    },
+    {
+        "ID": 127,
+        "parentID": 125,
+        "TXT": "1.0-   kisskh \n     ",
+        "isDone": false,
+        "isSub": true,
+        "isCollapsed": false
+    },
+    {
+        "ID": 128,
+        "parentID": 49,
+        "TXT": "3.1-   Breaking Bad s1\n\n3.2-   Breaking Bad s2\n\n3.3-   Breaking Bad s3   \n\n3.4-   Breaking Bad s4\n\n3.5-   Breaking Bad s5\n___",
+        "isDone": false,
+        "isSub": true,
+        "isCollapsed": false
+    },
+    {
+        "ID": 129,
+        "parentID": 125,
+        "TXT": "2.0-   Look Movie\n     }   https://lookmovie.fi/",
+        "isDone": false,
+        "isSub": true,
+        "isCollapsed": false
+    },
+    {
+        "ID": 130,
+        "parentID": 70,
+        "TXT": "5.1-   Batman: Arkham Asylum\n\n5.2-   Batman: Arkham City\n\n5.3-   Batman: Arkham Origins\n\n5.4-   Batman: Arkham Knight\n___",
+        "isDone": false,
+        "isSub": true,
+        "isCollapsed": false
+    },
+    {
+        "ID": 131,
+        "parentID": -1,
+        "TXT": "CMD Prompts",
+        "isDone": false,
+        "isSub": false,
+        "isCollapsed": true
+    },
+    {
+        "ID": 135,
+        "parentID": 7,
+        "TXT": "8.1-   Solo Leveling s1    [✔]\n\n8.2-   Solo Leveling s2    [✔]\n\n8.3-   Solo Leveling s3    [yet to release]\n___",
+        "isDone": false,
+        "isSub": true,
+        "isCollapsed": false
+    },
+    {
+        "ID": 136,
+        "parentID": 7,
+        "TXT": "9.1-   Rakshasa Street s1    [✔] [✔]   \n\n9.2-   Rakshasa Street s2    [✔] [✔]\n\n9.3-   Rakshasa Street s3    [✔]\n\n9.4-   Rakshasa Street s4    [✔]\n\n9.5-   Rakshasa Street s5    [yet to release]\n___",
+        "isDone": false,
+        "isSub": true,
+        "isCollapsed": false
+    },
+    {
+        "ID": 137,
+        "parentID": 7,
+        "TXT": "0.1-   Vinland Saga s1    [✔]\n\n0.2-   Vinland Saga s2    [✔]\n____",
+        "isDone": false,
+        "isSub": true,
+        "isCollapsed": false
+    },
+    {
+        "ID": 138,
+        "parentID": 7,
+        "TXT": "1.1-   Classroom of the Elite s1    [✔]\n\n1.2-   Classroom of the Elite s2    [✔]\n\n1.3-   Classroom of the Elite s3    [✔]\n\n1.4-   Classroom of the Elite s4 \n____",
+        "isDone": false,
+        "isSub": true,
+        "isCollapsed": false
+    },
+    {
+        "ID": 139,
+        "parentID": 5,
+        "TXT": "6.0-   The Foreigner - Jackie Chan    [Watched]",
+        "isDone": false,
+        "isSub": true,
+        "isCollapsed": false
+    },
+    {
+        "ID": 140,
+        "parentID": 5,
+        "TXT": "7.0-   The Imitation Game    [Yet to Watch]",
+        "isDone": false,
+        "isSub": true,
+        "isCollapsed": false
+    },
+    {
+        "ID": 141,
+        "parentID": 5,
+        "TXT": "8.0-   The Law Abiding Citizen    [Watched]",
+        "isDone": false,
+        "isSub": true,
+        "isCollapsed": false
+    },
+    {
+        "ID": 142,
+        "parentID": 5,
+        "TXT": "9.0-   Hachi : A Dog's Tale    [Watched]",
+        "isDone": false,
+        "isSub": true,
+        "isCollapsed": false
+    },
+    {
+        "ID": 143,
+        "parentID": 48,
+        "TXT": "1.1-   How to train your Dragon 1    [Watched]\n\n1.2-   How to train your Dragon 2    [Watched]\n\n1.3-   How to train your Dragon 3    [Watched]\n_",
+        "isDone": false,
+        "isSub": true,
+        "isCollapsed": false
+    },
+    {
+        "ID": 144,
+        "parentID": 48,
+        "TXT": "2.1-   Kung fu Panda 1    [Watched]\n\n2.2-   Kung fu Panda 2    [Watched]\n\n2.3-   Kung fu Panda 3    [Watched]\n_",
+        "isDone": false,
+        "isSub": true,
+        "isCollapsed": false
+    },
+    {
+        "ID": 145,
+        "parentID": 48,
+        "TXT": "3.1-   Frozen 1    [Watched]\n\n3.2-   Frozen 2    [Watched]\n\n3.3-   Frozen 3    [to be released on 24 Nov, 2027]\n_",
+        "isDone": false,
+        "isSub": true,
+        "isCollapsed": false
+    },
+    {
+        "ID": 146,
+        "parentID": 48,
+        "TXT": "4.1-   Spiderman into the Spider-Verse    [Watched]\n\n4.2-   Spiderman across the Spider-Verse    [Watched]\n\n4.3-   Spiderman beyond the Spider-Verse    [not released]\n___",
+        "isDone": false,
+        "isSub": true,
+        "isCollapsed": false
+    },
+    {
+        "ID": 147,
+        "parentID": 49,
+        "TXT": "4.1-   Money Heist s1    [Completed]\n\n4.2-   Money Heist s2    [Completed]\n\n4.3-   Money Heist s3    [Completed]\n\n4.4-   Money Heist s4    [Completed]\n\n4.5-   Money Heist s5    [Completed]\n___",
+        "isDone": false,
+        "isSub": true,
+        "isCollapsed": false
+    },
+    {
+        "ID": 149,
+        "parentID": 131,
+        "TXT": "1.1-   Show saved Wi-Fi network profiles\n     }   netsh wlan show profile\n\n1.2-   Shows details of a specific Wi-Fi profile.\n     }   netsh wlan show profile name=\"  \"\n\n1.3-   Shows Wi-Fi details including password.\n     }   netsh wlan show profile name=\" \" key=clear\n\n1.4-   Shows only the saved Wi-Fi password.\n    }    netsh wlan show profile name=\"WiFiName\" key=clear | findstr /i \"Key Content\"\n___",
+        "isDone": false,
+        "isSub": true,
+        "isCollapsed": false
+    },
+    {
+        "ID": 150,
+        "parentID": 63,
+        "TXT": "3.1-   The Deep s1\n\n3.2-   The Deep s2\n\n3.3-   The Deep s3\n\n3.4-   The Deep s4\n___",
+        "isDone": false,
+        "isSub": true,
+        "isCollapsed": false
+    },
+    {
+        "ID": 152,
+        "parentID": 70,
+        "TXT": "6.1-   Luigi Mansion 2\n\n6.3-   Luigi Mansion 3\n___",
+        "isDone": false,
+        "isSub": true,
+        "isCollapsed": false
+    },
+    {
+        "ID": 162,
+        "parentID": 131,
+        "TXT": "2.1-   Show IP address (basic).\n    }     ipconfig\n\n2.2-  Show full IP config (DNS, MAC, DHCP).\n    }    ipconfig /all\n___",
+        "isDone": false,
+        "isSub": true,
+        "isCollapsed": false
+    },
+    {
+        "ID": 154,
+        "parentID": 48,
+        "TXT": "5.1-   The Incredibles 1\n\n5.2-   The Incredibles 2\n___",
+        "isDone": false,
+        "isSub": true,
+        "isCollapsed": false
+    },
+    {
+        "ID": 155,
+        "parentID": 49,
+        "TXT": "5.1-   Dexter Ressurection s1    [Completed]",
+        "isDone": false,
+        "isSub": true,
+        "isCollapsed": false
+    },
+    {
+        "ID": 158,
+        "parentID": 5,
+        "TXT": "0.1-   Dune: Part 1     [✔]\n\n0.2-   Dune: Part 2\n\n0.3-   Dune: Part 3\n___",
+        "isDone": false,
+        "isSub": true,
+        "isCollapsed": false
+    },
+    {
+        "ID": 157,
+        "parentID": 70,
+        "TXT": "7.0-   Ghost of Tsushima",
+        "isDone": false,
+        "isSub": true,
+        "isCollapsed": false
+    },
+    {
+        "ID": 163,
+        "parentID": 5,
+        "TXT": "1.0-   Chak De! India    [Watched]",
+        "isDone": false,
+        "isSub": true,
+        "isCollapsed": false
+    },
+    {
+        "ID": 159,
+        "parentID": 49,
+        "TXT": "6.0-   Chernobyl 2019 HBO Drame Series    [Completed]",
+        "isDone": false,
+        "isSub": true,
+        "isCollapsed": false
+    },
+    {
+        "ID": 166,
+        "parentID": 131,
+        "TXT": "3.1-   Set file/folder as hidden system item\n     }    attrib +s +h \"filename\"\n\n3.2-   Remove hidden/system attributes (make visible)\n     }    attrib -s -h \"filename\"\n___",
+        "isDone": false,
+        "isSub": true,
+        "isCollapsed": false
+    },
+    {
+        "ID": 168,
+        "parentID": 5,
+        "TXT": "2.1-   The Amazing Spiderman 1    [Completed]   \n\n2.2-   The Amazing Spiderman 2    [Completed]   \n___",
+        "isDone": false,
+        "isSub": true,
+        "isCollapsed": false
+    },
+    {
+        "ID": 164,
+        "parentID": 71,
+        "TXT": "5.0-   Tank Stars",
+        "isDone": false,
+        "isSub": true,
+        "isCollapsed": false
+    },
+    {
+        "ID": 165,
+        "parentID": 70,
+        "TXT": "8.1-   Tomb Raider 1\n\n8.2-   Tomb Raider 2\n\n8.3-   Tomb Raider 3\n___",
+        "isDone": false,
+        "isSub": true,
+        "isCollapsed": false
+    },
+    {
+        "ID": 179,
+        "parentID": 131,
+        "TXT": "4.0 -  Sync audio and video\n     }    ffmpeg -i \"videoplayback.mp4\" -i \"audioplayback.m4a\" -c:v copy -c:a aac -strict experimental -shortest \"Output.mp4\"\n",
+        "isDone": false,
+        "isSub": true,
+        "isCollapsed": false
+    },
+    {
+        "ID": 167,
+        "parentID": 63,
+        "TXT": "4.1-   Young Justice s1    [Completed]\n\n4.2-   Young Justice s2    [Completed]\n\n4.3-   Yound Justice s3    [Completed]\n\n4.4-   Young Justice s4    [Completed]\n___",
+        "isDone": false,
+        "isSub": true,
+        "isCollapsed": false
+    },
+    {
+        "ID": 169,
+        "parentID": 5,
+        "TXT": "3.1-   Spider-Man: Homecoming       [Watched]\n\n3.2-   Spider-Man: Far From Home    [Watched]\n\n3.3-   Spider-Man: No Way Home     [Watched]\n___",
+        "isDone": false,
+        "isSub": true,
+        "isCollapsed": false
+    },
+    {
+        "ID": 198,
+        "parentID": 5,
+        "TXT": "4.0-   Dunkirk    [Watched]",
+        "isDone": false,
+        "isSub": true,
+        "isCollapsed": false
+    },
+    {
+        "ID": 174,
+        "parentID": -1,
+        "TXT": "Future Goals",
+        "isDone": false,
+        "isSub": false,
+        "isCollapsed": true
+    },
+    {
+        "ID": 175,
+        "parentID": 174,
+        "TXT": "1.0 -   Learn Beginners and Advanced CFOP for Rubiks Cube",
+        "isDone": false,
+        "isSub": true,
+        "isCollapsed": false
+    },
+    {
+        "ID": 176,
+        "parentID": 174,
+        "TXT": "2.0 -   Learn to Play Guitar and coordinate with singers",
+        "isDone": false,
+        "isSub": true,
+        "isCollapsed": false
+    },
+    {
+        "ID": 177,
+        "parentID": 125,
+        "TXT": "3.0-   HiAnime",
+        "isDone": false,
+        "isSub": true,
+        "isCollapsed": false
+    },
+    {
+        "ID": 183,
+        "parentID": 131,
+        "TXT": "5.1 -   Trim from start and keep the rest\nffmpeg -ss 00:00:21 -i \"input.mp4\" -c:v libx264 -preset fast -crf 18 -c:a aac -b:a 192k \"output_fixed.mp4\"\n\n5.2 -   Trim from both start and end \nExample: Keep from 21s to 1 hour 35 min 10s\n\n    }     ffmpeg -i \"Your Name.mp4\" -ss 00:00:21 -to 01:35:10 -c:v libx264 -preset fast -crf 18 -c:a aac -b:a 192k \"Your Name-Trimmed.mp4\"\n\n",
+        "isDone": false,
+        "isSub": true,
+        "isCollapsed": false
+    },
+    {
+        "ID": 184,
+        "parentID": 131,
+        "TXT": "6.0 -   upscale quality of Video\n\n    }     ffmpeg -i \"input.mp4\" -vf \"scale=1920:1080:flags=lanczos\" -c:v libx264 -crf 18 -preset slow -c:a copy \"output_1080p.mp4\"",
+        "isDone": false,
+        "isSub": true,
+        "isCollapsed": false
+    },
+    {
+        "ID": 185,
+        "parentID": 131,
+        "TXT": "7.0 -   Compress video with no quality loss\n\nffmpeg -i \"Your Name.mp4\" -c:v libx264 -preset slow -crf 22 -c:a aac -b:a 160k \"YourMovie-Compressed.mp4\"",
+        "isDone": false,
+        "isSub": true,
+        "isCollapsed": false
+    },
+    {
+        "ID": 188,
+        "parentID": 131,
+        "TXT": "Convert weba to m4a\n\nffmpeg -i videoplayback.weba -c:a aac -b:a 192k audioplayback.m4a",
+        "isDone": false,
+        "isSub": true,
+        "isCollapsed": false
+    },
+    {
+        "ID": 189,
+        "parentID": 131,
+        "TXT": "9.0-   Make a dvd vob files into mp4\n\nffmpeg -i \"VTS_02_0.IFO\" -fflags +genpts -c:v libx264 -preset medium -crf 18 -c:a aac -b:a 192k \"ChakDeIndia_Final.mp4\"",
+        "isDone": false,
+        "isSub": true,
+        "isCollapsed": false
+    },
+    {
+        "ID": 190,
+        "parentID": 131,
+        "TXT": "0-  Create a screen card\n\nffmpeg -f lavfi -i color=c=black:s=1920x1080:d=3 \\\n-vf \"drawtext=text='Farlands Arc – Part 1':fontcolor=white:fontsize=48:x=(w-text_w)/2:y=(h-text_h)/2\" \\\n-c:v libx264 -t 3 -pix_fmt yuv420p part1_intro.mp4",
+        "isDone": false,
+        "isSub": true,
+        "isCollapsed": false
+    },
+    {
+        "ID": 196,
+        "parentID": 76,
+        "TXT": "2.1-   TMNT Seasons 1-7 on Internet Archive(Part 1)\nLink:  https://archive.org/details/tmnt-2003_202404\n___",
+        "isDone": false,
+        "isSub": true,
+        "isCollapsed": false
+    },
+    {
+        "ID": 197,
+        "parentID": 174,
+        "TXT": "3.0 -   Start Working on V-PEFAS",
+        "isDone": false,
+        "isSub": true,
+        "isCollapsed": false
+    },
+    {
+        "ID": 156,
+        "parentID": 5,
+        "TXT": "Hindi Movie Watchlist\n\n- Chichorre\n\n- Chennai Express\n\n-  Kal ho na ho\n\n-Zindagi na milegi dubara\n\n-yeh Jawani hai Diwani\n\n-Happy New Year\n\n-Dilwaale\n\n-Student of the Year\n\n-   DDLJ\n\n-PK\n\n-Taare Zammen par\n\n-Fighter (Hrithik Roshan)\n\n-Padman\n\n-Chalte Chalte\n\n-Jab we Met\n\n-Kuch Kuch hota hai\n\n-Koi mil Gaya\n\n-M.S Dhoni : The Untold Story\n\n- LUCKY BHASKAR\n\n- Main HU Lucky The Racer\n___",
+        "isDone": false,
+        "isSub": true,
+        "isCollapsed": false
+    },
+    {
+        "ID": 199,
+        "parentID": -1,
+        "TXT": "Important Windows Paths",
+        "isDone": false,
+        "isSub": false,
+        "isCollapsed": true
+    },
+    {
+        "ID": 201,
+        "parentID": 199,
+        "TXT": "1.0-   windows icons\nC:\\Windows\\System32\\imageres.dll",
+        "isDone": false,
+        "isSub": true,
+        "isCollapsed": false
+    },
+    {
+        "ID": 202,
+        "parentID": 49,
+        "TXT": "7.1-   Stranger Things s1    [Completed]\n\n7.2-   Stranger Things s2    [Completed]\n\n7.3-   Stranger Things s3    [Completed]\n\n7.4-   Stranger Things s4    [✔]\n\n7.5-   Stranger Things s5    [✔]\n___",
+        "isDone": false,
+        "isSub": true,
+        "isCollapsed": false
+    },
+    {
+        "ID": 203,
+        "parentID": 7,
+        "TXT": "2.1-   Rascal does not dream of bunny girl senpai (Anime)           [✔]\n\n2.2-   Rascal does not dream of a dreaming girl (Movie)               [✔]\n\n2.3-   Rascal does not dream of a sister venturing out (Movie)     [✔]\n\n2.4-   Rascal does not dream of a knapsack kid (Movie)                 [✔]               \n\n2.5-   Rascal does not dream of santa claus (Anime)                       [✔]\n\n2.6-   Rascal does not dream of a dear friend(Movie)            (Oct 16, 2026)\n___",
+        "isDone": false,
+        "isSub": true,
+        "isCollapsed": false
+    },
+    {
+        "ID": 204,
+        "parentID": 7,
+        "TXT": "3.0-   The Fragrant Flower Blooms with Dignity   [✔]\n\nMangaka : \nch 100\nch 158\n___",
+        "isDone": false,
+        "isSub": true,
+        "isCollapsed": false
+    },
+    {
+        "ID": 205,
+        "parentID": 7,
+        "TXT": "4.1-   My Happy Marriage s1   [✔]\n\n4.2-   My Happy Marriage s2   [✔]\n___",
+        "isDone": false,
+        "isSub": true,
+        "isCollapsed": false
+    },
+    {
+        "ID": 206,
+        "parentID": 7,
+        "TXT": "5.1-   Horimiya s1\n\n5.2-   Horimiya s2\n___",
+        "isDone": false,
+        "isSub": true,
+        "isCollapsed": false
+    },
+    {
+        "ID": 209,
+        "parentID": 5,
+        "TXT": "5.0-   Tenet   [✔]",
+        "isDone": false,
+        "isSub": true,
+        "isCollapsed": false
+    },
+    {
+        "ID": 210,
+        "parentID": 7,
+        "TXT": "Naruto ep 80",
+        "isDone": false,
+        "isSub": true,
+        "isCollapsed": false
+    }
+]

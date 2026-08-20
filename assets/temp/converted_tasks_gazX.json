@@ -1,0 +1,442 @@
+[
+    {
+        "ID": 11,
+        "parentID": 5,
+        "TXT": "2.0-   Interstellar    [Watched]",
+        "isDone": false,
+        "isSub": true,
+        "isCollapsed": false
+    },
+    {
+        "ID": 8,
+        "parentID": 5,
+        "TXT": "1.0-   Hacksaw Ridge    [Watched]",
+        "isDone": false,
+        "isSub": true,
+        "isCollapsed": false
+    },
+    {
+        "ID": 5,
+        "parentID": -1,
+        "TXT": "Movies",
+        "isDone": false,
+        "isSub": false,
+        "isCollapsed": true
+    },
+    {
+        "ID": 48,
+        "parentID": -1,
+        "TXT": "Animated Movies",
+        "isDone": false,
+        "isSub": false,
+        "isCollapsed": true
+    },
+    {
+        "ID": 6,
+        "parentID": -1,
+        "TXT": "Anime Movies",
+        "isDone": false,
+        "isSub": false,
+        "isCollapsed": true
+    },
+    {
+        "ID": 20,
+        "parentID": 6,
+        "TXT": "1.0-   Grave of the fireflies    [Watched] [1]",
+        "isDone": false,
+        "isSub": true,
+        "isCollapsed": false
+    },
+    {
+        "ID": 21,
+        "parentID": 6,
+        "TXT": "2.0-   A Silent Voice    [Watched] [2]",
+        "isDone": false,
+        "isSub": true,
+        "isCollapsed": false
+    },
+    {
+        "ID": 23,
+        "parentID": 5,
+        "TXT": "3.0-   Oppenheimer    [#]",
+        "isDone": false,
+        "isSub": true,
+        "isCollapsed": false
+    },
+    {
+        "ID": 28,
+        "parentID": 5,
+        "TXT": "4.1-   John Wick 1\n\n4.2-   John Wick 2\n\n4.3-   John Wick 3\n\n4.4-   John Wick 4\n\n5.5-   John Wick - Ballerina\n_",
+        "isDone": false,
+        "isSub": true,
+        "isCollapsed": false
+    },
+    {
+        "ID": 37,
+        "parentID": 7,
+        "TXT": "1.0-   Violet Evergarden ( ep1 - ep12 )    [Completed]",
+        "isDone": false,
+        "isSub": true,
+        "isCollapsed": false
+    },
+    {
+        "ID": 38,
+        "parentID": 6,
+        "TXT": "3.0-   The tunnel to summer, The exit of goodbyes    [Watched] [2]",
+        "isDone": false,
+        "isSub": true,
+        "isCollapsed": false
+    },
+    {
+        "ID": 39,
+        "parentID": 6,
+        "TXT": "4.1-   Your Name    [to be reWatched]\n\n4.2-   Weathering with you    [to be reWatched]\n\n4.3-   Suzume no tojimari    [to be reWatched]\n___",
+        "isDone": false,
+        "isSub": true,
+        "isCollapsed": false
+    },
+    {
+        "ID": 42,
+        "parentID": 6,
+        "TXT": "5.0-   Violet Evergarden - The Movie    [Watched]",
+        "isDone": false,
+        "isSub": true,
+        "isCollapsed": false
+    },
+    {
+        "ID": 43,
+        "parentID": 7,
+        "TXT": "2.0-   Terror in Resonance ( ep1 - ep11 )    [Completed]",
+        "isDone": false,
+        "isSub": true,
+        "isCollapsed": false
+    },
+    {
+        "ID": 7,
+        "parentID": -1,
+        "TXT": "Animes",
+        "isDone": false,
+        "isSub": false,
+        "isCollapsed": true
+    },
+    {
+        "ID": 49,
+        "parentID": -1,
+        "TXT": "Shows",
+        "isDone": false,
+        "isSub": false,
+        "isCollapsed": true
+    },
+    {
+        "ID": 56,
+        "parentID": 49,
+        "TXT": "1.1-   Squid Game s1    [Completed]\n\n1.2-   Squid Game s2    [Completed]\n\n1.3-   Squid Game s3    [Completed]\n___",
+        "isDone": false,
+        "isSub": true,
+        "isCollapsed": false
+    },
+    {
+        "ID": 63,
+        "parentID": -1,
+        "TXT": "Cartoons Series",
+        "isDone": false,
+        "isSub": false,
+        "isCollapsed": true
+    },
+    {
+        "ID": 65,
+        "parentID": 63,
+        "TXT": "1.1-   Teenage Mutant Ninja Turtles s1   [Completed]\n\n1.2-   Teenage Mutant Ninja Turtles s2   [Completed]\n\n1.3-   Teenage Mutant Ninja Turtles s3\n\n1.4-   Teenage Mutant Ninja Turtles s4\n\n1.5-   Teenage Mutant Ninja Turtles s5\n___",
+        "isDone": false,
+        "isSub": true,
+        "isCollapsed": false
+    },
+    {
+        "ID": 93,
+        "parentID": 7,
+        "TXT": "3.1-   Full time magister s1\n\n3.2-   Full time magister s2\n\n3.3-   Full time magister s3\n\n3.4-   Full time magister s4\n\n3.5-   Full time magister s5\n\n3.6-   Full time magister s6\n\n3.7-   Full time magister s7\n___",
+        "isDone": false,
+        "isSub": true,
+        "isCollapsed": false
+    },
+    {
+        "ID": 100,
+        "parentID": 7,
+        "TXT": "4.1-   Swallowed Star 1 (Audio Novel)    [Completed]\n\n4.2-   Swallowed Star 2 - Origin Continent (Audio Novel)\n___",
+        "isDone": false,
+        "isSub": true,
+        "isCollapsed": false
+    },
+    {
+        "ID": 102,
+        "parentID": 49,
+        "TXT": "2.1-   Peaky Blinders s1\n\n2.2-   Peaky Blinders s2\n\n2.3-   Peaky Blinders s3\n\n2.4-   Peaky Blinders s4\n\n2.5-   Peaky Blinders s5\n\n2.6-   Peaky Blinders s6\n___",
+        "isDone": false,
+        "isSub": true,
+        "isCollapsed": false
+    },
+    {
+        "ID": 104,
+        "parentID": 5,
+        "TXT": "5.1-   The Accountant 1    [#]\n\n5.2-   The Accountant 2    [#]\n_",
+        "isDone": false,
+        "isSub": true,
+        "isCollapsed": false
+    },
+    {
+        "ID": 108,
+        "parentID": 7,
+        "TXT": "5.1-   Soul Land 1     [Completed]\n\n5.2-   Soul Land 2 : The Peerless Tang clan\n___",
+        "isDone": false,
+        "isSub": true,
+        "isCollapsed": false
+    },
+    {
+        "ID": 109,
+        "parentID": 7,
+        "TXT": "6.0-   Throne of Seal  (Anime and Audio Novel)",
+        "isDone": false,
+        "isSub": true,
+        "isCollapsed": false
+    },
+    {
+        "ID": 110,
+        "parentID": 6,
+        "TXT": "6.0-   Josee, The tiger and the fish    [#] [#]",
+        "isDone": false,
+        "isSub": true,
+        "isCollapsed": false
+    },
+    {
+        "ID": 118,
+        "parentID": 63,
+        "TXT": "2.1-   Slugterra s1\n\n2.2-   Slugterra s2\n\n2.3-   Slugterra s3\n\n2.4-   Slugterra s4\n\n2.5-   Slugterra s5 \n\n2.6-   Slugterra s6\n___",
+        "isDone": false,
+        "isSub": true,
+        "isCollapsed": false
+    },
+    {
+        "ID": 124,
+        "parentID": 7,
+        "TXT": "7.0-   Battle Through the Heavens",
+        "isDone": false,
+        "isSub": true,
+        "isCollapsed": false
+    },
+    {
+        "ID": 128,
+        "parentID": 49,
+        "TXT": "3.1-   Breaking Bad s1\n\n3.2-   Breaking Bad s2\n\n3.3-   Breaking Bad s3   \n\n3.4-   Breaking Bad s4\n\n3.5-   Breaking Bad s5\n___",
+        "isDone": false,
+        "isSub": true,
+        "isCollapsed": false
+    },
+    {
+        "ID": 135,
+        "parentID": 7,
+        "TXT": "8.1-   Solo Leveling s1    [Completed]\n\n8.2-   Solo Leveling s2    [Completed]\n\n8.3-   Solo Leveling s3    [yet to release]\n___",
+        "isDone": false,
+        "isSub": true,
+        "isCollapsed": false
+    },
+    {
+        "ID": 136,
+        "parentID": 7,
+        "TXT": "9.1-   Rakshasa Street s1    [Completed]   \n\n9.2-   Rakshasa Street s2    [Completed]\n\n9.3-   Rakshasa Street s3    [Completed]\n\n9.4-   Rakshasa Street s4    [Completed]\n\n9.5-   Rakshasa Street s5    [yet to release]\n___",
+        "isDone": false,
+        "isSub": true,
+        "isCollapsed": false
+    },
+    {
+        "ID": 137,
+        "parentID": 7,
+        "TXT": "0.1-   Vinland Saga s1    [Completed]\n\n0.2-   Vinland Saga s2    [Completed]\n____",
+        "isDone": false,
+        "isSub": true,
+        "isCollapsed": false
+    },
+    {
+        "ID": 138,
+        "parentID": 7,
+        "TXT": "1.1-   Classroom of the Elite s1    [Completed]\n\n1.2-   Classroom of the Elite s2    [Completed]\n\n1.3-   Classroom of the Elite s3    [Completed]\n____",
+        "isDone": false,
+        "isSub": true,
+        "isCollapsed": false
+    },
+    {
+        "ID": 139,
+        "parentID": 5,
+        "TXT": "6.0-   The Foreigner - Jackie Chan    [Watched]",
+        "isDone": false,
+        "isSub": true,
+        "isCollapsed": false
+    },
+    {
+        "ID": 140,
+        "parentID": 5,
+        "TXT": "7.0-   The Imitation Game    [Yet to Watch]",
+        "isDone": false,
+        "isSub": true,
+        "isCollapsed": false
+    },
+    {
+        "ID": 141,
+        "parentID": 5,
+        "TXT": "8.0-   The Law Abiding Citizen    [Watched]",
+        "isDone": false,
+        "isSub": true,
+        "isCollapsed": false
+    },
+    {
+        "ID": 142,
+        "parentID": 5,
+        "TXT": "9.0-   Hachi : A Dog's Tale    [Watched]",
+        "isDone": false,
+        "isSub": true,
+        "isCollapsed": false
+    },
+    {
+        "ID": 143,
+        "parentID": 48,
+        "TXT": "1.1-   How to train your Dragon 1    [Watched]\n\n1.2-   How to train your Dragon 2    [Watched]\n\n1.3-   How to train your Dragon 3    [Watched]\n_",
+        "isDone": false,
+        "isSub": true,
+        "isCollapsed": false
+    },
+    {
+        "ID": 144,
+        "parentID": 48,
+        "TXT": "2.1-   Kung fu Panda 1    [Watched]\n\n2.2-   Kung fu Panda 2    [Watched]\n\n2.3-   Kung fu Panda 3    [Watched]\n_",
+        "isDone": false,
+        "isSub": true,
+        "isCollapsed": false
+    },
+    {
+        "ID": 145,
+        "parentID": 48,
+        "TXT": "3.1-   Frozen 1    [Watched]\n\n3.2-   Frozen 2    [Watched]\n\n3.3-   Frozen 3    [to be released on 24 Nov, 2027]\n_",
+        "isDone": false,
+        "isSub": true,
+        "isCollapsed": false
+    },
+    {
+        "ID": 146,
+        "parentID": 48,
+        "TXT": "4.1-   Spiderman into the Spider-Verse    [Watched]\n\n4.2-   Spiderman across the Spider-Verse    [Watched]\n\n4.3-   Spiderman beyond the Spider-Verse    [not released]\n___",
+        "isDone": false,
+        "isSub": true,
+        "isCollapsed": false
+    },
+    {
+        "ID": 147,
+        "parentID": 49,
+        "TXT": "4.1-   Money Heist s1    [Completed]\n\n4.2-   Money Heist s2    [Completed]\n\n4.3-   Money Heist s3    [Completed]\n\n4.4-   Money Heist s4    [Completed]\n\n4.5-   Money Heist s5    [Completed]\n___",
+        "isDone": false,
+        "isSub": true,
+        "isCollapsed": false
+    },
+    {
+        "ID": 150,
+        "parentID": 63,
+        "TXT": "3.1-   The Deep s1\n\n3.2-   The Deep s2\n\n3.3-   The Deep s3\n\n3.4-   The Deep s4\n___",
+        "isDone": false,
+        "isSub": true,
+        "isCollapsed": false
+    },
+    {
+        "ID": 154,
+        "parentID": 48,
+        "TXT": "5.1-   The Incredibles 1\n\n5.2-   The Incredibles 2\n___",
+        "isDone": false,
+        "isSub": true,
+        "isCollapsed": false
+    },
+    {
+        "ID": 155,
+        "parentID": 49,
+        "TXT": "5.1-   Dexter Ressurection s1    [Completed]",
+        "isDone": false,
+        "isSub": true,
+        "isCollapsed": false
+    },
+    {
+        "ID": 158,
+        "parentID": 5,
+        "TXT": "0.1-   Dune: Part 1    [Watched]\n\n0.2-   Dune: Part 2\n___",
+        "isDone": false,
+        "isSub": true,
+        "isCollapsed": false
+    },
+    {
+        "ID": 163,
+        "parentID": 5,
+        "TXT": "1.0-   Chak De! India    [Watched]",
+        "isDone": false,
+        "isSub": true,
+        "isCollapsed": false
+    },
+    {
+        "ID": 159,
+        "parentID": 49,
+        "TXT": "6.0-   Chernobyl 2019 HBO Drame Series    [Completed]",
+        "isDone": false,
+        "isSub": true,
+        "isCollapsed": false
+    },
+    {
+        "ID": 168,
+        "parentID": 5,
+        "TXT": "2.1-   The Amazing Spiderman 1    [Completed]   \n\n2.2-   The Amazing Spiderman 2    [Completed]   \n___",
+        "isDone": false,
+        "isSub": true,
+        "isCollapsed": false
+    },
+    {
+        "ID": 167,
+        "parentID": 63,
+        "TXT": "4.1-   Young Justice s1    [Completed]\n\n4.2-   Young Justice s2    [Completed]\n\n4.3-   Yound Justice s3    [Completed]\n\n4.4-   Young Justice s4    [Completed]\n___",
+        "isDone": false,
+        "isSub": true,
+        "isCollapsed": false
+    },
+    {
+        "ID": 169,
+        "parentID": 5,
+        "TXT": "3.1-   Spider-Man: Homecoming       [Watched]\n\n3.2-   Spider-Man: Far From Home    [Watched]\n\n3.3-   Spider-Man: No Way Home     [Watched]\n___",
+        "isDone": false,
+        "isSub": true,
+        "isCollapsed": false
+    },
+    {
+        "ID": 198,
+        "parentID": 5,
+        "TXT": "4.0-   Dunkirk    [Watched]",
+        "isDone": false,
+        "isSub": true,
+        "isCollapsed": false
+    },
+    {
+        "ID": 156,
+        "parentID": 5,
+        "TXT": "Hindi Movie Watchlist\n\n- Chichorre\n\n- Chennai Express\n\n-  Kal ho na ho\n\n-Zindagi na milegi dubara\n\n-yeh Jawani hai Diwani\n\n-Happy New Year\n\n-Dilwaale\n\n-Student of the Year\n\n-   DDLJ\n\n-PK\n\n-Taare Zammen par\n\n-Fighter (Hrithik Roshan)\n\n-Padman\n\n-Chalte Chalte\n\n-Jab we Met\n\n-Kuch Kuch hota hai\n\n-Koi mil Gaya\n\n-M.S Dhoni : The Untold Story\n\n- LUCKY BHASKAR\n\n- Main HU Lucky The Racer\n___",
+        "isDone": false,
+        "isSub": true,
+        "isCollapsed": false
+    },
+    {
+        "ID": 202,
+        "parentID": 49,
+        "TXT": "7.1-   Stranger Things s1    [Completed]\n\n7.2-   Stranger Things s2    [Completed]\n\n7.3-   Stranger Things s3    [Completed]\n\n7.4-   Stranger Things s4    [Completed]\n\n7.5-   Stranger Things s5    [Completed]\n___",
+        "isDone": false,
+        "isSub": true,
+        "isCollapsed": false
+    },
+    {
+        "ID": 204,
+        "parentID": 7,
+        "TXT": "2.1 -   Rascal does not dream of Bunny Girl Senpai  (Season 1, 13 episodes)\n\n2.2 -   Rascal Does Not Dream of a Dreaming Girl (Movie)\n\n2.3 -   Rascal Does Not Dream of a Sister Venturing Out (Movie)\n\n2.4 -   Rascal Does Not Dream of a Knapsack Kid (Movie)\n\n2.5 -   Rascal Does Not Dream of Santa Claus (Season 2, 13 episodes)\n\n2.6 -   Rascal Does Not Dream of a Dear Friend [Yet to be released]\n___",
+        "isDone": false,
+        "isSub": true,
+        "isCollapsed": false
+    }
+]

@@ -3,6 +3,7 @@ package utilities;
 import java.io.File;
 import java.awt.Font;
 import java.awt.GraphicsEnvironment;
+import javax.swing.JOptionPane;
 
 public class PathResolver {
 
@@ -105,6 +106,32 @@ public class PathResolver {
         } catch (Exception e) {
             e.printStackTrace();
             return System.getProperty("user.dir");
+        }
+    }
+
+    /**
+     * Ensures the assets/ folder and its two required subfolders (fonts, data)
+     * exist before anything else in PathResolver is touched. Must run before
+     * getAssetsPath()/getFontDirPath()/getDataDirPath() are called anywhere,
+     * since those throw if the folders are missing.
+     */
+    public static void ensureAssetsStructure() {
+        String appRoot = getApplicationRoot();
+        File assetsDir = new File(appRoot, "assets");
+        File fontsDir = new File(assetsDir, "fonts");
+        File dataDir = new File(assetsDir, "data");
+
+        boolean ok = true;
+        if (!assetsDir.exists()) ok &= assetsDir.mkdirs();
+        if (!fontsDir.exists())  ok &= fontsDir.mkdirs();
+        if (!dataDir.exists())   ok &= dataDir.mkdirs();
+
+        if (!ok) {
+            JOptionPane.showMessageDialog(null,
+                    "ArkIV could not create its required assets folders at:\n" + assetsDir.getAbsolutePath()
+                            + "\n\nPlease check folder permissions and try again.",
+                    "Startup Error", JOptionPane.ERROR_MESSAGE);
+            System.exit(1);
         }
     }
 
