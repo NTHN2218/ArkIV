@@ -657,6 +657,43 @@ public class UniversalThemes {
     }
 
     ///==============================================================================================================
+    ///== Selection Collapse Navigation (arrow keys collapse to selection edge instead of default caret step)
+    ///==============================================================================================================
+    public static void applyCollapseSelectionNavigation(javax.swing.text.JTextComponent comp) {
+        InputMap im = comp.getInputMap(JComponent.WHEN_FOCUSED);
+        ActionMap am = comp.getActionMap();
+
+        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, 0), "collapseToStartOrStepBack");
+        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, 0), "collapseToEndOrStepForward");
+
+        am.put("collapseToStartOrStepBack", new AbstractAction() {
+            @Override public void actionPerformed(ActionEvent e) {
+                int selStart = comp.getSelectionStart();
+                int selEnd = comp.getSelectionEnd();
+                if (selStart != selEnd) {
+                    comp.setCaretPosition(selStart);
+                } else {
+                    int pos = Math.max(0, comp.getCaretPosition() - 1);
+                    comp.setCaretPosition(pos);
+                }
+            }
+        });
+
+        am.put("collapseToEndOrStepForward", new AbstractAction() {
+            @Override public void actionPerformed(ActionEvent e) {
+                int selStart = comp.getSelectionStart();
+                int selEnd = comp.getSelectionEnd();
+                if (selStart != selEnd) {
+                    comp.setCaretPosition(selEnd);
+                } else {
+                    int pos = Math.min(comp.getDocument().getLength(), comp.getCaretPosition() + 1);
+                    comp.setCaretPosition(pos);
+                }
+            }
+        });
+    }
+
+    ///==============================================================================================================
     ///== Label Wrapping Helpers
     ///==============================================================================================================
     private static int computeWrapWidth(Font font, String text, int minWidth, int maxWidth) {

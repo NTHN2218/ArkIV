@@ -36,6 +36,7 @@ public class UniversalFactory {
         textfield.setForeground(fgColor);
         textfield.setCaretColor(caretColor);
         UniversalThemes.applySelectionTheme(textfield);
+        UniversalThemes.applyCollapseSelectionNavigation(textfield);
         return textfield;
     }
 
