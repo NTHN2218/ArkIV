@@ -14,6 +14,8 @@ import java.awt.geom.RoundRectangle2D;
 import java.awt.font.TextAttribute;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
+import java.util.HashSet;
 
 public class UniversalThemes {
 
@@ -691,6 +693,19 @@ public class UniversalThemes {
                 }
             }
         });
+    }
+
+    ///==============================================================================================================
+    ///== Free Up Ctrl+Tab (text components claim it as focus-traversal by default)
+    ///==============================================================================================================
+    public static void freeCtrlTabFromTraversal(JComponent comp) {
+        Set<AWTKeyStroke> forwardKeys = new HashSet<>(comp.getFocusTraversalKeys(KeyboardFocusManager.FORWARD_TRAVERSAL_KEYS));
+        forwardKeys.remove(KeyStroke.getKeyStroke(KeyEvent.VK_TAB, InputEvent.CTRL_DOWN_MASK));
+        comp.setFocusTraversalKeys(KeyboardFocusManager.FORWARD_TRAVERSAL_KEYS, forwardKeys);
+
+        Set<AWTKeyStroke> backwardKeys = new HashSet<>(comp.getFocusTraversalKeys(KeyboardFocusManager.BACKWARD_TRAVERSAL_KEYS));
+        backwardKeys.remove(KeyStroke.getKeyStroke(KeyEvent.VK_TAB, InputEvent.CTRL_DOWN_MASK | InputEvent.SHIFT_DOWN_MASK));
+        comp.setFocusTraversalKeys(KeyboardFocusManager.BACKWARD_TRAVERSAL_KEYS, backwardKeys);
     }
 
     ///==============================================================================================================

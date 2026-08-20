@@ -177,6 +177,7 @@ public class ArkIVv9 implements ActionListener{
         inputArea.setMargin(new Insets(8, 8, 8, 8));
         UniversalThemes.applySelectionTheme(inputArea);
         UniversalThemes.applyCollapseSelectionNavigation(inputArea);
+        UniversalThemes.freeCtrlTabFromTraversal(inputArea);
         Hotstring.attach(inputArea);
 
 
@@ -302,6 +303,20 @@ public class ArkIVv9 implements ActionListener{
                 deselectAll();
                 saveTasks();
             }
+        });
+
+        JRootPane rootPane = frame.getRootPane();
+        InputMap rootIm = rootPane.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
+        ActionMap rootAm = rootPane.getActionMap();
+
+        rootIm.put(KeyStroke.getKeyStroke(KeyEvent.VK_TAB, InputEvent.CTRL_DOWN_MASK), "nextRegister");
+        rootAm.put("nextRegister", new AbstractAction() {
+            @Override public void actionPerformed(ActionEvent e) { cycleRegister(1); }
+        });
+
+        rootIm.put(KeyStroke.getKeyStroke(KeyEvent.VK_TAB, InputEvent.CTRL_DOWN_MASK | InputEvent.SHIFT_DOWN_MASK), "prevRegister");
+        rootAm.put("prevRegister", new AbstractAction() {
+            @Override public void actionPerformed(ActionEvent e) { cycleRegister(-1); }
         });
 
         loadTasks();
@@ -487,6 +502,7 @@ public class ArkIVv9 implements ActionListener{
         searchBar.setBorder(BorderFactory.createMatteBorder(1,1,1,1, UniversalThemes.BORDER_COLOR2));
         UniversalThemes.applySelectionTheme(searchBar);
         UniversalThemes.applyCollapseSelectionNavigation(searchBar);
+        UniversalThemes.freeCtrlTabFromTraversal(searchBar);
         searchBar.setMaximumSize(new Dimension(Integer.MAX_VALUE, 30)); // cap searchBar.setMaximumSize(new Dimension(Integer.MAX_VALUE, 30)); // cap height
         searchBar.setPreferredSize(new Dimension(0, 30)); // match button height; width controlled by BorderLayout.CENTER
 
@@ -1131,6 +1147,7 @@ public class ArkIVv9 implements ActionListener{
         registerRenameField.setBorder(BorderFactory.createLineBorder(UniversalThemes.ACCENT_COLOR, 1));
         UniversalThemes.applySelectionTheme(registerRenameField);
         UniversalThemes.applyCollapseSelectionNavigation(registerRenameField);
+        UniversalThemes.freeCtrlTabFromTraversal(registerRenameField);
 
         int textX = bounds.x + 10; // matches the leaf's left inset from the cell renderer
         int rightMargin = 12;
@@ -1223,6 +1240,7 @@ public class ArkIVv9 implements ActionListener{
         ));
         UniversalThemes.applySelectionTheme(nameField);
         UniversalThemes.applyCollapseSelectionNavigation(nameField);
+        UniversalThemes.freeCtrlTabFromTraversal(nameField);
         nameField.setAlignmentX(Component.LEFT_ALIGNMENT);
         nameField.setMaximumSize(new Dimension(Integer.MAX_VALUE, nameField.getPreferredSize().height));
 
@@ -1309,6 +1327,23 @@ public class ArkIVv9 implements ActionListener{
         taskPanel.repaint();
 
         refreshRegisterList();
+    }
+
+    private void cycleRegister(int direction) {
+        List<RegisterManager.RegisterEntry> registers = registerManager.getRegisters(); // sorted by order, recognized only
+        if (registers.isEmpty()) return;
+
+        int index = -1;
+        for (int i = 0; i < registers.size(); i++) {
+            if (registers.get(i).id == currentRegisterId) {
+                index = i;
+                break;
+            }
+        }
+        if (index == -1) return;
+
+        int newIndex = (index + direction + registers.size()) % registers.size();
+        switchToRegister(registers.get(newIndex));
     }
 
     private void showRegisterContextMenu(RegisterManager.RegisterEntry entry, Component invoker, MouseEvent e) {
@@ -1908,6 +1943,7 @@ public class ArkIVv9 implements ActionListener{
             textArea.setBorder(null);
             UniversalThemes.applySelectionTheme(textArea);
             UniversalThemes.applyCollapseSelectionNavigation(textArea);
+            UniversalThemes.freeCtrlTabFromTraversal(textArea);
 
             MarkdownRenderer.render(textArea.getStyledDocument(), rawText);
             MarkdownDebug.summary("[TaskItem] Initial render complete for id=" + id);
@@ -2193,6 +2229,7 @@ public class ArkIVv9 implements ActionListener{
             field.setBorder(null);
             UniversalThemes.applySelectionTheme(field);
             UniversalThemes.applyCollapseSelectionNavigation(field);
+            UniversalThemes.freeCtrlTabFromTraversal(field);
             Hotstring.attach(field);
 
             // Pre-size rows to fit existing content, capped at 10
@@ -2329,6 +2366,7 @@ public class ArkIVv9 implements ActionListener{
             field.setBorder(null);
             UniversalThemes.applySelectionTheme(field);
             UniversalThemes.applyCollapseSelectionNavigation(field);
+            UniversalThemes.freeCtrlTabFromTraversal(field);
             Hotstring.attach(field);
 
             JScrollPane scrollPane = new JScrollPane(field);

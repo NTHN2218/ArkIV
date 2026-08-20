@@ -66,7 +66,7 @@ public class MarkdownRenderer {
                 for (int b = 0; b < blankLines; b++) {
                     doc.insertString(doc.getLength(), "\n", MarkdownStyles.getPlainAttributes());
                 }
-                System.out.println("[MarkdownRenderer] Appended " + blankLines + " trailing blank line(s) from raw text.");
+                MarkdownDebug.log("[MarkdownRenderer] Appended " + blankLines + " trailing blank line(s) from raw text.");
             } catch (BadLocationException e) {
                 System.err.println("[MarkdownRenderer] Failed to append trailing blank lines: " + e.getMessage());
             }
