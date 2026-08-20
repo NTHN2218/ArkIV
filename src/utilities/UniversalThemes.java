@@ -676,11 +676,15 @@ public class UniversalThemes {
     }
 
     public static boolean showDeleteConfirmPopup(Component parent, String dialogTitle, String targetName, String subMessage) {
+        return showDeleteConfirmPopup(parent, dialogTitle, targetName, subMessage, "Delete");
+    }
+
+    public static boolean showDeleteConfirmPopup(Component parent, String dialogTitle, String targetName, String subMessage, String actionVerb) {
         final boolean[] result = { false };
         RoundedDialog rd = createRoundedDialogShell(parent, dialogTitle);
 
         JLabel messageLabel = createWrappingLabel(
-                "Are you sure you want to delete \u201C" + targetName + "\u201D?",
+                "Are you sure you want to " + actionVerb.toLowerCase() + " \u201C" + targetName + "\u201D?",
                 FONT_R_16, TXT_PRIMARY, 220, 340
         );
         rd.body.add(messageLabel);
@@ -693,15 +697,15 @@ public class UniversalThemes {
 
         rd.body.add(Box.createVerticalStrut(18));
 
-        JButton deleteButton = createRoundedDialogButton("Delete", BG_DELETE_BTN, Color.BLACK, BG_DELETE_BTN.darker());
+        JButton actionButton = createRoundedDialogButton(actionVerb, BG_DELETE_BTN, Color.BLACK, BG_DELETE_BTN.darker());
         JButton cancelButton = createRoundedDialogButton("Cancel", BG_CANCEL_BTN, TXT_PRIMARY, BORDER_COLOR1);
-        deleteButton.addActionListener(e -> { result[0] = true; rd.dialog.dispose(); });
+        actionButton.addActionListener(e -> { result[0] = true; rd.dialog.dispose(); });
         cancelButton.addActionListener(e -> rd.dialog.dispose());
 
         JPanel buttonRow = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 0));
         buttonRow.setOpaque(false);
         buttonRow.setAlignmentX(Component.LEFT_ALIGNMENT);
-        buttonRow.add(deleteButton);
+        buttonRow.add(actionButton);
         buttonRow.add(cancelButton);
 
         rd.body.add(buttonRow);

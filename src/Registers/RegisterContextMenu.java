@@ -51,7 +51,7 @@ public class RegisterContextMenu {
 
         menu.add(buildSeparator());
         menu.add(buildItem("Rename", true, e -> handler.onRename(), UniversalThemes.TXT_PRIMARY));
-        menu.add(buildItem("Delete", canDelete, e -> handler.onDelete(), UniversalThemes.BG_DELETE_BTN));
+        menu.add(buildItem("Remove", canDelete, e -> handler.onDelete(), UniversalThemes.BG_DELETE_BTN));
 
         menu.show(invoker, x, y);
     }
@@ -122,7 +122,7 @@ public class RegisterContextMenu {
         item.setOpaque(false);
         item.addActionListener(action);
 
-        Color idleColor = label.equals("Delete") ? UniversalThemes.BG_DELETE_BTN : UniversalThemes.TXT_PRIMARY;
+        Color idleColor = (label.equals("Delete") || label.equals("Remove")) ? UniversalThemes.BG_DELETE_BTN : UniversalThemes.TXT_PRIMARY;
         applyMenuItemTheme(item, activeTextColor, idleColor);
         return item;
     }

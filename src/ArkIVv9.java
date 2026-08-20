@@ -1360,21 +1360,22 @@ public class ArkIVv9 implements ActionListener{
     private void handleDeleteRegister(RegisterManager.RegisterEntry entry) {
 
         if (registerManager.getRegisters().size() <= 1) {
-            UniversalThemes.showPopup(frame, "You can't delete the only remaining register.", "Cannot Delete");
+            UniversalThemes.showPopup(frame, "You can't remove the only remaining register.", "Cannot Remove");
             return;
         }
 
         boolean confirmed = UniversalThemes.showDeleteConfirmPopup(
                 frame,
-                "Delete Register",
+                "Remove Register",
                 entry.name,
-                "The register file will be permanently deleted. This cannot be undone."
+                "The register file will be permanently removed. This cannot be undone.",
+                "Remove"
         );
         if (!confirmed) return;
 
         boolean wasCurrent = (entry.id == currentRegisterId);
 
-        registerManager.deleteRegister(entry.id, true);
+        registerManager.deleteRegister(entry.id, false);
 
         if (wasCurrent) {
             RegisterManager.RegisterEntry fallback = registerManager.getDefaultRegister();
