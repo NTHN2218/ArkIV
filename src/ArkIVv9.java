@@ -21,6 +21,7 @@ import javax.crypto.*;
 import javax.crypto.spec.*;
 
 //Package - utilities
+import utilities.PathResolver;
 import utilities.UniversalFactory;
 import utilities.UniversalThemes;
 
@@ -140,6 +141,8 @@ public class ArkIVv9 implements ActionListener{
     ///== Constructor
     ///==============================================================================================================
     public ArkIVv9() {
+
+        PathResolver.ensureAssetsStructure();
 
         registerManager = new RegisterManager();
         FILE_NAME = registerManager.getRegisterFilePath(registerManager.getDefaultRegister());
