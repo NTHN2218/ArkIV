@@ -52,6 +52,8 @@ public class UniversalThemes {
 
 
 
+
+
     ///==============================================================================================================
     ///== Fonts
     ///==============================================================================================================
@@ -247,6 +249,19 @@ public class UniversalThemes {
                 g2.dispose();
                 super.paintComponent(g);
             }
+
+            @Override protected void paintBorder(Graphics g) {
+                if (isFocusOwner()) {
+                    Color btnColor = bg==BG_DELETE_BTN ? Color.BLACK : Color.GRAY ;
+
+                    Graphics2D g2 = (Graphics2D) g.create();
+                    g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                    g2.setColor(BG_COMPONENT);
+                    g2.setStroke(new BasicStroke(1.5f));
+                    g2.drawRoundRect(1, 1, getWidth() - 3, getHeight() - 3, 8, 8);
+                    g2.dispose();
+                }
+            }
         };
         button.setFont(FONT_R_16);
         button.setForeground(fg);
@@ -254,7 +269,7 @@ public class UniversalThemes {
         button.setBorder(BorderFactory.createEmptyBorder(8, 18, 8, 18));
         button.setContentAreaFilled(false);
         button.setFocusPainted(false);
-        button.setFocusable(false);
+        button.setFocusable(true);
         button.setOpaque(false);
         button.setUI(new NoPressedButtonUI());
         button.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
@@ -262,7 +277,46 @@ public class UniversalThemes {
             @Override public void mouseEntered(MouseEvent e) { button.setBackground(hoverBg); }
             @Override public void mouseExited(MouseEvent e)  { button.setBackground(bg); }
         });
+        button.addFocusListener(new FocusAdapter() {
+            @Override public void focusGained(FocusEvent e) { button.repaint(); }
+            @Override public void focusLost(FocusEvent e)   { button.repaint(); }
+        });
         return button;
+    }
+
+    ///==============================================================================================================
+    ///== Dialog Button Keyboard Navigation
+    ///==============================================================================================================
+    public static void wireDialogButtonNavigation(JButton... buttons) {
+        if (buttons.length == 0) return;
+
+        for (int i = 0; i < buttons.length; i++) {
+            final JButton current = buttons[i];
+            final int index = i;
+
+            InputMap im = current.getInputMap(JComponent.WHEN_FOCUSED);
+            ActionMap am = current.getActionMap();
+
+            im.put(KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, 0), "navNext");
+            im.put(KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, 0), "navPrev");
+            im.put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "navActivate");
+
+            am.put("navNext", new AbstractAction() {
+                @Override public void actionPerformed(ActionEvent e) {
+                    buttons[(index + 1) % buttons.length].requestFocusInWindow();
+                }
+            });
+            am.put("navPrev", new AbstractAction() {
+                @Override public void actionPerformed(ActionEvent e) {
+                    buttons[(index - 1 + buttons.length) % buttons.length].requestFocusInWindow();
+                }
+            });
+            am.put("navActivate", new AbstractAction() {
+                @Override public void actionPerformed(ActionEvent e) {
+                    current.doClick();
+                }
+            });
+        }
     }
 
 
@@ -641,7 +695,7 @@ public class UniversalThemes {
         JPanel buttonRow = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 0));
         buttonRow.setOpaque(false);
         buttonRow.setAlignmentX(Component.LEFT_ALIGNMENT);
-        buttonRow.add(okButton);
+        wireDialogButtonNavigation(okButton);
         rd.body.add(buttonRow);
 
         finalizeRoundedDialog(rd.dialog, parent);
@@ -667,7 +721,7 @@ public class UniversalThemes {
         buttonRow.setOpaque(false);
         buttonRow.setAlignmentX(Component.LEFT_ALIGNMENT);
         buttonRow.add(yesButton);
-        buttonRow.add(noButton);
+        wireDialogButtonNavigation(yesButton, noButton);
         rd.body.add(buttonRow);
 
         finalizeRoundedDialog(rd.dialog, parent);
@@ -707,6 +761,7 @@ public class UniversalThemes {
         buttonRow.setAlignmentX(Component.LEFT_ALIGNMENT);
         buttonRow.add(actionButton);
         buttonRow.add(cancelButton);
+        wireDialogButtonNavigation(actionButton, cancelButton);
 
         rd.body.add(buttonRow);
 

@@ -1264,7 +1264,7 @@ public class ArkIVv9 implements ActionListener{
         buttonRow.setOpaque(false);
         buttonRow.setAlignmentX(Component.LEFT_ALIGNMENT);
         buttonRow.add(createButton);
-        buttonRow.add(cancelButton);
+        UniversalThemes.wireDialogButtonNavigation(createButton, cancelButton);
         rd.body.add(buttonRow);
 
         rd.dialog.addWindowListener(new WindowAdapter() {
@@ -2286,7 +2286,7 @@ public class ArkIVv9 implements ActionListener{
             buttonRow.setOpaque(false);
             buttonRow.setAlignmentX(Component.LEFT_ALIGNMENT);
             buttonRow.add(saveButton);
-            buttonRow.add(cancelButton);
+            UniversalThemes.wireDialogButtonNavigation(saveButton, cancelButton);
             rd.body.add(buttonRow);
 
             rd.dialog.addWindowListener(new WindowAdapter() {
@@ -2403,7 +2403,7 @@ public class ArkIVv9 implements ActionListener{
             buttonRow.setOpaque(false);
             buttonRow.setAlignmentX(Component.LEFT_ALIGNMENT);
             buttonRow.add(addButton);
-            buttonRow.add(cancelButton);
+            UniversalThemes.wireDialogButtonNavigation(addButton, cancelButton);
             rd.body.add(buttonRow);
 
             UniversalThemes.finalizeRoundedDialog(rd.dialog, frame);
