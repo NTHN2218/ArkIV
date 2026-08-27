@@ -31,3 +31,6 @@ bin/
 
 assets/data/
 assets/temp/
+.idea/modules.xml
+
+

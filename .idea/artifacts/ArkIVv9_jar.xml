@@ -2,7 +2,7 @@
   <artifact type="jar" name="ArkIVv9:jar">
     <output-path>$PROJECT_DIR$/out/artifacts/ArkIVv9_jar</output-path>
     <root id="archive" name="ArkIVv9.jar">
-      <element id="module-output" name="ArkIVv9" />
+      <element id="module-output" name="ArkIV" />
       <element id="extracted-dir" path="$PROJECT_DIR$/lib/gson-2.13.1.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$PROJECT_DIR$/lib/commonmark-ext-task-list-items-0.29.0.jar" path-in-jar="/" />
       <element id="library" level="project" name="commonmark-0.29.0-sources" />
