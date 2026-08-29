@@ -33,4 +33,5 @@ assets/data/
 assets/temp/
 .idea/modules.xml
 
- notes/.obsidian/
+notes\.obsidian\workspace.json
+notes/.obsidian/icons
