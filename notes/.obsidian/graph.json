@@ -1,0 +1,65 @@
+{
+  "collapse-filter": false,
+  "search": "",
+  "showTags": false,
+  "showAttachments": true,
+  "hideUnresolved": true,
+  "showOrphans": true,
+  "collapse-color-groups": false,
+  "colorGroups": [
+    {
+      "query": "path:ArkIV ",
+      "color": {
+        "a": 1,
+        "rgb": 45827
+      }
+    },
+    {
+      "query": "path:Education ",
+      "color": {
+        "a": 1,
+        "rgb": 15952914
+      }
+    },
+    {
+      "query": "path: Personal  ",
+      "color": {
+        "a": 1,
+        "rgb": 16467532
+      }
+    },
+    {
+      "query": "path:Bible",
+      "color": {
+        "a": 1,
+        "rgb": 16777215
+      }
+    },
+    {
+      "query": "path:VPEFAS",
+      "color": {
+        "a": 1,
+        "rgb": 45827
+      }
+    },
+    {
+      "query": "path:\"Web Development\"  ",
+      "color": {
+        "a": 1,
+        "rgb": 45827
+      }
+    }
+  ],
+  "collapse-display": true,
+  "showArrow": false,
+  "textFadeMultiplier": 2,
+  "nodeSizeMultiplier": 0.814583333333333,
+  "lineSizeMultiplier": 1.5546875,
+  "collapse-forces": false,
+  "centerStrength": 0.46875,
+  "repelStrength": 10.1041666666667,
+  "linkStrength": 1,
+  "linkDistance": 135,
+  "scale": 0.3213363860503581,
+  "close": true
+}

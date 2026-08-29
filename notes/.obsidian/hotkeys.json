@@ -1,0 +1,20 @@
+{
+  "editor:insert-link": [],
+  "obsidian-git:commit-smart-specified-message": [
+    {
+      "modifiers": [
+        "Mod"
+      ],
+      "key": "K"
+    }
+  ],
+  "obsidian-git:push": [
+    {
+      "modifiers": [
+        "Mod",
+        "Shift"
+      ],
+      "key": "K"
+    }
+  ]
+}

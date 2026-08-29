@@ -1,0 +1,65 @@
+{
+  "items": [
+    {
+      "type": "group",
+      "ctime": 1784123814885,
+      "items": [
+        {
+          "type": "group",
+          "ctime": 1784123847679,
+          "items": [],
+          "title": ""
+        },
+        {
+          "type": "group",
+          "ctime": 1784123814886,
+          "items": [],
+          "title": "Project - ArkIV"
+        },
+        {
+          "type": "group",
+          "ctime": 1784123814886,
+          "items": [],
+          "title": "Bible"
+        },
+        {
+          "type": "group",
+          "ctime": 1784123814886,
+          "items": [],
+          "title": "Education"
+        },
+        {
+          "type": "group",
+          "ctime": 1784123814886,
+          "items": [],
+          "title": "Personal"
+        },
+        {
+          "type": "group",
+          "ctime": 1784123814886,
+          "items": [],
+          "title": "Project - VPEFAS"
+        },
+        {
+          "type": "group",
+          "ctime": 1784123814886,
+          "items": [],
+          "title": "Project - Web Development"
+        },
+        {
+          "type": "file",
+          "ctime": 1784123814886,
+          "path": "crfValuesProcessor.py",
+          "subpath": "#^-"
+        },
+        {
+          "type": "file",
+          "ctime": 1784123814886,
+          "path": "Master Index.md",
+          "subpath": "#^-"
+        }
+      ],
+      "title": "sortspec"
+    }
+  ]
+}

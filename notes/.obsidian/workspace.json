@@ -1,0 +1,248 @@
+{
+  "main": {
+    "id": "de8ff3fade1ab485",
+    "type": "split",
+    "children": [
+      {
+        "id": "f7e1910f1aa5c59e",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "d33bc6ca013ee686",
+            "type": "leaf",
+            "state": {
+              "type": "empty",
+              "state": {},
+              "icon": "lucide-file",
+              "title": "New tab"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "78238cd9ff6bd0d4",
+    "type": "split",
+    "children": [
+      {
+        "id": "d0f4723f71ce635f",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "a0a79bac39550bd1",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical",
+                "autoReveal": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-folder-closed",
+              "title": "Files"
+            }
+          },
+          {
+            "id": "5b847e5a75fe06d7",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "universal themes",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-search",
+              "title": "Search"
+            }
+          },
+          {
+            "id": "aa17252bd81372c2",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {},
+              "icon": "lucide-bookmark",
+              "title": "Bookmarks"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 332.5
+  },
+  "right": {
+    "id": "dfa3f2e010ff2820",
+    "type": "split",
+    "children": [
+      {
+        "id": "453843d1a9ed4ddf",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "c7ed935f94ba1206",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-coming-in",
+              "title": "Backlinks"
+            }
+          },
+          {
+            "id": "cf85f4b8248b25a4",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-going-out",
+              "title": "Outgoing links"
+            }
+          },
+          {
+            "id": "bc64039301905494",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-tags",
+              "title": "Tags"
+            }
+          },
+          {
+            "id": "493db9c16bcbb0c1",
+            "type": "leaf",
+            "state": {
+              "type": "all-properties",
+              "state": {
+                "sortOrder": "frequency",
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-archive",
+              "title": "All properties"
+            }
+          },
+          {
+            "id": "78d565b303d44348",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "followCursor": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-list",
+              "title": "Outline"
+            }
+          },
+          {
+            "id": "2a0dde5585a7605f",
+            "type": "leaf",
+            "state": {
+              "type": "git-view",
+              "state": {},
+              "icon": "lucide-ghost",
+              "title": "git-view"
+            }
+          },
+          {
+            "id": "d2a702f93f451f2b",
+            "type": "leaf",
+            "state": {
+              "type": "calendar",
+              "state": {},
+              "icon": "lucide-ghost",
+              "title": "calendar"
+            }
+          }
+        ],
+        "currentTab": 5
+      }
+    ],
+    "direction": "horizontal",
+    "width": 200,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "graph:Open graph view": false,
+      "switcher:Open quick switcher": false,
+      "canvas:Create new canvas": false,
+      "daily-notes:Open today's daily note": false,
+      "templates:Insert template": false,
+      "command-palette:Open command palette": false,
+      "bases:Create new base": false,
+      "obsidian-git:Open Git source control": false,
+      "custom-sort:Toggle custom sorting": false
+    }
+  },
+  "active": "d33bc6ca013ee686",
+  "lastOpenFiles": [
+    "ArkIV - Plans and Features.md",
+    "Shortcuts.md",
+    "Project - ArkIV/ArkIV - Plans and Features.md",
+    "Project - ArkIV/ArkIVv8/Project Outline/6. Shortcuts.md",
+    "Personal/Account.md",
+    "nthnCompiler/Lexer.md",
+    "nthnCompiler",
+    "Learn - Java/2. Variables.md",
+    "Learn - Java/Timestamps.md",
+    "Journal/Daily Notes/2026-08-19.md",
+    "2026-08-19.md",
+    "Journal",
+    "Journal/Daily Notes",
+    "Project - ArkIV/ArkIVv9/Project Planning/ArkIVv9-Markdown Parsing and Rendering.md",
+    "Project - ArkIV/ArkIVv9/Project Planning/ArkIVv9-Copy and Paste.md",
+    "Project - ArkIV/ArkIVv9/Project Planning/ArkIVv9-Numbered Entries.md",
+    "Project - ArkIV/ArkIVv9/Index - ArkIVv9.md",
+    "UniversalThemes.md",
+    "Project - ArkIV/ArkIVv8/Project Documentation/01-Core/ArkIVv8-TaskItem.md",
+    "Project - ArkIV/ArkIVv8/Project Documentation/01-Core/ArkIVv8.md",
+    "Project - ArkIV/ArkIVv8/Project Documentation/00-Overview/ArkIVv8-Architecture.md",
+    "Project - ArkIV/ArkIVv8/Project Outline/7. Unrecognized Registers.md",
+    "Project - ArkIV/ArkIVv8/Project Outline/5. UI Layout - Registers (2).md",
+    "Project - ArkIV/ArkIVv8/Project Outline/4. Register (1) Code Implementation.md",
+    "Project - ArkIV/ArkIVv8/Project Outline/3. Data Storage.md",
+    "Project - ArkIV/ArkIVv8/Project Outline/2. UI Layout - Registers (1).md",
+    "Education/Grade 11/Results- Weekly Tests 1.md",
+    "Education/Grade 11/PU1 - Results.xlsx",
+    "Education/Grade 11/PU 1-Results.xlsx",
+    "Education/Grade 11/~ew Office Open XML Spreadsheet.tmp",
+    "Education/Grade 11/New Office Open XML Spreadsheet.xlsx",
+    "Education/Grade 11/PU1-Results.xlsx",
+    "Education/Grade 11/PU 1 - Results.xlsx",
+    "c.md",
+    "Education/Index - Education.md",
+    "Learn - Java/10 . printf",
+    "VPEFAS/VPEFASv3/Updated Reduction%/Untitled.canvas",
+    "Project - ArkIV/ArkIVv8/Project Outline/hierarchy.canvas",
+    "ArkIV/ArkIVv8/Feature Catalog/Delete Pop-Up.canvas",
+    "Pasted image 20260713211518.png",
+    "ArkIV/Pasted image 20260712161726.png"
+  ]
+}
