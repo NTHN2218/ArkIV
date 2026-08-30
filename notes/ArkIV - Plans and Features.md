@@ -4,10 +4,12 @@
 ## Registers
 
 - [x] Registers System
-	- [ ] [[Data Storage]]
-	- [ ] [[UI Layout - Registers 1]]
-	- [ ] [[UI Layout - Registers 2]]
-	- [ ] [[Unrecognized Registers]]
+	- [x] [[Data Storage]]
+	- [x] [[UI Layout - Registers 1]]
+	- [x] [[Unrecognized Registers]]
+- [x] Navigation Tree Registers - [[UI Layout - Registers 2]]
+- [x] Improve Delete Confirmation Popup UI
+- [x] Scroll Bar moves to and re-aligns to same line when a new Entry/Sub-Entry gets created
 
 
 # v9
@@ -49,9 +51,13 @@
 - [ ] Ordered/un-Ordered lists
 	- [ ] Hanging indent 
     - [ ] nested lists
+- [ ] Custom MD features
+	- [ ] right align blocks of text
+	- [ ] 
 
 ## Fixes
 - [ ] Fix emoji rendering
+- [ ] Create sub-Entry/Edit input box - Smart Increase height and width based on text size
 
 ## UI
 - [ ] Redesign JFrame appearance
