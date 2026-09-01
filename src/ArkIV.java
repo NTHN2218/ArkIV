@@ -502,6 +502,7 @@ public class ArkIV implements ActionListener{
         searchBar.setSelectedTextColor(Color.GREEN);
         searchBar.setFont(UniversalThemes.FONT_R_16);
         searchBar.setBorder(BorderFactory.createMatteBorder(1,1,1,1, UniversalThemes.BORDER_COLOR2));
+
         UniversalThemes.applySelectionTheme(searchBar);
         UniversalThemes.applyCollapseSelectionNavigation(searchBar);
         UniversalThemes.freeCtrlTabFromTraversal(searchBar);

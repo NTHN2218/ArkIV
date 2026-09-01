@@ -61,3 +61,21 @@
 	- Reversal handlers — private methods inside `UndoManager`, one per action type, invoked via a pattern-matching switch over the sealed type.
 	- Access to main-class internals is solved via the same **callback pattern** already used for `EditMenu`/`FileMenu` (`Runnable`/`Consumer`/`BiConsumer` passed in at construction) — `UndoManager` never reaches into private state directly, it's handed small execution primitives (reinsert task, delete by id, swap by id, restore register file, etc.) from the main class.
 	- `log()` gets called manually at the point of each accounted-for action (no central interception/event bus — matches ArkIV's existing direct-call style).
+10. **Toast messages**
+	 **Entry-level**
+	 
+	- **Undo Create** (main/sub) → `"Entry creation undone"`
+	- **Undo Delete** (main) → `"Entry restored"` (or, if it had children: `"Entry and sub-entries restored"`)
+	- **Undo Delete** (sub) → `"Sub-entry restored"`
+	- **Undo Edit/Rename text** → `"Edit undone"`
+	- **Undo Move** (up or down) → `"Move undone"`
+	
+	**Register-level**
+	
+	- **Undo Create Register** → `"Register creation undone"`
+	- **Undo Delete Register** → `"Register restored"`
+	- **Undo Rename Register** → `"Register name reverted"`
+	- **Undo Reorder Register** → `"Register order undone"`
+	- **Undo Set Default** → `"Default register reverted"`
+	- **Undo Recognize** → `"Register unrecognized again"`
+	- 
