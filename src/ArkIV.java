@@ -13,7 +13,7 @@ import javax.swing.border.LineBorder;
 import javax.swing.text.*;
 
 import java.nio.charset.StandardCharsets;
-
+import java.util.function.*;
 
 //Data Encryption
 import java.security.spec.KeySpec;
@@ -133,6 +133,8 @@ public class ArkIV implements ActionListener{
     );
 
     Undo.ActionUndoManager actionUndoManager = new Undo.ActionUndoManager(undoCallbacks);
+    // ── TEMPORARY Phase 3 wiring test — delete once confirmed ──
+
 
     SettingsMenu Menu_settings = new SettingsMenu();
 
@@ -1478,19 +1480,73 @@ public class ArkIV implements ActionListener{
     ///==============================================================================================================
 
     private void reinsertTask(Undo.TaskSnapshot task, List<Undo.TaskSnapshot> children, int anchorAfterTaskId) {
-        Undo.UndoDebug.summary("[Stub] reinsertTask called, anchorAfterTaskId=" + anchorAfterTaskId);
+        TaskItem restored = new TaskItem(task.id(), task.text(), task.isDone(), task.isSub(), task.isCollapsed(), task.parentId());
+        idToTaskMap.put(restored.getId(), restored);
+
+        int allTasksIndex = (anchorAfterTaskId == -1) ? 0 : allTasks.indexOf(idToTaskMap.get(anchorAfterTaskId)) + 1;
+        allTasks.add(allTasksIndex, restored);
+
+        int panelIndex = (anchorAfterTaskId == -1) ? 0 : indexOfInPanel(idToTaskMap.get(anchorAfterTaskId)) + 1;
+        taskPanel.add(restored, panelIndex);
+
+        TaskItem lastInserted = restored;
+        for (Undo.TaskSnapshot child : children) {
+            TaskItem childItem = new TaskItem(child.id(), child.text(), child.isDone(), child.isSub(), child.isCollapsed(), child.parentId());
+            idToTaskMap.put(childItem.getId(), childItem);
+            allTasks.add(allTasks.indexOf(lastInserted) + 1, childItem);
+            if (!restored.isCollapsed()) {
+                taskPanel.add(childItem, indexOfInPanel(lastInserted) + 1);
+            }
+            lastInserted = childItem;
+        }
+
+        taskPanel.revalidate();
+        taskPanel.repaint();
+        renumberAllTasks();
+        saveTasks();
     }
 
     private void deleteTaskById(int taskId) {
-        Undo.UndoDebug.summary("[Stub] deleteTaskById called, id=" + taskId);
+        TaskItem task = idToTaskMap.get(taskId);
+        if (task == null) return;
+        taskPanel.remove(task);
+        allTasks.remove(task);
+        idToTaskMap.remove(taskId);
+        taskPanel.revalidate();
+        taskPanel.repaint();
+        renumberAllTasks();
+        saveTasks();
     }
 
     private void editTaskText(int taskId, String oldText) {
-        Undo.UndoDebug.summary("[Stub] editTaskText called, id=" + taskId);
+        TaskItem task = idToTaskMap.get(taskId);
+        if (task == null) return;
+        task.rawText = oldText;
+        Markdown.MarkdownRenderer.render(task.textArea.getStyledDocument(), oldText);
+        saveTasks();
     }
 
     private void swapTasksById(int idA, int idB) {
-        Undo.UndoDebug.summary("[Stub] swapTasksById called, " + idA + " <-> " + idB);
+        TaskItem a = idToTaskMap.get(idA);
+        TaskItem b = idToTaskMap.get(idB);
+        if (a == null || b == null) return;
+
+        int indexA = indexOfInPanel(a);
+        int indexB = indexOfInPanel(b);
+        taskPanel.remove(a);
+        taskPanel.remove(b);
+        taskPanel.add(b, Math.min(indexA, indexB));
+        taskPanel.add(a, Math.max(indexA, indexB));
+
+        int allA = allTasks.indexOf(a);
+        int allB = allTasks.indexOf(b);
+        allTasks.set(allA, b);
+        allTasks.set(allB, a);
+
+        taskPanel.revalidate();
+        taskPanel.repaint();
+        renumberAllTasks();
+        saveTasks();
     }
 
     private void deleteRegisterById(int registerId) {
@@ -1596,6 +1652,7 @@ public class ArkIV implements ActionListener{
             }
             idToTaskMap.put(task.getId(), task);
             allTasks.add(task);
+            actionUndoManager.log(new Undo.CreateEntry(0, currentRegisterId, task.getId()));
             taskPanel.add(task);
             taskPanel.revalidate();
             renumberAllTasks();
@@ -2350,9 +2407,11 @@ public class ArkIV implements ActionListener{
             Runnable submit = () -> {
                 String newText = field.getText(); // preserve whitespace/newlines, don't trim here
                 if (!newText.trim().isEmpty()) {
+                    String oldTextForUndo = rawText;
                     rawText = newText;
                     Markdown.MarkdownRenderer.render(textArea.getStyledDocument(), rawText);
                     MarkdownDebug.summary("[TaskItem] Re-rendered after edit for id=" + id);
+                    actionUndoManager.log(new Undo.EditEntry(0, currentRegisterId, id, oldTextForUndo));
                     if (!checkBox.isSelected()) {
                         textArea.setForeground(UniversalThemes.TXT_PRIMARY);
                     }
@@ -2578,6 +2637,7 @@ public class ArkIV implements ActionListener{
             if (swapIndex == -1) return; // No valid task above to swap with
 
             Component aboveComp = taskPanel.getComponent(swapIndex);
+            actionUndoManager.log(new Undo.MoveEntry(0, currentRegisterId, this.id, ((TaskItem) aboveComp).id));
 
             // If the swap partner is itself an expanded main entry, collapse it too --
             // otherwise its sub-entries get left behind at the old panel position.
@@ -2681,6 +2741,7 @@ public class ArkIV implements ActionListener{
             if (swapIndex == -1) return; // No valid task below to swap with
 
             Component belowComp = taskPanel.getComponent(swapIndex);
+            actionUndoManager.log(new Undo.MoveEntry(0, currentRegisterId, this.id, ((TaskItem) belowComp).id));
 
             // If the swap partner is itself an expanded main entry, collapse it too --
             // otherwise its sub-entries get left behind at the old panel position.
@@ -2793,6 +2854,23 @@ public class ArkIV implements ActionListener{
             );
 
             if (confirmed) {
+                int anchorId = -1;
+                int myIndex = allTasks.indexOf(this);
+                for (int i = myIndex - 1; i >= 0; i--) {
+                    if (!isSubtask && !allTasks.get(i).isSubtask) { anchorId = allTasks.get(i).getId(); break; }
+                    if (isSubtask && allTasks.get(i).isSubtask && allTasks.get(i).getParentId() == this.parentId) { anchorId = allTasks.get(i).getId(); break; }
+                    if (isSubtask && !allTasks.get(i).isSubtask) break;
+                }
+
+                Undo.TaskSnapshot mySnapshot = new Undo.TaskSnapshot(id, parentId, getRawText(), isDone(), isSubtask, isCollapsed);
+                List<Undo.TaskSnapshot> childSnapshots = new ArrayList<>();
+                for (Component c : toRemove) {
+                    if (c != this && c instanceof TaskItem t) {
+                        childSnapshots.add(new Undo.TaskSnapshot(t.id, t.parentId, t.getRawText(), t.isDone(), t.isSubtask, t.isCollapsed));
+                    }
+                }
+
+                actionUndoManager.log(new Undo.DeleteEntry(0, currentRegisterId, mySnapshot, childSnapshots, anchorId));
                 for (Component c : toRemove) {
                     taskPanel.remove(c);
                     allTasks.remove(c);

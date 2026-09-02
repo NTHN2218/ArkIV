@@ -124,4 +124,112 @@ public class ActionUndoManager {
         Deque<UndoAction> stack = localStacks.get(registerId);
         return stack == null ? null : stack.peek();
     }
+
+    /**
+     * Compares globalStack's top vs. the CURRENT register's local top by
+     * sequence number, pops whichever is more recent, and dispatches its
+     * reversal. Never touches other registers' local stacks.
+     *
+     * Returns true if something was undone, false if both stacks (global +
+     * current-local) were empty -- lets the caller decide whether to show
+     * "nothing to undo" feedback.
+     */
+    public boolean undo(int currentRegisterId) {
+        UndoAction globalTop = globalStack.peek();
+        Deque<UndoAction> localStack = localStacks.get(currentRegisterId);
+        UndoAction localTop = (localStack == null) ? null : localStack.peek();
+
+        if (globalTop == null && localTop == null) {
+            UndoDebug.summary("Undo requested but nothing to undo (registerId=" + currentRegisterId + ")");
+            return false;
+        }
+
+        boolean useGlobal = (localTop == null) ||
+                (globalTop != null && globalTop.sequence() > localTop.sequence());
+
+        UndoAction winner = useGlobal ? globalStack.pop() : localStack.pop();
+
+        UndoDebug.summary("Undoing seq=" + winner.sequence() + " type=" + winner.getClass().getSimpleName()
+                + " (" + (useGlobal ? "GLOBAL" : "LOCAL") + ")");
+        UndoDebug.verbose(winner.toString());
+
+        dispatch(winner);
+        return true;
+    }
+
+    /**
+     * Routes each action type to its private reversal handler. sealed +
+     * exhaustive switch means a new UndoAction type added later without a
+     * matching case here fails to COMPILE, not silently misbehave.
+     */
+    private void dispatch(UndoAction action) {
+        switch (action) {
+            case CreateEntry a -> reverseCreateEntry(a);
+            case DeleteEntry a -> reverseDeleteEntry(a);
+            case EditEntry a -> reverseEditEntry(a);
+            case MoveEntry a -> reverseMoveEntry(a);
+
+            case CreateRegister a -> reverseCreateRegister(a);
+            case DeleteRegister a -> reverseDeleteRegister(a);
+            case RenameRegister a -> reverseRenameRegister(a);
+            case ReorderRegister a -> reverseReorderRegister(a);
+            case SetDefaultRegister a -> reverseSetDefaultRegister(a);
+            case RecognizeRegister a -> reverseRecognizeRegister(a);
+        }
+    }
+
+// ── Entry-level reversal handlers ───────────────────────────────────
+
+    private void reverseCreateEntry(CreateEntry a) {
+        // Reversing a create = delete the task that was created.
+        callbacks.deleteTaskById.accept(a.taskId());
+    }
+
+    private void reverseDeleteEntry(DeleteEntry a) {
+        // Reversing a delete = recreate it (+children) right after its old anchor.
+        callbacks.reinsertTask.reinsert(a.deletedTask(), a.deletedChildren(), a.anchorAfterTaskId());
+    }
+
+    private void reverseEditEntry(EditEntry a) {
+        // Reversing an edit = restore the old text.
+        callbacks.editTaskText.accept(a.taskId(), a.oldText());
+    }
+
+    private void reverseMoveEntry(MoveEntry a) {
+        // Reversing a move = swap the two tasks back.
+        callbacks.swapTasksById.accept(a.taskIdA(), a.taskIdB());
+    }
+
+// ── Register-level reversal handlers ────────────────────────────────
+
+    private void reverseCreateRegister(CreateRegister a) {
+        // Reversing a create = delete the register that was created.
+        callbacks.deleteRegisterById.accept(a.newRegisterId());
+    }
+
+    private void reverseDeleteRegister(DeleteRegister a) {
+        // Reversing a delete = restore the full register from its snapshot.
+        callbacks.restoreRegister.restore(
+                a.oldRegisterId(), a.name(), a.filename(),
+                a.oldOrder(), a.wasDefault(), a.fullFileContentJson()
+        );
+    }
+
+    private void reverseRenameRegister(RenameRegister a) {
+        callbacks.renameRegisterById.accept(a.registerId(), a.oldName());
+    }
+
+    private void reverseReorderRegister(ReorderRegister a) {
+        // Swapping order back is symmetric with the original reorder.
+        callbacks.reorderRegistersById.accept(a.registerIdA(), a.registerIdB());
+    }
+
+    private void reverseSetDefaultRegister(SetDefaultRegister a) {
+        callbacks.setDefaultRegisterById.accept(a.previousDefaultId());
+    }
+
+    private void reverseRecognizeRegister(RecognizeRegister a) {
+        // Reversing a recognize = un-recognize it again (back to unrecognized).
+        callbacks.unrecognizeRegisterById.accept(a.newRegisterId());
+    }
 }

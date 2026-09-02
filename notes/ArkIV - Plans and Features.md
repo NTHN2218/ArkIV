@@ -40,21 +40,31 @@
 
 # v10
 
+## New Features
 - [ ] `v10.1.1` - [[Undo Action]]
 - [ ] `v10.1.2` - Undo Text
 
-- [ ] `v10.2` - [[Copy and Paste]]
+- [ ] `v10.2` - Mark-Down
+	- [ ] Ordered/un-Ordered lists
+		- [ ] Hanging indent 
+	    - [ ] nested lists
+	- [ ] Color Tags
+
+
+- [ ] `v10.5` - [[Copy and Paste]]
 
 - [ ] `v10.3` - GitHub integration  
-## New Features
+
+
 - [ ] Replace after Find within Registers
+- [ ] Read only mode
+	- [ ] unrecognized registers
+	- [ ] help and guide
+- [ ] 
 ## Mark-Down
-- [ ] Ordered/un-Ordered lists
-	- [ ] Hanging indent 
-    - [ ] nested lists
-- [ ] Custom MD features
-	- [ ] right align blocks of text
+
 - [ ] selected text + md key auto applies it
+
 
 ## Fixes
 - [ ] Fix emoji rendering
