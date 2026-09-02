@@ -14,9 +14,7 @@ import java.util.List;
 public sealed interface UndoAction
         permits CreateEntry, DeleteEntry, EditEntry, MoveEntry,
         CreateRegister, DeleteRegister, RenameRegister,
-        ReorderRegister, SetDefaultRegister, RecognizeRegister,
-        CollapseExpandAll {
-
+        ReorderRegister, SetDefaultRegister, RecognizeRegister {
     long sequence();
     int registerId();
 }
@@ -57,8 +55,6 @@ record CollapseState(int taskId, boolean wasCollapsed) { }
  * Same record shape handles both directions -- undo just replays whatever
  * state each entry was in beforehand.
  */
-record CollapseExpandAll(long sequence, int registerId,
-                         List<CollapseState> previousStates) implements UndoAction { }
 
 // ── Register-level actions ──────────────────────────────────────────
 

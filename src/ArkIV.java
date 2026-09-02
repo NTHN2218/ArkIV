@@ -14,6 +14,7 @@ import javax.swing.text.*;
 
 import java.nio.charset.StandardCharsets;
 
+
 //Data Encryption
 import java.security.spec.KeySpec;
 import javax.crypto.*;
@@ -114,6 +115,24 @@ public class ArkIV implements ActionListener{
             this::expandAll
     );
 
+    Undo.UndoCallbacks undoCallbacks = new Undo.UndoCallbacks(
+            this::reinsertTask,
+            this::deleteTaskById,
+            this::editTaskText,
+            this::swapTasksById,
+            this::deleteRegisterById,
+            this::restoreRegister,
+            this::renameRegisterById,
+            this::reorderRegistersById,
+            this::setDefaultRegisterById,
+            this::unrecognizeRegisterById,
+            msg -> UniversalThemes.showToast(frame, msg),
+            this::expandIfCollapsed,
+            this::scrollToTaskById,
+            this::refreshRegisterList
+    );
+
+    Undo.ActionUndoManager actionUndoManager = new Undo.ActionUndoManager(undoCallbacks);
 
     SettingsMenu Menu_settings = new SettingsMenu();
 
@@ -1452,6 +1471,58 @@ public class ArkIV implements ActionListener{
         } catch (Exception e) {
             UniversalThemes.showPopup(frame, "Could not open system explorer.\n" + e.getMessage(), "Error");
         }
+    }
+
+    ///==============================================================================================================
+    ///== Undo Primitives (called only by ActionUndoManager via UndoCallbacks) — Phase 4 fills these in
+    ///==============================================================================================================
+
+    private void reinsertTask(Undo.TaskSnapshot task, List<Undo.TaskSnapshot> children, int anchorAfterTaskId) {
+        Undo.UndoDebug.summary("[Stub] reinsertTask called, anchorAfterTaskId=" + anchorAfterTaskId);
+    }
+
+    private void deleteTaskById(int taskId) {
+        Undo.UndoDebug.summary("[Stub] deleteTaskById called, id=" + taskId);
+    }
+
+    private void editTaskText(int taskId, String oldText) {
+        Undo.UndoDebug.summary("[Stub] editTaskText called, id=" + taskId);
+    }
+
+    private void swapTasksById(int idA, int idB) {
+        Undo.UndoDebug.summary("[Stub] swapTasksById called, " + idA + " <-> " + idB);
+    }
+
+    private void deleteRegisterById(int registerId) {
+        Undo.UndoDebug.summary("[Stub] deleteRegisterById called, id=" + registerId);
+    }
+
+    private void restoreRegister(int id, String name, String filename, int order, boolean wasDefault, String fileContentJson) {
+        Undo.UndoDebug.summary("[Stub] restoreRegister called, id=" + id + " name=" + name);
+    }
+
+    private void renameRegisterById(int registerId, String name) {
+        Undo.UndoDebug.summary("[Stub] renameRegisterById called, id=" + registerId + " name=" + name);
+    }
+
+    private void reorderRegistersById(int idA, int idB) {
+        Undo.UndoDebug.summary("[Stub] reorderRegistersById called, " + idA + " <-> " + idB);
+    }
+
+    private void setDefaultRegisterById(int registerId) {
+        Undo.UndoDebug.summary("[Stub] setDefaultRegisterById called, id=" + registerId);
+    }
+
+    private void unrecognizeRegisterById(int registerId) {
+        Undo.UndoDebug.summary("[Stub] unrecognizeRegisterById called, id=" + registerId);
+    }
+
+    private void expandIfCollapsed(int taskId) {
+        Undo.UndoDebug.summary("[Stub] expandIfCollapsed called, id=" + taskId);
+    }
+
+    private void scrollToTaskById(int taskId) {
+        Undo.UndoDebug.summary("[Stub] scrollToTaskById called, id=" + taskId);
     }
 
     ///==============================================================================================================
