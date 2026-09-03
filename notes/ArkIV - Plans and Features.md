@@ -44,14 +44,15 @@
 - [ ] `v10.1.1` - [[Undo Action]]
 - [ ] `v10.1.2` - Undo Text
 
-- [ ] `v10.2` - Mark-Down
+- [ ] Mark-Down
 	- [ ] Ordered/un-Ordered lists
 		- [ ] Hanging indent 
 	    - [ ] nested lists
 	- [ ] Color Tags
+	- [ ] Right indent text
 
 
-- [ ] `v10.5` - [[Copy and Paste]]
+- [ ] `v10.2` - [[Copy and Paste]]
 
 - [ ] `v10.3` - GitHub integration  
 

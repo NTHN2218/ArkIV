@@ -1605,11 +1605,22 @@ public class ArkIV implements ActionListener{
     }
 
     private void expandIfCollapsed(int taskId) {
-        Undo.UndoDebug.summary("[Stub] expandIfCollapsed called, id=" + taskId);
+        TaskItem task = idToTaskMap.get(taskId);
+        if (task == null) return;
+
+        if (task.isSubtask()) {
+            TaskItem parent = idToTaskMap.get(task.getParentId());
+            if (parent != null && parent.isCollapsed()) {
+                expandTask(parent);
+            }
+        }
     }
 
     private void scrollToTaskById(int taskId) {
-        Undo.UndoDebug.summary("[Stub] scrollToTaskById called, id=" + taskId);
+        TaskItem task = idToTaskMap.get(taskId);
+        if (task != null) {
+            SwingUtilities.invokeLater(() -> scrollToTaskWithPadding(task));
+        }
     }
 
 
@@ -1645,10 +1656,8 @@ public class ArkIV implements ActionListener{
     }
 
     private void performUndo() {
-        boolean didSomething = actionUndoManager.undo(currentRegisterId);
-        if (!didSomething) {
-            UndoDebug.summary("Nothing to undo.");
-        }
+        Undo.UndoAction result = actionUndoManager.undo(currentRegisterId);
+        if (result == null) UndoDebug.summary("Nothing to undo.");
     }
 
     private int countMainEntries() {

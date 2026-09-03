@@ -134,15 +134,15 @@ public class ActionUndoManager {
      * current-local) were empty -- lets the caller decide whether to show
      * "nothing to undo" feedback.
      */
-    public boolean undo(int currentRegisterId) {
+    public UndoAction undo(int currentRegisterId) {
         UndoAction globalTop = globalStack.peek();
         Deque<UndoAction> localStack = localStacks.get(currentRegisterId);
         UndoAction localTop = (localStack == null) ? null : localStack.peek();
 
-        if (globalTop == null && localTop == null) {
-            UndoDebug.summary("Undo requested but nothing to undo (registerId=" + currentRegisterId + ")");
-            return false;
-        }
+//        if (globalTop == null && localTop == null) {
+//            UndoDebug.summary("Undo requested but nothing to undo (registerId=" + currentRegisterId + ")");
+//            return false;
+//        }
 
         boolean useGlobal = (localTop == null) ||
                 (globalTop != null && globalTop.sequence() > localTop.sequence());
@@ -154,7 +154,68 @@ public class ActionUndoManager {
         UndoDebug.verbose(winner.toString());
 
         dispatch(winner);
-        return true;
+
+        // ── Phase 7: UX feedback ──
+        callbacks.showToast.accept(toastMessageFor(winner));
+
+        if (useGlobal) {
+            callbacks.refreshRegisterSidebar.run();
+        } else {
+            Integer targetTaskId = affectedTaskId(winner);
+            if (targetTaskId != null) {
+                callbacks.expandIfCollapsed.accept(targetTaskId);
+                callbacks.scrollToTask.accept(targetTaskId);
+            }
+        }
+
+        return winner;
+    }
+
+    public long lastLoggedSequence() {
+        return sequenceCounter - 1;
+    }
+
+    /**
+     * Maps each action type to its toast message. Kept generic/categorical --
+     * never embeds entry text, since entries can hold arbitrarily large content.
+     */
+    private String toastMessageFor(UndoAction action) {
+        return switch (action) {
+            case CreateEntry a -> "Entry creation undone";
+            case DeleteEntry a -> a.deletedTask().isSub()
+                    ? "Sub-entry restored"
+                    : (a.deletedChildren().isEmpty() ? "Entry restored" : "Entry and sub-entries restored");
+            case EditEntry a -> "Edit undone";
+            case MoveEntry a -> "Move undone";
+
+            case CreateRegister a -> "Register creation undone";
+            case DeleteRegister a -> "Register restored";
+            case RenameRegister a -> "Register name reverted";
+            case ReorderRegister a -> "Register order undone";
+            case SetDefaultRegister a -> "Default register reverted";
+            case RecognizeRegister a -> "Register unrecognized again";
+        };
+    }
+
+    /**
+     * Returns the task id a LOCAL undo should expand-if-collapsed + scroll to,
+     * or null if there's nothing meaningful to focus (e.g. CreateEntry's
+     * reversal deletes the task -- nothing left on screen to point at).
+     */
+    private Integer affectedTaskId(UndoAction action) {
+        return switch (action) {
+            case DeleteEntry a -> a.deletedTask().id();
+            case EditEntry a -> a.taskId();
+            case MoveEntry a -> a.taskIdA();
+            case CreateEntry a -> null;
+
+            case CreateRegister a -> null;
+            case DeleteRegister a -> null;
+            case RenameRegister a -> null;
+            case ReorderRegister a -> null;
+            case SetDefaultRegister a -> null;
+            case RecognizeRegister a -> null;
+        };
     }
 
     /**
