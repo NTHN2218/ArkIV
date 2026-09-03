@@ -272,6 +272,50 @@ public class RegisterManager {
         return max + 1;
     }
 
+    public String getRegisterFileContent(RegisterEntry entry) {
+        try {
+            byte[] bytes = java.nio.file.Files.readAllBytes(new File(getRegisterFilePath(entry)).toPath());
+            return new String(bytes, StandardCharsets.UTF_8);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return "[]";
+        }
+    }
+
+    public void restoreRegisterEntry(int id, String name, String filename, int order, boolean wasDefault, String fileContent) {
+        File f = new File(assetsPath, filename);
+        try (PrintWriter writer = new PrintWriter(
+                new OutputStreamWriter(new FileOutputStream(f), StandardCharsets.UTF_8))) {
+            writer.print(fileContent);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        registers.add(new RegisterEntry(id, name, filename, order));
+        if (wasDefault) defaultRegisterId = id;
+        saveHeader();
+    }
+
+    public void swapOrder(int idA, int idB) {
+        RegisterEntry a = getRegisterById(idA);
+        RegisterEntry b = getRegisterById(idB);
+        if (a == null || b == null) return;
+        int tmp = a.order;
+        a.order = b.order;
+        b.order = tmp;
+        saveHeader();
+    }
+
+    public void unrecognize(int id) {
+        RegisterEntry entry = getRegisterById(id);
+        if (entry == null) return;
+        registers.remove(entry);
+        if (defaultRegisterId == id) {
+            List<RegisterEntry> remaining = getRegisters();
+            defaultRegisterId = remaining.isEmpty() ? -1 : remaining.get(0).id;
+        }
+        saveHeader();
+    }
+
     public static class UnrecognizedEntry {
         public final String filename;
         public final String displayName;

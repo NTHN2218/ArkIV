@@ -1099,7 +1099,8 @@ public class ArkIV implements ActionListener{
                         SwingUtilities.invokeLater(() -> {
                             String name = promptForRegisterName();
                             if (name == null) return;
-                            registerManager.recognizeFile(entry.filename, name);
+                            RegisterManager.RegisterEntry newEntry = registerManager.recognizeFile(entry.filename, name);
+                            actionUndoManager.log(new Undo.RecognizeRegister(0, newEntry.id, newEntry.id));
                             refreshRegisterList();
                         });
                     }
@@ -1137,9 +1138,10 @@ public class ArkIV implements ActionListener{
 
     private void handleCreateRegister() {
         String name = promptForRegisterName();
-        if (name == null) return; // user cancelled
+        if (name == null) return;
 
-        registerManager.createRegister(name);
+        RegisterManager.RegisterEntry entry = registerManager.createRegister(name);
+        actionUndoManager.log(new Undo.CreateRegister(0, entry.id, entry.id)); //Logs it for Undo
         refreshRegisterList();
     }
 
@@ -1221,7 +1223,9 @@ public class ArkIV implements ActionListener{
         cleanupInlineRenameField();
         String newName = newNameRaw.trim();
         if (!newName.isEmpty() && !newName.equals(entry.name)) {
+            String oldName = entry.name;
             registerManager.renameRegister(entry.id, newName);
+            actionUndoManager.log(new Undo.RenameRegister(0, entry.id, oldName));// Logs it for Undo
         }
         refreshRegisterList();
     }
@@ -1387,19 +1391,33 @@ public class ArkIV implements ActionListener{
 
                     @Override
                     public void onMoveUp() {
+                        List<RegisterManager.RegisterEntry> sorted = registerManager.getRegisters();
+                        int idx = sorted.indexOf(entry);
+                        int neighborId = (idx > 0) ? sorted.get(idx - 1).id : -1;
                         registerManager.reorder(entry.id, -1);
+                        if (neighborId != -1) {
+                            actionUndoManager.log(new Undo.ReorderRegister(0, entry.id, entry.id, neighborId));
+                        }
                         refreshRegisterList();
                     }
 
                     @Override
                     public void onMoveDown() {
+                        List<RegisterManager.RegisterEntry> sorted = registerManager.getRegisters();
+                        int idx = sorted.indexOf(entry);
+                        int neighborId = (idx < sorted.size() - 1) ? sorted.get(idx + 1).id : -1;
                         registerManager.reorder(entry.id, 1);
+                        if (neighborId != -1) {
+                            actionUndoManager.log(new Undo.ReorderRegister(0, entry.id, entry.id, neighborId));
+                        }
                         refreshRegisterList();
                     }
 
                     @Override
                     public void onSetDefault() {
+                        int previousDefault = registerManager.getDefaultRegisterId();
                         registerManager.setDefault(entry.id);
+                        actionUndoManager.log(new Undo.SetDefaultRegister(0, entry.id, previousDefault));
                         refreshRegisterList();
                     }
 
@@ -1421,30 +1439,27 @@ public class ArkIV implements ActionListener{
     }
 
     private void handleDeleteRegister(RegisterManager.RegisterEntry entry) {
-
         if (registerManager.getRegisters().size() <= 1) {
             UniversalThemes.showPopup(frame, "You can't remove the only remaining register.", "Cannot Remove");
             return;
         }
 
         boolean confirmed = UniversalThemes.showDeleteConfirmPopup(
-                frame,
-                "Remove Register",
-                entry.name,
-                "The register file will be permanently removed. This cannot be undone.",
-                "Remove"
-        );
+                frame, "Remove Register", entry.name,
+                "The register file will be permanently removed. This cannot be undone.", "Remove");
         if (!confirmed) return;
 
         boolean wasCurrent = (entry.id == currentRegisterId);
+        boolean wasDefault = (entry.id == registerManager.getDefaultRegisterId());
+        String fileContent = registerManager.getRegisterFileContent(entry);
+
+        actionUndoManager.log(new Undo.DeleteRegister(0, entry.id, entry.id, entry.name, entry.file, entry.order, wasDefault, fileContent));
 
         registerManager.deleteRegister(entry.id, false);
 
         if (wasCurrent) {
             RegisterManager.RegisterEntry fallback = registerManager.getDefaultRegister();
-            if (fallback == null) {
-                fallback = registerManager.getRegisters().get(0);
-            }
+            if (fallback == null) fallback = registerManager.getRegisters().get(0);
             switchToRegister(fallback);
         } else {
             refreshRegisterList();
@@ -1549,28 +1564,37 @@ public class ArkIV implements ActionListener{
         saveTasks();
     }
 
+    /**
+     * Register Level
+     */
     private void deleteRegisterById(int registerId) {
-        Undo.UndoDebug.summary("[Stub] deleteRegisterById called, id=" + registerId);
+        registerManager.deleteRegister(registerId, true);
+        refreshRegisterList();
     }
 
     private void restoreRegister(int id, String name, String filename, int order, boolean wasDefault, String fileContentJson) {
-        Undo.UndoDebug.summary("[Stub] restoreRegister called, id=" + id + " name=" + name);
+        registerManager.restoreRegisterEntry(id, name, filename, order, wasDefault, fileContentJson);
+        refreshRegisterList();
     }
 
     private void renameRegisterById(int registerId, String name) {
-        Undo.UndoDebug.summary("[Stub] renameRegisterById called, id=" + registerId + " name=" + name);
+        registerManager.renameRegister(registerId, name);
+        refreshRegisterList();
     }
 
     private void reorderRegistersById(int idA, int idB) {
-        Undo.UndoDebug.summary("[Stub] reorderRegistersById called, " + idA + " <-> " + idB);
+        registerManager.swapOrder(idA, idB);
+        refreshRegisterList();
     }
 
     private void setDefaultRegisterById(int registerId) {
-        Undo.UndoDebug.summary("[Stub] setDefaultRegisterById called, id=" + registerId);
+        registerManager.setDefault(registerId);
+        refreshRegisterList();
     }
 
     private void unrecognizeRegisterById(int registerId) {
-        Undo.UndoDebug.summary("[Stub] unrecognizeRegisterById called, id=" + registerId);
+        registerManager.unrecognize(registerId);
+        refreshRegisterList();
     }
 
     private void expandIfCollapsed(int taskId) {
@@ -1580,6 +1604,7 @@ public class ArkIV implements ActionListener{
     private void scrollToTaskById(int taskId) {
         Undo.UndoDebug.summary("[Stub] scrollToTaskById called, id=" + taskId);
     }
+
 
     ///==============================================================================================================
     ///== Task Lifecycle
@@ -2535,6 +2560,7 @@ public class ArkIV implements ActionListener{
                     TaskItem subtask = new TaskItem(taskCounter++, subtaskText, false, true, false, getId());
                     idToTaskMap.put(subtask.getId(), subtask);
                     allTasks.add(subtask);
+                    actionUndoManager.log(new Undo.CreateEntry(0, currentRegisterId, subtask.getId()));
 
                     int insertIndex = -1;
                     for (int i = 0; i < taskPanel.getComponentCount(); i++) {
