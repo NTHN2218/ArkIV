@@ -21,6 +21,7 @@ import javax.crypto.*;
 import javax.crypto.spec.*;
 
 //Package - utilities
+import Undo.UndoDebug;
 import utilities.PathResolver;
 import utilities.UniversalFactory;
 import utilities.UniversalThemes;
@@ -112,7 +113,8 @@ public class ArkIV implements ActionListener{
 
     EditMenu Menu_edit = new EditMenu(
             this::collapseAll,
-            this::expandAll
+            this::expandAll,
+            this::performUndo
     );
 
     Undo.UndoCallbacks undoCallbacks = new Undo.UndoCallbacks(
@@ -340,6 +342,11 @@ public class ArkIV implements ActionListener{
         rootIm.put(KeyStroke.getKeyStroke(KeyEvent.VK_TAB, InputEvent.CTRL_DOWN_MASK | InputEvent.SHIFT_DOWN_MASK), "prevRegister");
         rootAm.put("prevRegister", new AbstractAction() {
             @Override public void actionPerformed(ActionEvent e) { cycleRegister(-1); }
+        });
+
+        rootIm.put(KeyStroke.getKeyStroke(KeyEvent.VK_Z, InputEvent.CTRL_DOWN_MASK), "performUndo");
+        rootAm.put("performUndo", new AbstractAction() {
+            @Override public void actionPerformed(ActionEvent e) { performUndo(); }
         });
 
         loadTasks();
@@ -1635,6 +1642,13 @@ public class ArkIV implements ActionListener{
         // Optional: Repaint panel to ensure visuals update immediately
         taskPanel.revalidate();
         taskPanel.repaint();
+    }
+
+    private void performUndo() {
+        boolean didSomething = actionUndoManager.undo(currentRegisterId);
+        if (!didSomething) {
+            UndoDebug.summary("Nothing to undo.");
+        }
     }
 
     private int countMainEntries() {
