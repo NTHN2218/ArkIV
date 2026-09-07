@@ -20,6 +20,8 @@ import javax.crypto.*;
 import javax.crypto.spec.*;
 
 //Package - utilities
+import AutoHotkey.CaretNavigation;
+import AutoHotkey.SelectionWrapper;
 import utilities.PathResolver;
 import utilities.UniversalFactory;
 import utilities.UniversalThemes;
@@ -181,6 +183,8 @@ public class ArkIV implements ActionListener{
         UniversalThemes.applyCollapseSelectionNavigation(inputArea);
         UniversalThemes.freeCtrlTabFromTraversal(inputArea);
         Hotstring.attach(inputArea);
+        SelectionWrapper.attach(inputArea);
+        CaretNavigation.attach(inputArea);
 
 
         JScrollPane inputScroll = new JScrollPane(inputArea);
@@ -2234,6 +2238,8 @@ public class ArkIV implements ActionListener{
             UniversalThemes.applyCollapseSelectionNavigation(field);
             UniversalThemes.freeCtrlTabFromTraversal(field);
             Hotstring.attach(field);
+            SelectionWrapper.attach(field);
+            CaretNavigation.attach(field);
 
             // Pre-size rows to fit existing content, capped at 10
             int existingLines = field.getLineCount();
@@ -2371,6 +2377,8 @@ public class ArkIV implements ActionListener{
             UniversalThemes.applyCollapseSelectionNavigation(field);
             UniversalThemes.freeCtrlTabFromTraversal(field);
             Hotstring.attach(field);
+            SelectionWrapper.attach(field);
+            CaretNavigation.attach(field);
 
             JScrollPane scrollPane = new JScrollPane(field);
             scrollPane.setBorder(BorderFactory.createLineBorder(UniversalThemes.BORDER_COLOR1, 1));
