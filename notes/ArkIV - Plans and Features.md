@@ -40,7 +40,7 @@
 
 # v10
 
-- [ ] `v10.0` 
+- [x] `v10.0` 
 	- [x] Selection Wrapper
 	- [x] Caret navigation
 	- [x] Jump to start/end of line
