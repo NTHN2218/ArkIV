@@ -181,12 +181,12 @@ public class ArkIV implements ActionListener{
         inputArea.setLineWrap(true);
         inputArea.setWrapStyleWord(true);
         inputArea.setMargin(new Insets(8, 8, 8, 8));
-        UniversalThemes.applySelectionTheme(inputArea);
-        UniversalThemes.applyCollapseSelectionNavigation(inputArea);
-        UniversalThemes.freeCtrlTabFromTraversal(inputArea);
         Hotstring.attach(inputArea);
         SelectionWrapper.attach(inputArea);
         CaretNavigation.attach(inputArea);
+        UniversalThemes.applySelectionTheme(inputArea);
+        UniversalThemes.applyCollapseSelectionNavigation(inputArea);
+        UniversalThemes.freeCtrlTabFromTraversal(inputArea);
 
 
         JScrollPane inputScroll = new JScrollPane(inputArea);
@@ -2236,12 +2236,13 @@ public class ArkIV implements ActionListener{
             field.setWrapStyleWord(true);
             field.setMargin(new Insets(10, 10, 10, 10));
             field.setBorder(null);
-            UniversalThemes.applySelectionTheme(field);
-            UniversalThemes.applyCollapseSelectionNavigation(field);
-            UniversalThemes.freeCtrlTabFromTraversal(field);
             Hotstring.attach(field);
             SelectionWrapper.attach(field);
             CaretNavigation.attach(field);
+            UniversalThemes.applySelectionTheme(field);
+            UniversalThemes.applyCollapseSelectionNavigation(field);
+            UniversalThemes.freeCtrlTabFromTraversal(field);
+
 
             // Pre-size rows to fit existing content, capped at 10
             int existingLines = field.getLineCount();
@@ -2375,12 +2376,13 @@ public class ArkIV implements ActionListener{
             field.setWrapStyleWord(true);
             field.setMargin(new Insets(10, 10, 10, 10));
             field.setBorder(null);
-            UniversalThemes.applySelectionTheme(field);
-            UniversalThemes.applyCollapseSelectionNavigation(field);
-            UniversalThemes.freeCtrlTabFromTraversal(field);
             Hotstring.attach(field);
             SelectionWrapper.attach(field);
             CaretNavigation.attach(field);
+            UniversalThemes.applySelectionTheme(field);
+            UniversalThemes.applyCollapseSelectionNavigation(field);
+            UniversalThemes.freeCtrlTabFromTraversal(field);
+
 
             JScrollPane scrollPane = new JScrollPane(field);
             scrollPane.setBorder(BorderFactory.createLineBorder(UniversalThemes.BORDER_COLOR1, 1));

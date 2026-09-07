@@ -6,6 +6,8 @@ import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.text.BreakIterator;
 
+import javax.swing.text.DefaultEditorKit;
+
 /**
  * JetBrains/IntelliJ-style caret navigation. Word-jump (this feature) and
  * line-jump (added next) both live here since they're one conceptual family,
@@ -28,6 +30,21 @@ public class CaretNavigation {
 
         im.put(KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, InputEvent.ALT_DOWN_MASK | InputEvent.SHIFT_DOWN_MASK), "wordJumpLeftSelect");
         am.put("wordJumpLeftSelect", new WordJumpAction(area, false, true));
+
+        // ── Line-jump (Ctrl+Alt+Arrow) ──────────────────────────────────
+        // Swing already ships the exact actions needed -- just remap the
+        // keystrokes to them, no custom caret-position math required.
+        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, InputEvent.CTRL_DOWN_MASK | InputEvent.ALT_DOWN_MASK), "lineJumpRight");
+        am.put("lineJumpRight", am.get(DefaultEditorKit.endLineAction));
+
+        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, InputEvent.CTRL_DOWN_MASK | InputEvent.ALT_DOWN_MASK), "lineJumpLeft");
+        am.put("lineJumpLeft", am.get(DefaultEditorKit.beginLineAction));
+
+        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, InputEvent.CTRL_DOWN_MASK | InputEvent.ALT_DOWN_MASK | InputEvent.SHIFT_DOWN_MASK), "lineJumpRightSelect");
+        am.put("lineJumpRightSelect", am.get(DefaultEditorKit.selectionEndLineAction));
+
+        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, InputEvent.CTRL_DOWN_MASK | InputEvent.ALT_DOWN_MASK | InputEvent.SHIFT_DOWN_MASK), "lineJumpLeftSelect");
+        am.put("lineJumpLeftSelect", am.get(DefaultEditorKit.selectionBeginLineAction));
     }
 
     private static class WordJumpAction extends AbstractAction {

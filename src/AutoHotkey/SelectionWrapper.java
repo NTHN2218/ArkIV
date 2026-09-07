@@ -48,7 +48,6 @@ public class SelectionWrapper {
             int end = area.getSelectionEnd();
 
             if (start == end) {
-                // No selection -- let the character type normally.
                 area.replaceSelection(String.valueOf(getTriggerChar()));
                 return;
             }
@@ -58,10 +57,10 @@ public class SelectionWrapper {
 
             area.replaceRange(replacement, start, end);
 
-            // Reselect just the original inner text (excluding the new delimiters)
             int newInnerStart = start + wrap.length();
             int newInnerEnd = newInnerStart + selected.length();
-            area.select(newInnerStart, newInnerEnd);
+
+            SwingUtilities.invokeLater(() -> area.select(newInnerStart, newInnerEnd));
         }
 
         private char getTriggerChar() {
