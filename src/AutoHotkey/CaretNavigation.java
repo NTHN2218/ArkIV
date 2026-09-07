@@ -62,12 +62,13 @@ public class CaretNavigation {
             }
         }
 
-        // End of current/next word -- skips boundaries that just separate
-        // runs of whitespace (BreakIterator treats those as stops too).
+        // End of current/next word -- skips any boundary that doesn't sit at
+        // the edge of an alphanumeric run (whitespace AND markdown punctuation
+        // like * # - > ` [ ] ( ) etc. are all treated as noise to jump over).
         private int nextWordBoundary(BreakIterator it, String text, int pos) {
             int boundary = it.following(pos);
             while (boundary != BreakIterator.DONE && boundary < text.length()
-                    && isWhitespaceBoundary(text, boundary)) {
+                    && !endsAlphanumericRun(text, boundary)) {
                 int next = it.next();
                 if (next == BreakIterator.DONE) break;
                 boundary = next;
@@ -75,16 +76,32 @@ public class CaretNavigation {
             return boundary == BreakIterator.DONE ? text.length() : boundary;
         }
 
-        // Start of current/previous word
+        // Start of current/previous word -- same skip rule, mirrored.
         private int previousWordBoundary(BreakIterator it, String text, int pos) {
             int boundary = it.preceding(pos);
             while (boundary != BreakIterator.DONE && boundary > 0
-                    && isWhitespaceBoundary(text, boundary)) {
+                    && !startsAlphanumericRun(text, boundary)) {
                 int prev = it.previous();
                 if (prev == BreakIterator.DONE) break;
                 boundary = prev;
             }
             return boundary == BreakIterator.DONE ? 0 : boundary;
+        }
+
+        // True if the character just before `boundary` is alphanumeric --
+        // meaning this boundary is genuinely the end of a word, not a
+        // whitespace/punctuation transition we should hop over.
+        private boolean endsAlphanumericRun(String text, int boundary) {
+            if (boundary <= 0) return false;
+            return Character.isLetterOrDigit(text.charAt(boundary - 1));
+        }
+
+        // True if the character at `boundary` (start of the next segment)
+        // is alphanumeric -- meaning this boundary is genuinely the start
+        // of a word.
+        private boolean startsAlphanumericRun(String text, int boundary) {
+            if (boundary >= text.length()) return false;
+            return Character.isLetterOrDigit(text.charAt(boundary));
         }
 
         private boolean isWhitespaceBoundary(String text, int boundary) {

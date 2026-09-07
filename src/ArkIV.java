@@ -70,6 +70,8 @@ public class ArkIV implements ActionListener{
     private int taskCounter = 1;
     private RegisterManager registerManager;
     private String FILE_NAME;
+    private int inputFieldRows = 10;
+    private int inputFieldColumns = 80;
 
     private static final String SECRET_KEY = "dataEncryptKey15";
     private static final String SALT = "dataEncryptSalt7";
@@ -2225,7 +2227,7 @@ public class ArkIV implements ActionListener{
         private void editEntry() {
             UniversalThemes.RoundedDialog rd = UniversalThemes.createRoundedDialogShell(frame, "Edit");
 
-            JTextArea field = new JTextArea(getRawText(), 4, 70);
+            JTextArea field = new JTextArea(getRawText(), inputFieldRows, inputFieldColumns);
             field.setBackground(UniversalThemes.BG_COMPONENT);
             field.setForeground(UniversalThemes.TXT_PRIMARY);
             field.setCaretColor(UniversalThemes.ACCENT_COLOR);
@@ -2243,7 +2245,7 @@ public class ArkIV implements ActionListener{
 
             // Pre-size rows to fit existing content, capped at 10
             int existingLines = field.getLineCount();
-            field.setRows(Math.min(Math.max(existingLines, 4), 10));
+            field.setRows(Math.min(Math.max(existingLines, inputFieldRows), inputFieldColumns));
 
             field.addFocusListener(new FocusAdapter() {
                 @Override public void focusGained(FocusEvent e) { field.selectAll(); }
@@ -2364,7 +2366,7 @@ public class ArkIV implements ActionListener{
             }
             UniversalThemes.RoundedDialog rd = UniversalThemes.createRoundedDialogShell(frame, "Create Sub-Entry");
 
-            JTextArea field = new JTextArea(4, 70);
+            JTextArea field = new JTextArea(inputFieldRows, inputFieldColumns);
             field.setBackground(UniversalThemes.BG_COMPONENT);
             field.setForeground(UniversalThemes.TXT_PRIMARY);
             field.setCaretColor(UniversalThemes.ACCENT_COLOR);
