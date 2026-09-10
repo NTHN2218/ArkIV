@@ -327,6 +327,42 @@ public class ArkIV implements ActionListener{
             @Override public void actionPerformed(ActionEvent e) { cycleRegister(-1); }
         });
 
+// ── Collapse All / Expand All (global, works without any entry focused) ──
+        rootIm.put(KeyStroke.getKeyStroke(KeyEvent.VK_OPEN_BRACKET, InputEvent.CTRL_DOWN_MASK), "collapse_all");
+        rootAm.put("collapse_all", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                collapseAll();
+            }
+        });
+
+        rootIm.put(KeyStroke.getKeyStroke(KeyEvent.VK_CLOSE_BRACKET, InputEvent.CTRL_DOWN_MASK), "expand_all");
+        rootAm.put("expand_all", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                expandAll();
+            }
+        });
+
+        // ── Page Up / Page Down: jump scrollbar to top/bottom extremes ──
+        rootIm.put(KeyStroke.getKeyStroke(KeyEvent.VK_PAGE_UP, 0), "scrollToTop");
+        rootAm.put("scrollToTop", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JScrollBar vBar = taskScrollPane.getVerticalScrollBar();
+                vBar.setValue(vBar.getMinimum());
+            }
+        });
+
+        rootIm.put(KeyStroke.getKeyStroke(KeyEvent.VK_PAGE_DOWN, 0), "scrollToBottom");
+        rootAm.put("scrollToBottom", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JScrollBar vBar = taskScrollPane.getVerticalScrollBar();
+                vBar.setValue(vBar.getMaximum());
+            }
+        });
+
         loadTasks();
         currentRegisterId = registerManager.getDefaultRegisterId();
         refreshRegisterList();
@@ -1505,6 +1541,29 @@ public class ArkIV implements ActionListener{
             if (t.isSubtask() && t.getParentId() == parentId) count++;
         }
         return count;
+    }
+
+    private int[] countVisibility() {
+        int collapsed = 0;
+        int expanded = 0;
+        for (TaskItem t : allTasks) {
+            if (!t.isSubtask()) {
+                if (t.isCollapsed()) collapsed++;
+                else expanded++;
+            }
+        }
+        return new int[]{collapsed, expanded};
+    }
+
+    private void toggleVisibility(){
+        int[] visibilityState = countVisibility();
+        int collapsed = visibilityState[0]; //Total number of collapsed main-Entries
+        int expanded = visibilityState[1];  //Total number of expanded main-Entries
+
+        if(collapsed > expanded) //If more collapsed then expand All
+            expandAll();
+        if(expanded > collapsed) //If more expanded then collapse All
+            collapseAll();
     }
 
     private boolean addTaskFromInput(String text) {

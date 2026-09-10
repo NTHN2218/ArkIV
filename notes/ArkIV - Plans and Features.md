@@ -45,19 +45,26 @@
 	- [x] Caret navigation
 	- [x] Jump to start/end of line
 
-- [ ] `v10.1.1` - [[Undo Action]]
-- [ ] `v10.1.2` - Undo Text
+- [ ] `v10.1
+	- [ ] `v10.1.1` [[Undo Action]]
+	- [ ] `v10.1.2` - Undo Text
+    - [x] Key-binds for expand all(ctrl+]) /collapse all(ctrl+[)
+    - [x] Page-up & page-down scrolls to extremes when no input box is focused
 
-- [ ] `v10.2` - [[Copy and Paste]]
+- [ ] `v10.2`
+	- [ ] [[Copy and Paste]]
+	- [ ] Read Only Mode
+		- [ ] Finish Incomplete [[Unrecognized Registers]] Handling
+		- [ ] User Instructions 
 
-- [ ] `v10.3` - GitHub integration  
+- [ ] `v10.3` - GitHub integration  (very basic)
 
 ## Mark-Down
 - [ ] Ordered/un-Ordered lists
 	- [ ] Hanging indent 
     - [ ] nested lists
 - [ ] Custom MD features
-	- [ ] right align blocks of text
+	- [ ] [[Right Align]]
 
 
 ## Fixes
@@ -66,7 +73,6 @@
 
 ## UI
 - [ ] Redesign JFrame appearance
-- [ ] Alt + arrow move cursor to start/end of line
 - [ ] Help
     - [ ] Basic User Guide
 	- [ ] Key-Binds
