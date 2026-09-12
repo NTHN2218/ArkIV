@@ -53,6 +53,19 @@ public class UniversalThemes {
     public static final Color MD_COLOR_BOLD = new Color(0x94A5F2);
 
 
+    // VIBGYOR Color Tag palette (^1..^7) -- tuned for readability on BG_MAIN/BG_PANEL,
+    // deliberately not raw textbook VIBGYOR values since some wash out or clash on dark bg.
+    public static final Color MD_COLOR_VIOLET = new Color(0xC084FC);
+    public static final Color MD_COLOR_INDIGO = new Color(0x818CF8);
+    public static final Color MD_COLOR_BLUE   = new Color(0x60A5FA);
+    public static final Color MD_COLOR_GREEN  = new Color(0x4ADE80);
+    public static final Color MD_COLOR_YELLOW = new Color(0xFACC15);
+    public static final Color MD_COLOR_ORANGE = new Color(0xFB923C);
+    public static final Color MD_COLOR_RED    = new Color(0xF87171);
+
+
+
+
 
 
 

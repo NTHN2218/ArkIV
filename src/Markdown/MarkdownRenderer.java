@@ -5,6 +5,9 @@ import org.commonmark.node.Node;
 import org.commonmark.parser.IncludeSourceSpans;
 import org.commonmark.parser.Parser;
 
+import Markdown.Extensions.ColorTag.ColorTagExtension;
+import Markdown.Extensions.ColorTag.ColorSpan;
+
 import java.util.List;
 
 import javax.swing.text.BadLocationException;
@@ -23,7 +26,7 @@ public class MarkdownRenderer {
     // One shared Parser instance -- commonmark's Parser is stateless per-parse-call
     // and safe to reuse across many render() invocations.
     private static final Parser PARSER = Parser.builder()
-            .extensions(List.of(TaskListItemsExtension.create()))
+            .extensions(List.of(TaskListItemsExtension.create(), ColorTagExtension.create()))
             .includeSourceSpans(IncludeSourceSpans.BLOCKS)
             .build();
 
