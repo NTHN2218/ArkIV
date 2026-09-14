@@ -50,7 +50,7 @@
 	- [ ] `v10.1.2` - Undo Text
     - [x] Key-binds for expand all(ctrl+]) /collapse all(ctrl+[)
     - [x] Page-up & page-down scrolls to extremes when no input box is focused
-      - [ ] fix page-up/down strange behaviour
+	    - [ ] fix page-up/down strange behavior
     - [x] custom MD feature- VIBGYOR color tags
     - [x] Key-binds to activate selectionWrapper when text selected
 
