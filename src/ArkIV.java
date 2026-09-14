@@ -76,7 +76,6 @@ public class ArkIV implements ActionListener{
     private static final String SECRET_KEY = "dataEncryptKey15";
     private static final String SALT = "dataEncryptSalt7";
     private static final String IV = "dataEncryptIV328";
-    private JTextArea inputArea;
 
     private JPanel sidebarPanel;
 
@@ -107,10 +106,7 @@ public class ArkIV implements ActionListener{
     FileMenu Menu_file = new FileMenu(
             this::saveTasks,
             this::deselectAll,
-            () -> SwingUtilities.invokeLater(() -> {
-                inputArea.requestFocusInWindow();
-                UniversalThemes.flashBorder(inputArea, UniversalThemes.ACCENT_COLOR, UniversalThemes.BORDER_COLOR1, 2);
-            })
+            this::openNewEntryDialog
     );
 
     EditMenu Menu_edit = new EditMenu(
@@ -172,69 +168,7 @@ public class ArkIV implements ActionListener{
         UniversalThemes.applyScrollbarTheme(taskScrollPane);
 
         // ── Input area + scroll ──────────────────────────────────────────
-        inputArea = new JTextArea(3, 30);
-        inputArea.setFont(UniversalThemes.getCompositeFont(17));
-        inputArea.setBackground(UniversalThemes.BG_COMPONENT);
-        inputArea.setForeground(UniversalThemes.TXT_PRIMARY);
-        inputArea.setCaretColor(UniversalThemes.ACCENT_COLOR);
-        inputArea.setBorder(BorderFactory.createMatteBorder(1, 0, 1, 1, UniversalThemes.BORDER_COLOR1));
-        inputArea.setLineWrap(true);
-        inputArea.setWrapStyleWord(true);
-        inputArea.setMargin(new Insets(8, 8, 8, 8));
-        Hotstring.attach(inputArea);
-        SelectionWrapper.attach(inputArea);
-        CaretNavigation.attach(inputArea);
-        UniversalThemes.applySelectionTheme(inputArea);
-        UniversalThemes.applyCollapseSelectionNavigation(inputArea);
-        UniversalThemes.freeCtrlTabFromTraversal(inputArea);
 
-
-        JScrollPane inputScroll = new JScrollPane(inputArea);
-        inputScroll.getViewport().setBackground(UniversalThemes.BG_PANEL);
-        inputScroll.setBorder(BorderFactory.createMatteBorder(1, 0, 0, 0, UniversalThemes.BORDER_COLOR1));
-        UniversalThemes.applyScrollbarTheme(inputScroll);
-        inputScroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-        inputScroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-        inputScroll.setMinimumSize(new Dimension(0, 60));
-        inputScroll.setPreferredSize(new Dimension(0, 90));
-
-        // Auto-grow input area
-        inputArea.getDocument().addDocumentListener(new DocumentListener() {
-            public void insertUpdate(DocumentEvent e)  { adjustHeight(); }
-            public void removeUpdate(DocumentEvent e)  { adjustHeight(); }
-            public void changedUpdate(DocumentEvent e) { adjustHeight(); }
-
-            private void adjustHeight() {
-                int rows = inputArea.getLineCount();
-                if (rows > inputArea.getRows()) {
-                    inputArea.setRows(Math.min(rows, 10));
-                    inputScroll.revalidate();
-                }
-            }
-        });
-
-        // Key bindings: Shift+Enter = new line, Enter = submit
-        InputMap im = inputArea.getInputMap(JComponent.WHEN_FOCUSED);
-        ActionMap am = inputArea.getActionMap();
-
-        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, InputEvent.SHIFT_DOWN_MASK), "insert-newline");
-        am.put("insert-newline", new AbstractAction() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                int pos = inputArea.getCaretPosition();
-                String text = inputArea.getText();
-                inputArea.setText(text.substring(0, pos) + "\n" + text.substring(pos));
-                inputArea.setCaretPosition(pos + 1);
-            }
-        });
-
-        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "submit-note");
-        am.put("submit-note", new AbstractAction() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                createTask();
-            }
-        });
 
         // ── Sidebar ──────────────────────────────────────────────────────
         sidebarPanel = new JPanel() {
@@ -261,16 +195,8 @@ public class ArkIV implements ActionListener{
 
 
 
-        // ── Inner split: tasks (top) + input (bottom) ────────────────────
-        JSplitPane innerSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, taskScrollPane, inputScroll);
-        innerSplitPane.setResizeWeight(0.96);   // tasks absorb all extra space
-        innerSplitPane.setDividerSize(0);
-        innerSplitPane.setBorder(null);
-        innerSplitPane.setBackground(UniversalThemes.BG_MAIN);
-        innerSplitPane.setEnabled(false);      // lock divider, input height is fixed
-
-        // ── Outer split: sidebar (left) + inner split (right) ────────────
-        JSplitPane outerSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, sidebarPanel, innerSplitPane);
+// ── Outer split: sidebar (left) + task list (right) ──────────────
+        JSplitPane outerSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, sidebarPanel, taskScrollPane);
         outerSplitPane.setResizeWeight(0.18);
         outerSplitPane.setDividerSize(0);
         outerSplitPane.setBorder(null);
@@ -344,8 +270,16 @@ public class ArkIV implements ActionListener{
             }
         });
 
+        rootIm.put(KeyStroke.getKeyStroke(KeyEvent.VK_N, InputEvent.CTRL_DOWN_MASK), "create_entry");
+        rootAm.put("create_entry", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                openNewEntryDialog();
+            }
+        });
+
         // ── Page Up / Page Down: jump scrollbar to top/bottom extremes ──
-        rootIm.put(KeyStroke.getKeyStroke(KeyEvent.VK_PAGE_UP, 0), "scrollToTop");
+        rootIm.put(KeyStroke.getKeyStroke(KeyEvent.VK_PAGE_UP, InputEvent.CTRL_DOWN_MASK), "scrollToTop");
         rootAm.put("scrollToTop", new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -354,7 +288,7 @@ public class ArkIV implements ActionListener{
             }
         });
 
-        rootIm.put(KeyStroke.getKeyStroke(KeyEvent.VK_PAGE_DOWN, 0), "scrollToBottom");
+        rootIm.put(KeyStroke.getKeyStroke(KeyEvent.VK_PAGE_DOWN, InputEvent.CTRL_DOWN_MASK), "scrollToBottom");
         rootAm.put("scrollToBottom", new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -1499,14 +1433,103 @@ public class ArkIV implements ActionListener{
     ///==============================================================================================================
     ///== Task Lifecycle
     ///==============================================================================================================
-    private void createTask() {
-        String text = inputArea.getText().trim();
-        if (!text.isEmpty()) {
-            boolean added = addTaskFromInput(text);
-            if (added) {
-                inputArea.setText("");
-            }
+
+    private void openNewEntryDialog() {
+        if (countMainEntries() >= 999) {
+            UniversalThemes.showPopup(frame,
+                    "This register already has 999 Entries, which is the maximum allowed.",
+                    "Entry Limit Reached");
+            return;
         }
+
+        UniversalThemes.RoundedDialog rd = UniversalThemes.createRoundedDialogShell(frame, "New Entry");
+
+        JTextArea field = new JTextArea(inputFieldRows, inputFieldColumns);
+        field.setBackground(UniversalThemes.BG_COMPONENT);
+        field.setForeground(UniversalThemes.TXT_PRIMARY);
+        field.setCaretColor(UniversalThemes.ACCENT_COLOR);
+        field.setFont(UniversalThemes.getCompositeFont(17));
+        field.setLineWrap(true);
+        field.setWrapStyleWord(true);
+        field.setMargin(new Insets(10, 10, 10, 10));
+        field.setBorder(null);
+        Hotstring.attach(field);
+        SelectionWrapper.attach(field);
+        CaretNavigation.attach(field);
+        UniversalThemes.applySelectionTheme(field);
+        UniversalThemes.applyCollapseSelectionNavigation(field);
+        UniversalThemes.freeCtrlTabFromTraversal(field);
+
+        JScrollPane scrollPane = new JScrollPane(field);
+        scrollPane.setBorder(BorderFactory.createLineBorder(UniversalThemes.BORDER_COLOR1, 1));
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        UniversalThemes.applyScrollbarTheme(scrollPane);
+        scrollPane.setAlignmentX(Component.LEFT_ALIGNMENT);
+        scrollPane.setMaximumSize(new Dimension(Integer.MAX_VALUE, 220));
+
+        rd.body.add(scrollPane);
+        rd.body.add(Box.createVerticalStrut(18));
+
+        // Auto-grow
+        field.getDocument().addDocumentListener(new DocumentListener() {
+            public void insertUpdate(DocumentEvent e) { adjust(); }
+            public void removeUpdate(DocumentEvent e) { adjust(); }
+            public void changedUpdate(DocumentEvent e) { adjust(); }
+            private void adjust() {
+                int rows = field.getLineCount();
+                if (rows > field.getRows()) {
+                    field.setRows(Math.min(rows, 10));
+                    rd.dialog.pack();
+                    UniversalThemes.finalizeRoundedDialog(rd.dialog, frame);
+                }
+            }
+        });
+
+        Runnable submit = () -> {
+            String text = field.getText().trim();
+            if (!text.isEmpty()) {
+                rd.dialog.dispose();
+                deselectAll(); // New Entry always creates a top-level Entry, regardless of prior selection
+                addTaskFromInput(text);
+            }
+        };
+
+        InputMap im = field.getInputMap(JComponent.WHEN_FOCUSED);
+        ActionMap am = field.getActionMap();
+
+        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, InputEvent.SHIFT_DOWN_MASK), "insert-newline");
+        am.put("insert-newline", new AbstractAction() {
+            @Override public void actionPerformed(ActionEvent e) {
+                int caretPos = field.getCaretPosition();
+                String text = field.getText();
+                field.setText(text.substring(0, caretPos) + "\n" + text.substring(caretPos));
+                field.setCaretPosition(caretPos + 1);
+            }
+        });
+
+        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "submit-entry");
+        am.put("submit-entry", new AbstractAction() {
+            @Override public void actionPerformed(ActionEvent e) { submit.run(); }
+        });
+
+        JButton addButton = UniversalThemes.createRoundedDialogButton("Create", UniversalThemes.ACCENT_COLOR,
+                UniversalThemes.TXT_SELECTED, UniversalThemes.ACCENT_COLOR_DARK);
+        JButton cancelButton = UniversalThemes.createRoundedDialogButton("Cancel", UniversalThemes.BG_COMPONENT,
+                UniversalThemes.TXT_PRIMARY, UniversalThemes.BORDER_COLOR1);
+        addButton.addActionListener(e -> submit.run());
+        cancelButton.addActionListener(e -> rd.dialog.dispose());
+
+        JPanel buttonRow = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 0));
+        buttonRow.setOpaque(false);
+        buttonRow.setAlignmentX(Component.LEFT_ALIGNMENT);
+        buttonRow.add(addButton);
+        UniversalThemes.wireDialogButtonNavigation(addButton, cancelButton);
+        rd.body.add(buttonRow);
+
+        UniversalThemes.finalizeRoundedDialog(rd.dialog, frame);
+        SwingUtilities.invokeLater(field::requestFocusInWindow);
+        rd.dialog.setVisible(true);
     }
 
     private void deselectAll() {
