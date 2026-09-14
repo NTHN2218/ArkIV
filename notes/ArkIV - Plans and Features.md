@@ -53,6 +53,7 @@
 	    - [ ] fix page-up/down strange behavior
     - [x] custom MD feature- VIBGYOR color tags
     - [x] Key-binds to activate selectionWrapper when text selected
+    - [x] Removed inputArea for create main-entry, replace with dialog to create new Entries, can be activated with ctrl+N when no Ancestor selected
 
 - [ ] `v10.2`
 	- [ ] [[Copy and Paste]]
