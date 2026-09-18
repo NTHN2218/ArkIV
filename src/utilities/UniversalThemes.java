@@ -755,11 +755,13 @@ public class UniversalThemes {
         rd.body.add(Box.createVerticalStrut(18));
 
         JButton okButton = createRoundedDialogButton("OK", ACCENT_COLOR, TXT_SELECTED, ACCENT_COLOR_DARK);
+
+        rd.body.add(okButton);
         okButton.addActionListener(e -> rd.dialog.dispose());
 
         JPanel buttonRow = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 0));
         buttonRow.setOpaque(false);
-        buttonRow.setAlignmentX(Component.LEFT_ALIGNMENT);
+        buttonRow.setAlignmentX(Component.CENTER_ALIGNMENT);
         wireDialogButtonNavigation(okButton);
         rd.body.add(buttonRow);
 

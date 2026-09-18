@@ -65,6 +65,8 @@ public class ArkIV implements ActionListener{
     ///== Fields
     ///==============================================================================================================
     private JFrame frame;
+    private JPanel titleBar;
+
     private JPanel taskPanel;
     private JTextField inputField;
     private int taskCounter = 1;
@@ -149,10 +151,16 @@ public class ArkIV implements ActionListener{
         frame = new JFrame("ArkIV");
         frame.getContentPane().setBackground(UniversalThemes.BG_MAIN);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+        frame.setUndecorated(true);
+        frame.setResizable(false);
         frame.setLayout(new BorderLayout());
-        frame.setLocationRelativeTo(null);
-        frame.setResizable(true);
+
+        Rectangle screenBounds = GraphicsEnvironment.getLocalGraphicsEnvironment()
+                .getMaximumWindowBounds(); // taskbar-aware, consistent per-OS
+        frame.setBounds(screenBounds);
+
+        titleBar = createTitleBar();
+        frame.add(titleBar, BorderLayout.NORTH);
 
         // ── Task panel + scroll ──────────────────────────────────────────
         taskPanel = new ScrollableTaskPanel();
@@ -301,6 +309,80 @@ public class ArkIV implements ActionListener{
         currentRegisterId = registerManager.getDefaultRegisterId();
         refreshRegisterList();
         frame.setVisible(true);
+    }
+
+    // ── New method: custom title bar ────────────────────────────────────────
+    private JPanel createTitleBar() {
+        JPanel bar = new JPanel(new BorderLayout());
+        bar.setBackground(UniversalThemes.BG_MAIN);
+        bar.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, UniversalThemes.BORDER_COLOR2));
+        bar.setPreferredSize(new Dimension(0, 23));
+
+//        JLabel title = new JLabel("ArkIV");
+//        title.setFont(UniversalThemes.FONT_R_12);
+//        title.setForeground(UniversalThemes.TXT_PRIMARY);
+//        title.setBorder(BorderFactory.createEmptyBorder(0, 12, 0, 0));
+//        bar.add(title, BorderLayout.WEST);
+
+        JPanel controls = new JPanel(new FlowLayout(FlowLayout.RIGHT, 0, 0));
+        controls.setOpaque(false);
+
+        JButton minimizeButton = createTitleBarButton('-', false);
+        minimizeButton.addActionListener(e -> frame.setState(Frame.ICONIFIED));
+
+        JButton maximizeButton = createTitleBarButton('□', false);
+// No-op: frame is always fullscreen via screenBounds, nothing to toggle
+
+        JButton closeButton = createTitleBarButton('x', true);
+        closeButton.addActionListener(e ->
+                frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING))
+        );
+
+        controls.add(minimizeButton);
+        controls.add(maximizeButton);
+        controls.add(closeButton);
+
+        bar.add(controls, BorderLayout.EAST);
+
+        return bar;
+    }
+
+    private JButton createTitleBarButton(char glyph, boolean isClose) {
+        JButton button = new JButton() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                Graphics2D g2 = (Graphics2D) g.create();
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                g2.setColor(UniversalThemes.TXT_PRIMARY);
+                g2.setStroke(new BasicStroke(1.3f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
+
+                int cx = getWidth() / 2, cy = getHeight() / 2, arm = 4;
+                if (glyph == '-') {
+                    g2.drawLine(cx - arm, cy, cx + arm, cy);
+                } else if (glyph == '□') {
+                    g2.drawRect(cx - arm, cy - arm, arm * 2, arm * 2);
+                } else {
+                    g2.drawLine(cx - arm, cy - arm, cx + arm, cy + arm);
+                    g2.drawLine(cx - arm, cy + arm, cx + arm, cy - arm);
+                }
+                g2.dispose();
+            }
+        };
+        button.setPreferredSize(new Dimension(46, 23));
+        button.setBackground(UniversalThemes.BG_MAIN);
+        button.setBorderPainted(false);
+        button.setFocusable(false);
+        button.setUI(new UniversalThemes.NoPressedButtonUI());
+        button.addMouseListener(new MouseAdapter() {
+            public void mouseEntered(MouseEvent e) {
+                button.setBackground(isClose ? UniversalThemes.BG_DELETE_BTN : UniversalThemes.BORDER_COLOR1);
+            }
+            public void mouseExited(MouseEvent e) {
+                button.setBackground(UniversalThemes.BG_MAIN);
+            }
+        });
+        return button;
     }
 
     ///==============================================================================================================
@@ -1669,7 +1751,7 @@ public class ArkIV implements ActionListener{
                 renumberAllTasks();
 
             } catch (Exception e) {
-                JOptionPane.showMessageDialog(frame, "Error loading tasks");
+                UniversalThemes.showPopup(frame, "Error loading tasks","Error");
                 e.printStackTrace();
             }
         }

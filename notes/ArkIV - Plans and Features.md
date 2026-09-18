@@ -53,7 +53,13 @@
 	    - [ ] fix page-up/down strange behavior
     - [x] custom MD feature- VIBGYOR color tags
     - [x] Key-binds to activate selectionWrapper when text selected
-    - [x] Removed inputArea for create main-entry, replace with dialog to create new Entries, can be activated with ctrl+N when no Ancestor selected
+    - [x] Removed InputArea for create main-entry, replace with dialog to create new Entries, can be activated with Ctrl+N when no Ancestor selected
+    - [ ] [[Right Align]]
+    - [ ] App opens into the last visited Register
+    - [ ] Add Taskbar icon for ArkIV
+    - [ ] Anchor input-Areas to the main JFrame
+    - [x] Redesign JFrame appearance
+
 
 - [ ] `v10.2`
 	- [ ] [[Copy and Paste]]
@@ -68,7 +74,7 @@
 	- [ ] Hanging indent 
     - [ ] nested lists
 - [ ] Custom MD features
-	- [ ] [[Right Align]]
+	
 
 
 ## Fixes
@@ -76,7 +82,6 @@
 - [ ] Create sub-Entry/Edit input box - Smart Increase height and width based on text size
 
 ## UI
-- [ ] Redesign JFrame appearance
 - [ ] Help
     - [ ] Basic User Guide
 	- [ ] Key-Binds
