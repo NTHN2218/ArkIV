@@ -11,6 +11,7 @@ import javax.swing.border.Border;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.text.*;
+import java.util.function.Consumer;
 
 import java.nio.charset.StandardCharsets;
 
@@ -1082,10 +1083,11 @@ public class ArkIV implements ActionListener{
                     @Override
                     public void onRecognize() {
                         SwingUtilities.invokeLater(() -> {
-                            String name = promptForRegisterName();
-                            if (name == null) return;
-                            registerManager.recognizeFile(entry.filename, name);
-                            refreshRegisterList();
+                            promptForRegisterName(name -> {
+                                if (name == null) return;
+                                registerManager.recognizeFile(entry.filename, name);
+                                refreshRegisterList();
+                            });
                         });
                     }
 
@@ -1104,28 +1106,29 @@ public class ArkIV implements ActionListener{
                     @Override
                     public void onDelete() {
                         SwingUtilities.invokeLater(() -> {
-                            boolean confirmed = UniversalThemes.showDeleteConfirmPopup(
+                            UniversalThemes.showDeleteConfirmPopup(
                                     frame,
                                     "Delete File",
                                     entry.filename,
-                                    "It will be permanently removed. This cannot be undone."
-                            );
-                            if (confirmed) {
-                                File f = new File(registerManager.getAssetsPathPublic(), entry.filename);
-                                f.delete();
-                                refreshRegisterList();
-                            }
+                                    "It will be permanently removed. This cannot be undone.",
+                                    confirmed -> {
+                                        if (confirmed) {
+                                            File f = new File(registerManager.getAssetsPathPublic(), entry.filename);
+                                            f.delete();
+                                            refreshRegisterList();
+                                        }
+                                    });
                         });
                     }
                 });
     }
 
     private void handleCreateRegister() {
-        String name = promptForRegisterName();
-        if (name == null) return; // user cancelled
-
-        registerManager.createRegister(name);
-        refreshRegisterList();
+        promptForRegisterName(name -> {
+            if (name == null) return; // user cancelled
+            registerManager.createRegister(name);
+            refreshRegisterList();
+        });
     }
 
     private DefaultMutableTreeNode findLeafNodeForEntry(Object entry) {
@@ -1230,7 +1233,7 @@ public class ArkIV implements ActionListener{
         RegisterContextMenu.showForBranch(invoker, x, y, this::handleCreateRegister);
     }
 
-    private String promptForRegisterName() {
+    private void promptForRegisterName(Consumer<String> onResult) {
         UniversalThemes.RoundedDialog rd = UniversalThemes.createRoundedDialogShell(frame, "New Register");
 
         JLabel label = new JLabel("Register name:");
@@ -1258,11 +1261,9 @@ public class ArkIV implements ActionListener{
         rd.body.add(nameField);
         rd.body.add(Box.createVerticalStrut(18));
 
-        final String[] result = { null };
-
-        Runnable submit = () -> {
-            result[0] = nameField.getText().trim();
-            rd.dialog.dispose();
+        Consumer<String> finish = name -> {
+            rd.close();
+            onResult.accept(name);
         };
 
         InputMap im = nameField.getInputMap(JComponent.WHEN_FOCUSED);
@@ -1270,26 +1271,20 @@ public class ArkIV implements ActionListener{
 
         im.put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "confirm");
         am.put("confirm", new AbstractAction() {
-            @Override public void actionPerformed(ActionEvent e) { submit.run(); }
+            @Override public void actionPerformed(ActionEvent e) { finish.accept(nameField.getText().trim()); }
         });
 
         im.put(KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), "cancel");
         am.put("cancel", new AbstractAction() {
-            @Override public void actionPerformed(ActionEvent e) {
-                result[0] = null;
-                rd.dialog.dispose();
-            }
+            @Override public void actionPerformed(ActionEvent e) { finish.accept(null); }
         });
 
         JButton createButton = UniversalThemes.createRoundedDialogButton("Create", UniversalThemes.ACCENT_COLOR,
                 UniversalThemes.TXT_SELECTED, UniversalThemes.ACCENT_COLOR_DARK);
         JButton cancelButton = UniversalThemes.createRoundedDialogButton("Cancel", UniversalThemes.BG_COMPONENT,
                 UniversalThemes.TXT_PRIMARY, UniversalThemes.BORDER_COLOR1);
-        createButton.addActionListener(e -> submit.run());
-        cancelButton.addActionListener(e -> {
-            result[0] = null;
-            rd.dialog.dispose();
-        });
+        createButton.addActionListener(e -> finish.accept(nameField.getText().trim()));
+        cancelButton.addActionListener(e -> finish.accept(null));
 
         JPanel buttonRow = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 0));
         buttonRow.setOpaque(false);
@@ -1298,15 +1293,10 @@ public class ArkIV implements ActionListener{
         UniversalThemes.wireDialogButtonNavigation(createButton, cancelButton);
         rd.body.add(buttonRow);
 
-        rd.dialog.addWindowListener(new WindowAdapter() {
-            @Override public void windowClosing(WindowEvent e) { result[0] = null; }
-        });
+        rd.setOnCloseRequest(() -> finish.accept(null));
 
-        UniversalThemes.finalizeRoundedDialog(rd.dialog, frame);
+        rd.show();
         SwingUtilities.invokeLater(nameField::requestFocusInWindow);
-        rd.dialog.setVisible(true);
-
-        return result[0];
     }
 
     private void switchToRegister(RegisterManager.RegisterEntry entry) {
@@ -1412,28 +1402,29 @@ public class ArkIV implements ActionListener{
             return;
         }
 
-        boolean confirmed = UniversalThemes.showDeleteConfirmPopup(
+        UniversalThemes.showDeleteConfirmPopup(
                 frame,
                 "Remove Register",
                 entry.name,
                 "The register file will be permanently removed. This cannot be undone.",
-                "Remove"
-        );
-        if (!confirmed) return;
+                "Remove",
+                confirmed -> {
+                    if (!confirmed) return;
 
-        boolean wasCurrent = (entry.id == currentRegisterId);
+                    boolean wasCurrent = (entry.id == currentRegisterId);
 
-        registerManager.deleteRegister(entry.id, false);
+                    registerManager.deleteRegister(entry.id, false);
 
-        if (wasCurrent) {
-            RegisterManager.RegisterEntry fallback = registerManager.getDefaultRegister();
-            if (fallback == null) {
-                fallback = registerManager.getRegisters().get(0);
-            }
-            switchToRegister(fallback);
-        } else {
-            refreshRegisterList();
-        }
+                    if (wasCurrent) {
+                        RegisterManager.RegisterEntry fallback = registerManager.getDefaultRegister();
+                        if (fallback == null) {
+                            fallback = registerManager.getRegisters().get(0);
+                        }
+                        switchToRegister(fallback);
+                    } else {
+                        refreshRegisterList();
+                    }
+                });
     }
 
     private void copyPathToClipboard(String absolutePath) {
@@ -2243,8 +2234,6 @@ public class ArkIV implements ActionListener{
             UniversalThemes.applyCollapseSelectionNavigation(field);
             UniversalThemes.freeCtrlTabFromTraversal(field);
 
-
-            // Pre-size rows to fit existing content, capped at 10
             int existingLines = field.getLineCount();
             field.setRows(Math.min(Math.max(existingLines, inputFieldRows), inputFieldColumns));
 
@@ -2263,7 +2252,6 @@ public class ArkIV implements ActionListener{
             rd.body.add(scrollPane);
             rd.body.add(Box.createVerticalStrut(18));
 
-            // Auto-grow + auto-scroll-to-caret
             field.getDocument().addDocumentListener(new DocumentListener() {
                 public void insertUpdate(DocumentEvent e) { adjust(); scrollToCaret(); }
                 public void removeUpdate(DocumentEvent e) { adjust(); scrollToCaret(); }
@@ -2273,8 +2261,7 @@ public class ArkIV implements ActionListener{
                     int rows = field.getLineCount();
                     if (rows > field.getRows()) {
                         field.setRows(Math.min(rows, 10));
-                        rd.dialog.pack();
-                        UniversalThemes.finalizeRoundedDialog(rd.dialog, frame);
+                        rd.refresh();
                     }
                 }
 
@@ -2286,7 +2273,7 @@ public class ArkIV implements ActionListener{
             });
 
             Runnable submit = () -> {
-                String newText = field.getText(); // preserve whitespace/newlines, don't trim here
+                String newText = field.getText();
                 if (!newText.trim().isEmpty()) {
                     rawText = newText;
                     Markdown.MarkdownRenderer.render(textArea.getStyledDocument(), rawText);
@@ -2296,20 +2283,22 @@ public class ArkIV implements ActionListener{
                     }
                     deselectThisTask();
                     saveTasks();
-                    rd.dialog.dispose();
+                    rd.close();
                 } else {
-                    boolean confirmed = UniversalThemes.showDeleteConfirmPopup(
+                    UniversalThemes.showDeleteConfirmPopup(
                             frame,
                             "Delete Entry",
                             "empty entry",
-                            "The text was cleared. This cannot be undone."
+                            "The text was cleared. This cannot be undone.",
+                            confirmed -> {
+                                if (confirmed) {
+                                    deselectThisTask();
+                                    rd.close();
+                                    DeleteEmptyTask();
+                                }
+                                // if not confirmed: leave dialog open, let them keep editing
+                            }
                     );
-                    if (confirmed) {
-                        deselectThisTask();
-                        rd.dialog.dispose();
-                        DeleteEmptyTask();
-                    }
-                    // if not confirmed: leave dialog open, let them keep editing
                 }
             };
 
@@ -2338,7 +2327,7 @@ public class ArkIV implements ActionListener{
             saveButton.addActionListener(e -> submit.run());
             cancelButton.addActionListener(e -> {
                 deselectThisTask();
-                rd.dialog.dispose();
+                rd.close();
             });
 
             JPanel buttonRow = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 0));
@@ -2348,13 +2337,10 @@ public class ArkIV implements ActionListener{
             UniversalThemes.wireDialogButtonNavigation(saveButton, cancelButton);
             rd.body.add(buttonRow);
 
-            rd.dialog.addWindowListener(new WindowAdapter() {
-                @Override public void windowClosing(WindowEvent e) { deselectThisTask(); }
-            });
+            rd.setOnCloseRequest(() -> { deselectThisTask(); rd.close(); });
 
-            UniversalThemes.finalizeRoundedDialog(rd.dialog, frame);
+            rd.show();
             SwingUtilities.invokeLater(() -> { field.requestFocusInWindow(); field.selectAll(); });
-            rd.dialog.setVisible(true);
         }
 
 
@@ -2383,7 +2369,6 @@ public class ArkIV implements ActionListener{
             UniversalThemes.applyCollapseSelectionNavigation(field);
             UniversalThemes.freeCtrlTabFromTraversal(field);
 
-
             JScrollPane scrollPane = new JScrollPane(field);
             scrollPane.setBorder(BorderFactory.createLineBorder(UniversalThemes.BORDER_COLOR1, 1));
             scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
@@ -2395,7 +2380,6 @@ public class ArkIV implements ActionListener{
             rd.body.add(scrollPane);
             rd.body.add(Box.createVerticalStrut(18));
 
-            // Auto-grow
             field.getDocument().addDocumentListener(new DocumentListener() {
                 public void insertUpdate(DocumentEvent e) { adjust(); }
                 public void removeUpdate(DocumentEvent e) { adjust(); }
@@ -2404,8 +2388,7 @@ public class ArkIV implements ActionListener{
                     int rows = field.getLineCount();
                     if (rows > field.getRows()) {
                         field.setRows(Math.min(rows, 10));
-                        rd.dialog.pack();
-                        UniversalThemes.finalizeRoundedDialog(rd.dialog, frame);
+                        rd.refresh();
                     }
                 }
             });
@@ -2413,7 +2396,7 @@ public class ArkIV implements ActionListener{
             Runnable submit = () -> {
                 String subtaskText = field.getText().trim();
                 if (!subtaskText.isEmpty()) {
-                    rd.dialog.dispose();
+                    rd.close();
                     TaskItem subtask = new TaskItem(taskCounter++, subtaskText, false, true, false, getId());
                     idToTaskMap.put(subtask.getId(), subtask);
                     allTasks.add(subtask);
@@ -2461,7 +2444,7 @@ public class ArkIV implements ActionListener{
             JButton cancelButton = UniversalThemes.createRoundedDialogButton("Cancel", UniversalThemes.BG_COMPONENT,
                     UniversalThemes.TXT_PRIMARY, UniversalThemes.BORDER_COLOR1);
             addButton.addActionListener(e -> submit.run());
-            cancelButton.addActionListener(e -> rd.dialog.dispose());
+            cancelButton.addActionListener(e -> rd.close());
 
             JPanel buttonRow = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 0));
             buttonRow.setOpaque(false);
@@ -2470,9 +2453,8 @@ public class ArkIV implements ActionListener{
             UniversalThemes.wireDialogButtonNavigation(addButton, cancelButton);
             rd.body.add(buttonRow);
 
-            UniversalThemes.finalizeRoundedDialog(rd.dialog, frame);
+            rd.show();
             SwingUtilities.invokeLater(field::requestFocusInWindow);
-            rd.dialog.setVisible(true);
         }
         // New method: Move this task up within its allowed range, allowing repeated moves while selected
         private void moveTaskUp() {
@@ -2706,11 +2688,10 @@ public class ArkIV implements ActionListener{
 
         private void confirmDeleteTask() {
             List<Component> toRemove = new ArrayList<>();
-            toRemove.add(this); // Always remove the clicked task
+            toRemove.add(this);
             boolean hasSubtasks = false;
 
             if (!isSubtask) {
-                // It's a main task, so find and mark its subtasks
                 for (TaskItem task : allTasks) {
                     if (task.isSubtask() && task.getParentId() == this.id) {
                         toRemove.add(task);
@@ -2726,24 +2707,23 @@ public class ArkIV implements ActionListener{
                     ? "This will also delete its sub-Entries. "
                     : "";
 
-            boolean confirmed = UniversalThemes.showDeleteConfirmPopup(
+            UniversalThemes.showDeleteConfirmPopup(
                     frame,
                     "Delete Entry",
                     entryPreview,
-                    subMessage
-            );
-
-            if (confirmed) {
-                for (Component c : toRemove) {
-                    taskPanel.remove(c);
-                    allTasks.remove(c);
-                }
-                saveTasks();
-                taskPanel.revalidate();
-                taskPanel.repaint();
-                renumberAllTasks();
-            }
-
+                    subMessage,
+                    confirmed -> {
+                        if (confirmed) {
+                            for (Component c : toRemove) {
+                                taskPanel.remove(c);
+                                allTasks.remove(c);
+                            }
+                            saveTasks();
+                            taskPanel.revalidate();
+                            taskPanel.repaint();
+                            renumberAllTasks();
+                        }
+                    });
         }
 
         public void applySearchHighlight() {

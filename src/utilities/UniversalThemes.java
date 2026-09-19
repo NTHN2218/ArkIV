@@ -16,6 +16,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.HashSet;
+import java.util.function.Consumer;
 
 public class UniversalThemes {
 
@@ -107,12 +108,155 @@ public class UniversalThemes {
     ///==============================================================================================================
     ///== Dialog Shell & Helpers
     ///==============================================================================================================
+    ///==============================================================================================================
+    ///== Dialog Shell & Helpers  (JLayeredPane overlay -- lives inside the frame,
+    ///== not a second OS window, so there's nothing for Windows to give its own
+    ///== taskbar identity or raise above other apps.)
+    ///==============================================================================================================
     public static final int DIALOG_CORNER_RADIUS = 16;
 
     public static class RoundedDialog {
-        public final JDialog dialog;
         public final JPanel body; // caller adds content here
-        RoundedDialog(JDialog dialog, JPanel body) { this.dialog = dialog; this.body = body; }
+
+        private final JFrame ownerFrame;
+        private final JLayeredPane layeredPane;
+        private final JPanel dimOverlay;
+        private final JPanel shellPanel;
+        private final ComponentAdapter resizeListener;
+        private Runnable onCloseRequest;
+        private boolean showing = false;
+
+        RoundedDialog(JFrame ownerFrame, JLayeredPane layeredPane, JPanel dimOverlay, JPanel shellPanel, JPanel body) {
+            this.ownerFrame = ownerFrame;
+            this.layeredPane = layeredPane;
+            this.dimOverlay = dimOverlay;
+            this.shellPanel = shellPanel;
+            this.body = body;
+            this.onCloseRequest = this::close; // default: X button just closes
+            this.resizeListener = new ComponentAdapter() {
+                @Override public void componentResized(ComponentEvent e) { refresh(); }
+            };
+        }
+
+        // Recompute size/position -- call after adding content that changes
+        // preferred size (e.g. an auto-growing text area).
+        public void refresh() {
+            Dimension frameSize = ownerFrame.getRootPane().getSize();
+            dimOverlay.setBounds(0, 0, frameSize.width, frameSize.height);
+
+            Dimension pref = shellPanel.getPreferredSize();
+            int w = Math.min(pref.width, frameSize.width - 40);
+            int h = Math.min(pref.height, frameSize.height - 40);
+            int x = (frameSize.width - w) / 2;
+            int y = (frameSize.height - h) / 2;
+            shellPanel.setBounds(x, y, w, h);
+        }
+
+        public void show() {
+            if (showing) return;
+            showing = true;
+            layeredPane.add(dimOverlay, JLayeredPane.MODAL_LAYER);
+            layeredPane.add(shellPanel, JLayeredPane.MODAL_LAYER + 1);
+            ownerFrame.addComponentListener(resizeListener);
+            refresh();
+            layeredPane.revalidate();
+            layeredPane.repaint();
+        }
+
+        public void close() {
+            if (!showing) return;
+            showing = false;
+            ownerFrame.removeComponentListener(resizeListener);
+            layeredPane.remove(shellPanel);
+            layeredPane.remove(dimOverlay);
+            layeredPane.revalidate();
+            layeredPane.repaint();
+        }
+
+        // Overrides what the header's X button does. Default is close(); pass
+        // your own handler when closing needs extra logic (treat X as Cancel, etc.)
+        public void setOnCloseRequest(Runnable r) { this.onCloseRequest = r; }
+
+        void requestClose() { onCloseRequest.run(); }
+    }
+
+    public static RoundedDialog createRoundedDialogShell(Component parent, String titleText) {
+        Window ownerWindow = SwingUtilities.getWindowAncestor(parent);
+        if (!(ownerWindow instanceof JFrame ownerFrame)) {
+            throw new IllegalStateException("RoundedDialog requires a JFrame ancestor");
+        }
+        JLayeredPane layeredPane = ownerFrame.getLayeredPane();
+
+        // Blocks clicks to the app behind it, same job OS modality used to do --
+        // just a real opaque component now, not a system-level enforcement.
+        JPanel dimOverlay = new JPanel(null);
+        dimOverlay.setOpaque(true);
+        dimOverlay.setBackground(new Color(0, 0, 0, 120));
+
+        JPanel shellPanel = new JPanel(new BorderLayout()) {
+            @Override protected void paintComponent(Graphics g) {
+                Graphics2D g2 = (Graphics2D) g.create();
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
+                g2.setColor(getBackground());
+                g2.fillRoundRect(0, 0, getWidth(), getHeight(), DIALOG_CORNER_RADIUS, DIALOG_CORNER_RADIUS);
+
+                float strokeWidth = 1.5f;
+                g2.setColor(BORDER_COLOR1);
+                g2.setStroke(new BasicStroke(strokeWidth));
+                float inset = strokeWidth / 2f;
+                g2.draw(new RoundRectangle2D.Float(
+                        inset, inset,
+                        getWidth() - strokeWidth, getHeight() - strokeWidth,
+                        DIALOG_CORNER_RADIUS, DIALOG_CORNER_RADIUS
+                ));
+
+                g2.dispose();
+            }
+        };
+        shellPanel.setOpaque(false);
+        shellPanel.setBackground(BG_PANEL);
+        shellPanel.setBorder(BorderFactory.createEmptyBorder(20, 22, 18, 22));
+
+        JPanel header = new JPanel(new BorderLayout());
+        header.setOpaque(false);
+
+        JLabel titleLabel = new JLabel(titleText);
+        titleLabel.setFont(FONT_B_18);
+        titleLabel.setForeground(TXT_PRIMARY);
+        header.add(titleLabel, BorderLayout.WEST);
+
+        JPanel body = new JPanel();
+        body.setOpaque(false);
+        body.setLayout(new BoxLayout(body, BoxLayout.Y_AXIS));
+        body.setBorder(BorderFactory.createEmptyBorder(14, 2, 0, 2));
+
+        RoundedDialog rd = new RoundedDialog(ownerFrame, layeredPane, dimOverlay, shellPanel, body);
+
+        JButton closeButton = new JButton() {
+            @Override protected void paintComponent(Graphics g) {
+                Graphics2D g2 = (Graphics2D) g.create();
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                g2.setColor(TXT_SECONDARY);
+                g2.setStroke(new BasicStroke(1.6f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
+                int cx = getWidth() / 2, cy = getHeight() / 2, arm = 5;
+                g2.drawLine(cx - arm, cy - arm, cx + arm, cy + arm);
+                g2.drawLine(cx - arm, cy + arm, cx + arm, cy - arm);
+                g2.dispose();
+            }
+        };
+        closeButton.setPreferredSize(new Dimension(24, 24));
+        closeButton.setContentAreaFilled(false);
+        closeButton.setBorderPainted(false);
+        closeButton.setFocusable(false);
+        closeButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        closeButton.addActionListener(e -> rd.requestClose());
+        header.add(closeButton, BorderLayout.EAST);
+
+        shellPanel.add(header, BorderLayout.NORTH);
+        shellPanel.add(body, BorderLayout.CENTER);
+
+        return rd;
     }
 
     public static void showToast(Component parent, String message) {
@@ -160,86 +304,7 @@ public class UniversalThemes {
         dismissTimer.start();
     }
 
-    public static RoundedDialog createRoundedDialogShell(Component parent, String titleText) {
-        JDialog dialog = new JDialog(SwingUtilities.getWindowAncestor(parent), Dialog.ModalityType.APPLICATION_MODAL);
-        dialog.setUndecorated(true);
-        dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-        dialog.setResizable(false);
-        dialog.setLayout(new BorderLayout());
 
-        JPanel rounded = new JPanel(new BorderLayout()) {
-            @Override protected void paintComponent(Graphics g) {
-                Graphics2D g2 = (Graphics2D) g.create();
-                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-
-                g2.setColor(getBackground());
-                g2.fillRoundRect(0, 0, getWidth(), getHeight(), DIALOG_CORNER_RADIUS, DIALOG_CORNER_RADIUS);
-
-                float strokeWidth = 1.5f;
-                g2.setColor(BORDER_COLOR1);
-                g2.setStroke(new BasicStroke(strokeWidth));
-                float inset = strokeWidth / 2f;
-                g2.draw(new RoundRectangle2D.Float(
-                        inset, inset,
-                        getWidth() - strokeWidth, getHeight() - strokeWidth,
-                        DIALOG_CORNER_RADIUS, DIALOG_CORNER_RADIUS
-                ));
-
-                g2.dispose();
-            }
-        };
-        rounded.setOpaque(false);
-        rounded.setBackground(BG_PANEL);
-        rounded.setOpaque(false);
-        rounded.setBackground(BG_PANEL);
-        rounded.setBorder(BorderFactory.createEmptyBorder(20, 22, 18, 22));
-
-        JPanel header = new JPanel(new BorderLayout());
-        header.setOpaque(false);
-
-        JLabel titleLabel = new JLabel(titleText);
-        titleLabel.setFont(FONT_B_18);
-        titleLabel.setForeground(TXT_PRIMARY);
-        header.add(titleLabel, BorderLayout.WEST);
-
-        JButton closeButton = new JButton() {
-            @Override protected void paintComponent(Graphics g) {
-                Graphics2D g2 = (Graphics2D) g.create();
-                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-                g2.setColor(TXT_SECONDARY);
-                g2.setStroke(new BasicStroke(1.6f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
-                int cx = getWidth() / 2, cy = getHeight() / 2, arm = 5;
-                g2.drawLine(cx - arm, cy - arm, cx + arm, cy + arm);
-                g2.drawLine(cx - arm, cy + arm, cx + arm, cy - arm);
-                g2.dispose();
-            }
-        };
-        closeButton.setPreferredSize(new Dimension(24, 24));
-        closeButton.setContentAreaFilled(false);
-        closeButton.setBorderPainted(false);
-        closeButton.setFocusable(false);
-        closeButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        closeButton.addActionListener(e -> dialog.dispose());
-        header.add(closeButton, BorderLayout.EAST);
-
-        rounded.add(header, BorderLayout.NORTH);
-
-        JPanel body = new JPanel();
-        body.setOpaque(false);
-        body.setLayout(new BoxLayout(body, BoxLayout.Y_AXIS));
-        body.setBorder(BorderFactory.createEmptyBorder(14, 2, 0, 2));
-        rounded.add(body, BorderLayout.CENTER);
-
-        dialog.add(rounded, BorderLayout.CENTER);
-        return new RoundedDialog(dialog, body);
-    }
-
-    public static void finalizeRoundedDialog(JDialog dialog, Component parent) {
-        dialog.pack();
-        dialog.setShape(new RoundRectangle2D.Double(0, 0, dialog.getWidth(), dialog.getHeight(),
-                DIALOG_CORNER_RADIUS, DIALOG_CORNER_RADIUS));
-        dialog.setLocationRelativeTo(parent);
-    }
 
     public static JButton createRoundedDialogButton(String text, Color bg, Color fg, Color hoverBg) {
         JButton button = new JButton(text) {
@@ -734,6 +799,9 @@ public class UniversalThemes {
     ///==============================================================================================================
     ///== Popups & Confirm Dialogs
     ///==============================================================================================================
+    ///==============================================================================================================
+    ///== Popups & Confirm Dialogs
+    ///==============================================================================================================
     public static void showPopup(Component parent, String message, String title) {
         RoundedDialog rd = createRoundedDialogShell(parent, title);
 
@@ -742,22 +810,22 @@ public class UniversalThemes {
         rd.body.add(Box.createVerticalStrut(18));
 
         JButton okButton = createRoundedDialogButton("OK", ACCENT_COLOR, TXT_SELECTED, ACCENT_COLOR_DARK);
-        okButton.addActionListener(e -> rd.dialog.dispose());
+        okButton.addActionListener(e -> rd.close());
 
         JPanel buttonRow = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 0));
         buttonRow.setOpaque(false);
         buttonRow.setAlignmentX(Component.LEFT_ALIGNMENT);
+        buttonRow.add(okButton);
         wireDialogButtonNavigation(okButton);
         rd.body.add(buttonRow);
 
-        finalizeRoundedDialog(rd.dialog, parent);
-        rd.dialog.setVisible(true);
+        rd.show();
+        SwingUtilities.invokeLater(okButton::requestFocusInWindow);
     }
 
-
-
-    public static boolean showConfirmPopup(Component parent, String message, String title) {
-        final boolean[] result = { false };
+    // No more OS modal blocking to fake a synchronous return -- callers get
+    // the answer via onResult instead of a boolean return value.
+    public static void showConfirmPopup(Component parent, String message, String title, Consumer<Boolean> onResult) {
         RoundedDialog rd = createRoundedDialogShell(parent, title);
 
         JLabel messageLabel = createWrappingLabel(message, FONT_R_18, TXT_PRIMARY, 200, 340);
@@ -766,27 +834,27 @@ public class UniversalThemes {
 
         JButton yesButton = createRoundedDialogButton("Yes", ACCENT_COLOR, TXT_SELECTED, ACCENT_COLOR_DARK);
         JButton noButton  = createRoundedDialogButton("No", BG_COMPONENT, TXT_PRIMARY, BORDER_COLOR1);
-        yesButton.addActionListener(e -> { result[0] = true; rd.dialog.dispose(); });
-        noButton.addActionListener(e -> rd.dialog.dispose());
+        yesButton.addActionListener(e -> { rd.close(); onResult.accept(true); });
+        noButton.addActionListener(e -> { rd.close(); onResult.accept(false); });
+        rd.setOnCloseRequest(() -> { rd.close(); onResult.accept(false); });
 
         JPanel buttonRow = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 0));
         buttonRow.setOpaque(false);
         buttonRow.setAlignmentX(Component.LEFT_ALIGNMENT);
         buttonRow.add(yesButton);
+        buttonRow.add(noButton);
         wireDialogButtonNavigation(yesButton, noButton);
         rd.body.add(buttonRow);
 
-        finalizeRoundedDialog(rd.dialog, parent);
-        rd.dialog.setVisible(true);
-        return result[0];
+        rd.show();
+        SwingUtilities.invokeLater(noButton::requestFocusInWindow);
     }
 
-    public static boolean showDeleteConfirmPopup(Component parent, String dialogTitle, String targetName, String subMessage) {
-        return showDeleteConfirmPopup(parent, dialogTitle, targetName, subMessage, "Delete");
+    public static void showDeleteConfirmPopup(Component parent, String dialogTitle, String targetName, String subMessage, Consumer<Boolean> onResult) {
+        showDeleteConfirmPopup(parent, dialogTitle, targetName, subMessage, "Delete", onResult);
     }
 
-    public static boolean showDeleteConfirmPopup(Component parent, String dialogTitle, String targetName, String subMessage, String actionVerb) {
-        final boolean[] result = { false };
+    public static void showDeleteConfirmPopup(Component parent, String dialogTitle, String targetName, String subMessage, String actionVerb, Consumer<Boolean> onResult) {
         RoundedDialog rd = createRoundedDialogShell(parent, dialogTitle);
 
         JLabel messageLabel = createWrappingLabel(
@@ -805,8 +873,9 @@ public class UniversalThemes {
 
         JButton actionButton = createRoundedDialogButton(actionVerb, BG_DELETE_BTN, Color.BLACK, BG_DELETE_BTN.darker());
         JButton cancelButton = createRoundedDialogButton("Cancel", BG_CANCEL_BTN, TXT_PRIMARY, BORDER_COLOR1);
-        actionButton.addActionListener(e -> { result[0] = true; rd.dialog.dispose(); });
-        cancelButton.addActionListener(e -> rd.dialog.dispose());
+        actionButton.addActionListener(e -> { rd.close(); onResult.accept(true); });
+        cancelButton.addActionListener(e -> { rd.close(); onResult.accept(false); });
+        rd.setOnCloseRequest(() -> { rd.close(); onResult.accept(false); });
 
         JPanel buttonRow = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 0));
         buttonRow.setOpaque(false);
@@ -814,12 +883,10 @@ public class UniversalThemes {
         buttonRow.add(actionButton);
         buttonRow.add(cancelButton);
         wireDialogButtonNavigation(actionButton, cancelButton);
-
         rd.body.add(buttonRow);
 
-        finalizeRoundedDialog(rd.dialog, parent);
-        rd.dialog.setVisible(true);
-        return result[0];
+        rd.show();
+        SwingUtilities.invokeLater(cancelButton::requestFocusInWindow);
     }
 
     ///==============================================================================================================
