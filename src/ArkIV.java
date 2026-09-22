@@ -14,6 +14,9 @@ import javax.swing.text.*;
 
 import java.nio.charset.StandardCharsets;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+
 //Data Encryption
 import java.security.spec.KeySpec;
 import javax.crypto.*;
@@ -138,6 +141,18 @@ public class ArkIV implements ActionListener{
     private DefaultMutableTreeNode editingNode = null;
     private JTextField registerRenameField = null;
 
+    private static List<Image> loadIconImages(List<File> files) {
+        List<Image> icons = new ArrayList<>();
+        for (File f : files) {
+            try {
+                icons.add(ImageIO.read(f));
+            } catch (IOException e) {
+                System.err.println("Could not load icon " + f.getName() + ": " + e.getMessage());
+            }
+        }
+        return icons;
+    }
+
     ///==============================================================================================================
     ///== Constructor
     ///==============================================================================================================
@@ -149,6 +164,12 @@ public class ArkIV implements ActionListener{
         FILE_NAME = registerManager.getRegisterFilePath(registerManager.getDefaultRegister());
 
         frame = new JFrame("ArkIV");
+
+        List<Image> icons = loadIconImages(PathResolver.getTaskbarIconFiles());
+        if (!icons.isEmpty()) {
+            frame.setIconImages(icons);
+        }
+
         frame.getContentPane().setBackground(UniversalThemes.BG_MAIN);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setUndecorated(true);

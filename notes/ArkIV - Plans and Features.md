@@ -56,9 +56,9 @@
     - [x] Removed InputArea for create main-entry, replace with dialog to create new Entries, can be activated with Ctrl+N when no Ancestor selected
     - [ ] [[Right Align]]
     - [ ] App opens into the last visited Register
-    - [ ] Add Taskbar icon for ArkIV
+    - [x] Add Taskbar icon for ArkIV
     - [ ] Anchor input-Areas to the main JFrame
-    - [x] Redesign JFrame appearance
+    - [x] Redesign JFrame title bar appearance
 
 
 - [ ] `v10.2`
