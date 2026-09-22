@@ -307,8 +307,7 @@ public class ArkIV implements ActionListener{
             }
         });
 
-        // ── Page Up / Page Down: jump scrollbar to top/bottom extremes ──
-        rootIm.put(KeyStroke.getKeyStroke(KeyEvent.VK_PAGE_UP, InputEvent.CTRL_DOWN_MASK), "scrollToTop");
+        rootIm.put(KeyStroke.getKeyStroke(KeyEvent.VK_UP, InputEvent.CTRL_DOWN_MASK | InputEvent.ALT_DOWN_MASK), "scrollToTop");
         rootAm.put("scrollToTop", new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -317,7 +316,7 @@ public class ArkIV implements ActionListener{
             }
         });
 
-        rootIm.put(KeyStroke.getKeyStroke(KeyEvent.VK_PAGE_DOWN, InputEvent.CTRL_DOWN_MASK), "scrollToBottom");
+        rootIm.put(KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, InputEvent.CTRL_DOWN_MASK | InputEvent.ALT_DOWN_MASK), "scrollToBottom");
         rootAm.put("scrollToBottom", new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {

@@ -49,8 +49,7 @@
 	- [ ] `v10.1.1` [[Undo Action]]
 	- [ ] `v10.1.2` - Undo Text
     - [x] Key-binds for expand all(ctrl+]) /collapse all(ctrl+[)
-    - [x] Page-up & page-down scrolls to extremes when no input box is focused
-	    - [ ] fix page-up/down strange behavior
+    - [x] Jump scrollbar to top/bottom of the current register
     - [x] custom MD feature- VIBGYOR color tags
     - [x] Key-binds to activate selectionWrapper when text selected
     - [x] Removed InputArea for create main-entry, replace with dialog to create new Entries, can be activated with Ctrl+N when no Ancestor selected
