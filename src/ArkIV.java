@@ -2124,7 +2124,7 @@ public class ArkIV implements ActionListener{
             textArea.setText(text);
             textArea.setFont(UniversalThemes.getCompositeFont(17));
             textArea.setForeground(UniversalThemes.TXT_PRIMARY);
-            textArea.setCaretColor(UniversalThemes.ACCENT_COLOR);
+            textArea.setCaretColor(cardBg);
             textArea.setOpaque(false);
             textArea.setEditable(false);
             textArea.setBorder(null);
