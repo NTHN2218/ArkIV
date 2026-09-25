@@ -5,15 +5,15 @@
 </p>
 
 <p align="center">
-  <img src="docs/screenshot_1.png" alt="ArkIV" width="1600">
+  <img src="docs/Screenshot_1.png" alt="ArkIV" width="1600">
 </p>
 
 <p align="center">
-  <img src="docs/screenshot_2.png" alt="ArkIV" width="1600">
+  <img src="docs/Screenshot_2.png" alt="ArkIV" width="1600">
 </p>
 
 <p align="center">
-  <img src="docs/screenshot_3.png" alt="ArkIV" width="1600">
+  <img src="docs/Screenshot_3.png" alt="ArkIV" width="1600">
 </p>
 
 ## What is it?
