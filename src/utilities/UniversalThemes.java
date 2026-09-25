@@ -23,6 +23,7 @@ public class UniversalThemes {
     ///== Theme Colors
     ///==============================================================================================================
     public static final Color BG_MAIN        = new Color(0x0F0F12);
+    public static final Color TITLE_BAR      = new Color(0x191621);
     public static final Color BG_PANEL       = new Color(0x1A1A1E);
     public static final Color BG_COMPONENT   = new Color(0x222226);
     public static final Color BG_SIDEBAR     = new Color(0x1e1f22);
@@ -50,7 +51,9 @@ public class UniversalThemes {
 
     //Markdown Features Colors
     public static final Color MD_COLOR_HEADING = new Color(0x0fb6d6);
-    public static final Color MD_COLOR_BOLD = new Color(0x94A5F2);
+    //public static final Color MD_COLOR_BOLD = new Color(0x94A5F2);
+    public static final Color MD_COLOR_BOLD = new Color(0xE5E5E5);
+
 
 
     // VIBGYOR Color Tag palette (^1..^7) -- tuned for readability on BG_MAIN/BG_PANEL,

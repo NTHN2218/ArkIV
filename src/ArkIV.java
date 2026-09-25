@@ -161,7 +161,7 @@ public class ArkIV implements ActionListener{
         PathResolver.ensureAssetsStructure();
 
         registerManager = new RegisterManager();
-        FILE_NAME = registerManager.getRegisterFilePath(registerManager.getDefaultRegister());
+        FILE_NAME = registerManager.getRegisterFilePath(registerManager.getLastVisitedRegister());
 
         frame = new JFrame("ArkIV");
 
@@ -307,7 +307,7 @@ public class ArkIV implements ActionListener{
             }
         });
 
-        rootIm.put(KeyStroke.getKeyStroke(KeyEvent.VK_UP, InputEvent.CTRL_DOWN_MASK | InputEvent.ALT_DOWN_MASK), "scrollToTop");
+        rootIm.put(KeyStroke.getKeyStroke(KeyEvent.VK_UP, InputEvent.CTRL_DOWN_MASK | InputEvent.SHIFT_DOWN_MASK), "scrollToTop");
         rootAm.put("scrollToTop", new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -316,7 +316,7 @@ public class ArkIV implements ActionListener{
             }
         });
 
-        rootIm.put(KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, InputEvent.CTRL_DOWN_MASK | InputEvent.ALT_DOWN_MASK), "scrollToBottom");
+        rootIm.put(KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, InputEvent.CTRL_DOWN_MASK | InputEvent.SHIFT_DOWN_MASK), "scrollToBottom");
         rootAm.put("scrollToBottom", new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -326,7 +326,7 @@ public class ArkIV implements ActionListener{
         });
 
         loadTasks();
-        currentRegisterId = registerManager.getDefaultRegisterId();
+        currentRegisterId = registerManager.getLastVisitedRegisterId();
         refreshRegisterList();
         frame.setVisible(true);
     }
@@ -336,13 +336,13 @@ public class ArkIV implements ActionListener{
         JPanel bar = new JPanel(new BorderLayout());
         bar.setBackground(UniversalThemes.BG_MAIN);
         bar.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, UniversalThemes.BORDER_COLOR2));
-        bar.setPreferredSize(new Dimension(0, 23));
+        bar.setPreferredSize(new Dimension(0, 25));
 
-//        JLabel title = new JLabel("ArkIV");
-//        title.setFont(UniversalThemes.FONT_R_12);
-//        title.setForeground(UniversalThemes.TXT_PRIMARY);
-//        title.setBorder(BorderFactory.createEmptyBorder(0, 12, 0, 0));
-//        bar.add(title, BorderLayout.WEST);
+        JLabel title = new JLabel("ArkIV");
+        title.setFont(UniversalThemes.FONT_B_14);
+        title.setForeground(UniversalThemes.MD_COLOR_HEADING);
+        title.setBorder(BorderFactory.createEmptyBorder(0, 12, 0, 0));
+        bar.add(title, BorderLayout.WEST);
 
         JPanel controls = new JPanel(new FlowLayout(FlowLayout.RIGHT, 0, 0));
         controls.setOpaque(false);
@@ -389,7 +389,7 @@ public class ArkIV implements ActionListener{
                 g2.dispose();
             }
         };
-        button.setPreferredSize(new Dimension(46, 23));
+        button.setPreferredSize(new Dimension(46, 25));
         button.setBackground(UniversalThemes.BG_MAIN);
         button.setBorderPainted(false);
         button.setFocusable(false);
@@ -1401,6 +1401,7 @@ public class ArkIV implements ActionListener{
 
         // Point at the new register's file and load it
         currentRegisterId = entry.id;
+        registerManager.setLastVisited(entry.id);
         FILE_NAME = registerManager.getRegisterFilePath(entry);
         loadTasks();
 
@@ -1432,10 +1433,9 @@ public class ArkIV implements ActionListener{
         int index = sorted.indexOf(entry);
         boolean isFirst = index == 0;
         boolean isLast = index == sorted.size() - 1;
-        boolean isDefault = entry.id == registerManager.getDefaultRegisterId();
         boolean canDelete = sorted.size() > 1;
 
-        RegisterContextMenu.show(invoker, e.getX(), e.getY(), isFirst, isLast, isDefault, canDelete,
+        RegisterContextMenu.show(invoker, e.getX(), e.getY(), isFirst, isLast, canDelete,
                 new RegisterContextMenu.Handler() {
                     @Override
                     public void onRename() {
@@ -1451,12 +1451,6 @@ public class ArkIV implements ActionListener{
                     @Override
                     public void onMoveDown() {
                         registerManager.reorder(entry.id, 1);
-                        refreshRegisterList();
-                    }
-
-                    @Override
-                    public void onSetDefault() {
-                        registerManager.setDefault(entry.id);
                         refreshRegisterList();
                     }
 
@@ -1498,7 +1492,7 @@ public class ArkIV implements ActionListener{
         registerManager.deleteRegister(entry.id, false);
 
         if (wasCurrent) {
-            RegisterManager.RegisterEntry fallback = registerManager.getDefaultRegister();
+            RegisterManager.RegisterEntry fallback = registerManager.getLastVisitedRegister();
             if (fallback == null) {
                 fallback = registerManager.getRegisters().get(0);
             }

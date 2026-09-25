@@ -51,20 +51,20 @@
     - [x] Key-binds for expand all(ctrl+]) /collapse all(ctrl+[)
     - [x] Jump scrollbar to top/bottom of the current register
     - [x] custom MD feature- VIBGYOR color tags
+    - [ ] custom MD feature - [[Right Align]]
     - [x] Key-binds to activate selectionWrapper when text selected
-    - [x] Removed InputArea for create main-entry, replace with dialog to create new Entries, can be activated with Ctrl+N when no Ancestor selected
-    - [ ] [[Right Align]]
-    - [ ] App opens into the last visited Register
+    - [x] Replaced the persistent input area with a dialog for creating main Entries — opens via Ctrl+N when no Entry is selected
+    - [x] App opens into the last visited Register
     - [x] Add Taskbar icon for ArkIV
     - [ ] Anchor input-Areas to the main JFrame
     - [x] Redesign JFrame title bar appearance
+    - [ ] hide caret when not in focus 
 
 
 - [ ] `v10.2`
 	- [ ] [[Copy and Paste]]
 	- [ ] Read Only Mode
 		- [ ] Finish Incomplete [[Unrecognized Registers]] Handling
-		- [ ] User Instructions 
 
 - [ ] `v10.3` - GitHub integration  (very basic)
 
@@ -80,7 +80,7 @@
 - [ ] Fix emoji rendering
 - [ ] Create sub-Entry/Edit input box - Smart Increase height and width based on text size
 
-## UI
+- [ ] Auto close bracket 
 - [ ] Help
     - [ ] Basic User Guide
 	- [ ] Key-Binds
