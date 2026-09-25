@@ -23,6 +23,7 @@ import javax.crypto.spec.*;
 //Package - utilities
 import AutoHotkey.CaretNavigation;
 import AutoHotkey.SelectionWrapper;
+import utilities.DialogFieldKit;
 import utilities.PathResolver;
 import utilities.UniversalFactory;
 import utilities.UniversalThemes;
@@ -2218,22 +2219,9 @@ public class ArkIV implements ActionListener{
         private void editEntry() {
             UniversalThemes.RoundedDialog rd = UniversalThemes.createRoundedDialogShell(frame, "Edit");
 
-            JTextArea field = new JTextArea(getRawText(), inputFieldRows, inputFieldColumns);
-            field.setBackground(UniversalThemes.BG_COMPONENT);
-            field.setForeground(UniversalThemes.TXT_PRIMARY);
-            field.setCaretColor(UniversalThemes.ACCENT_COLOR);
-            field.setFont(UniversalThemes.getCompositeFont(17));
-            field.setLineWrap(true);
-            field.setWrapStyleWord(true);
-            field.setMargin(new Insets(10, 10, 10, 10));
-            field.setBorder(null);
-            Hotstring.attach(field);
-            SelectionWrapper.attach(field);
-            CaretNavigation.attach(field);
-            UniversalThemes.applySelectionTheme(field);
-            UniversalThemes.applyCollapseSelectionNavigation(field);
-            UniversalThemes.freeCtrlTabFromTraversal(field);
+            JTextArea field = DialogFieldKit.createThemedTextEntryField(getRawText(), inputFieldRows, inputFieldColumns);
 
+            // Pre-size rows to fit existing content, capped at 10
             int existingLines = field.getLineCount();
             field.setRows(Math.min(Math.max(existingLines, inputFieldRows), inputFieldColumns));
 
@@ -2241,39 +2229,14 @@ public class ArkIV implements ActionListener{
                 @Override public void focusGained(FocusEvent e) { field.selectAll(); }
             });
 
-            JScrollPane scrollPane = new JScrollPane(field);
-            scrollPane.setBorder(BorderFactory.createLineBorder(UniversalThemes.BORDER_COLOR1, 1));
-            scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-            scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-            UniversalThemes.applyScrollbarTheme(scrollPane);
-            scrollPane.setAlignmentX(Component.LEFT_ALIGNMENT);
-            scrollPane.setMaximumSize(new Dimension(Integer.MAX_VALUE, 220));
-
+            JScrollPane scrollPane = DialogFieldKit.wrapInThemedScrollPane(field, 220);
             rd.body.add(scrollPane);
             rd.body.add(Box.createVerticalStrut(18));
 
-            field.getDocument().addDocumentListener(new DocumentListener() {
-                public void insertUpdate(DocumentEvent e) { adjust(); scrollToCaret(); }
-                public void removeUpdate(DocumentEvent e) { adjust(); scrollToCaret(); }
-                public void changedUpdate(DocumentEvent e) { adjust(); scrollToCaret(); }
-
-                private void adjust() {
-                    int rows = field.getLineCount();
-                    if (rows > field.getRows()) {
-                        field.setRows(Math.min(rows, 10));
-                        rd.refresh();
-                    }
-                }
-
-                private void scrollToCaret() {
-                    if (field.getCaretPosition() == field.getDocument().getLength()) {
-                        SwingUtilities.invokeLater(() -> field.setCaretPosition(field.getDocument().getLength()));
-                    }
-                }
-            });
+            DialogFieldKit.attachAutoGrow(field, rd, 10, true); // true: auto-scroll to caret while editing
 
             Runnable submit = () -> {
-                String newText = field.getText();
+                String newText = field.getText(); // preserve whitespace/newlines, don't trim here
                 if (!newText.trim().isEmpty()) {
                     rawText = newText;
                     Markdown.MarkdownRenderer.render(textArea.getStyledDocument(), rawText);
@@ -2302,40 +2265,11 @@ public class ArkIV implements ActionListener{
                 }
             };
 
-            InputMap im = field.getInputMap(JComponent.WHEN_FOCUSED);
-            ActionMap am = field.getActionMap();
-
-            im.put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, InputEvent.SHIFT_DOWN_MASK), "insert-newline");
-            am.put("insert-newline", new AbstractAction() {
-                @Override public void actionPerformed(ActionEvent e) {
-                    int caretPos = field.getCaretPosition();
-                    String text = field.getText();
-                    field.setText(text.substring(0, caretPos) + "\n" + text.substring(caretPos));
-                    field.setCaretPosition(caretPos + 1);
-                }
-            });
-
-            im.put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "submit-edit");
-            am.put("submit-edit", new AbstractAction() {
-                @Override public void actionPerformed(ActionEvent e) { submit.run(); }
-            });
-
-            JButton saveButton = UniversalThemes.createRoundedDialogButton("Save", UniversalThemes.ACCENT_COLOR,
-                    UniversalThemes.TXT_SELECTED, UniversalThemes.ACCENT_COLOR_DARK);
-            JButton cancelButton = UniversalThemes.createRoundedDialogButton("Cancel", UniversalThemes.BG_COMPONENT,
-                    UniversalThemes.TXT_PRIMARY, UniversalThemes.BORDER_COLOR1);
-            saveButton.addActionListener(e -> submit.run());
-            cancelButton.addActionListener(e -> {
+            DialogFieldKit.bindEnterToSubmit(field, submit);
+            DialogFieldKit.addPrimaryCancelRow(rd, "Save", submit, () -> {
                 deselectThisTask();
                 rd.close();
             });
-
-            JPanel buttonRow = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 0));
-            buttonRow.setOpaque(false);
-            buttonRow.setAlignmentX(Component.LEFT_ALIGNMENT);
-            buttonRow.add(saveButton);
-            UniversalThemes.wireDialogButtonNavigation(saveButton, cancelButton);
-            rd.body.add(buttonRow);
 
             rd.setOnCloseRequest(() -> { deselectThisTask(); rd.close(); });
 
@@ -2353,45 +2287,12 @@ public class ArkIV implements ActionListener{
             }
             UniversalThemes.RoundedDialog rd = UniversalThemes.createRoundedDialogShell(frame, "Create Sub-Entry");
 
-            JTextArea field = new JTextArea(inputFieldRows, inputFieldColumns);
-            field.setBackground(UniversalThemes.BG_COMPONENT);
-            field.setForeground(UniversalThemes.TXT_PRIMARY);
-            field.setCaretColor(UniversalThemes.ACCENT_COLOR);
-            field.setFont(UniversalThemes.getCompositeFont(17));
-            field.setLineWrap(true);
-            field.setWrapStyleWord(true);
-            field.setMargin(new Insets(10, 10, 10, 10));
-            field.setBorder(null);
-            Hotstring.attach(field);
-            SelectionWrapper.attach(field);
-            CaretNavigation.attach(field);
-            UniversalThemes.applySelectionTheme(field);
-            UniversalThemes.applyCollapseSelectionNavigation(field);
-            UniversalThemes.freeCtrlTabFromTraversal(field);
-
-            JScrollPane scrollPane = new JScrollPane(field);
-            scrollPane.setBorder(BorderFactory.createLineBorder(UniversalThemes.BORDER_COLOR1, 1));
-            scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-            scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-            UniversalThemes.applyScrollbarTheme(scrollPane);
-            scrollPane.setAlignmentX(Component.LEFT_ALIGNMENT);
-            scrollPane.setMaximumSize(new Dimension(Integer.MAX_VALUE, 140));
-
+            JTextArea field = DialogFieldKit.createThemedTextEntryField(null, inputFieldRows, inputFieldColumns);
+            JScrollPane scrollPane = DialogFieldKit.wrapInThemedScrollPane(field, 140);
             rd.body.add(scrollPane);
             rd.body.add(Box.createVerticalStrut(18));
 
-            field.getDocument().addDocumentListener(new DocumentListener() {
-                public void insertUpdate(DocumentEvent e) { adjust(); }
-                public void removeUpdate(DocumentEvent e) { adjust(); }
-                public void changedUpdate(DocumentEvent e) { adjust(); }
-                private void adjust() {
-                    int rows = field.getLineCount();
-                    if (rows > field.getRows()) {
-                        field.setRows(Math.min(rows, 10));
-                        rd.refresh();
-                    }
-                }
-            });
+            DialogFieldKit.attachAutoGrow(field, rd, 10, false);
 
             Runnable submit = () -> {
                 String subtaskText = field.getText().trim();
@@ -2421,37 +2322,8 @@ public class ArkIV implements ActionListener{
                 }
             };
 
-            InputMap im = field.getInputMap(JComponent.WHEN_FOCUSED);
-            ActionMap am = field.getActionMap();
-
-            im.put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, InputEvent.SHIFT_DOWN_MASK), "insert-newline");
-            am.put("insert-newline", new AbstractAction() {
-                @Override public void actionPerformed(ActionEvent e) {
-                    int caretPos = field.getCaretPosition();
-                    String text = field.getText();
-                    field.setText(text.substring(0, caretPos) + "\n" + text.substring(caretPos));
-                    field.setCaretPosition(caretPos + 1);
-                }
-            });
-
-            im.put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "submit-subtask");
-            am.put("submit-subtask", new AbstractAction() {
-                @Override public void actionPerformed(ActionEvent e) { submit.run(); }
-            });
-
-            JButton addButton = UniversalThemes.createRoundedDialogButton("Create", UniversalThemes.ACCENT_COLOR,
-                    UniversalThemes.TXT_SELECTED, UniversalThemes.ACCENT_COLOR_DARK);
-            JButton cancelButton = UniversalThemes.createRoundedDialogButton("Cancel", UniversalThemes.BG_COMPONENT,
-                    UniversalThemes.TXT_PRIMARY, UniversalThemes.BORDER_COLOR1);
-            addButton.addActionListener(e -> submit.run());
-            cancelButton.addActionListener(e -> rd.close());
-
-            JPanel buttonRow = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 0));
-            buttonRow.setOpaque(false);
-            buttonRow.setAlignmentX(Component.LEFT_ALIGNMENT);
-            buttonRow.add(addButton);
-            UniversalThemes.wireDialogButtonNavigation(addButton, cancelButton);
-            rd.body.add(buttonRow);
+            DialogFieldKit.bindEnterToSubmit(field, submit);
+            DialogFieldKit.addPrimaryCancelRow(rd, "Create", submit, rd::close);
 
             rd.show();
             SwingUtilities.invokeLater(field::requestFocusInWindow);
