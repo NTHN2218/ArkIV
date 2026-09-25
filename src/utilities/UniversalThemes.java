@@ -140,27 +140,40 @@ public class UniversalThemes {
 
         // Recompute size/position -- call after adding content that changes
         // preferred size (e.g. an auto-growing text area).
-        public void refresh() {
-            Dimension frameSize = ownerFrame.getRootPane().getSize();
-            dimOverlay.setBounds(0, 0, frameSize.width, frameSize.height);
-
-            Dimension pref = shellPanel.getPreferredSize();
-            int w = Math.min(pref.width, frameSize.width - 40);
-            int h = Math.min(pref.height, frameSize.height - 40);
-            int x = (frameSize.width - w) / 2;
-            int y = (frameSize.height - h) / 2;
-            shellPanel.setBounds(x, y, w, h);
-        }
-
         public void show() {
             if (showing) return;
             showing = true;
-            layeredPane.add(dimOverlay, JLayeredPane.MODAL_LAYER);
-            layeredPane.add(shellPanel, JLayeredPane.MODAL_LAYER + 1);
+            layeredPane.add(dimOverlay, Integer.valueOf(JLayeredPane.MODAL_LAYER));
+            layeredPane.add(shellPanel, Integer.valueOf(JLayeredPane.MODAL_LAYER.intValue() + 1));
+            layeredPane.moveToFront(shellPanel); // guarantee z-order regardless of add-order
             ownerFrame.addComponentListener(resizeListener);
             refresh();
             layeredPane.revalidate();
             layeredPane.repaint();
+        }
+
+        public void refresh() {
+            Dimension frameSize = ownerFrame.getRootPane().getSize();
+            if (frameSize.width <= 0 || frameSize.height <= 0) {
+                frameSize = ownerFrame.getSize(); // fallback if rootPane hasn't reported yet
+            }
+            dimOverlay.setBounds(0, 0, frameSize.width, frameSize.height);
+
+            // Force header/body to actually lay out before trusting their preferred size --
+            // an unvalidated BorderLayout container can report an unreliable size otherwise.
+            shellPanel.doLayout();
+            Dimension pref = shellPanel.getPreferredSize();
+
+            // Floor values so the dialog can never come out effectively invisible.
+            int w = Math.max(320, Math.min(pref.width, frameSize.width - 40));
+            int h = Math.max(160, Math.min(pref.height, frameSize.height - 40));
+            int x = (frameSize.width - w) / 2;
+            int y = (frameSize.height - h) / 2;
+            shellPanel.setBounds(x, y, w, h);
+
+            shellPanel.revalidate();
+            shellPanel.repaint();
+            dimOverlay.repaint();
         }
 
         public void close() {
@@ -171,6 +184,8 @@ public class UniversalThemes {
             layeredPane.remove(dimOverlay);
             layeredPane.revalidate();
             layeredPane.repaint();
+            ownerFrame.repaint(); // force a full repaint in case the RepaintManager's
+            // dirty-region tracking still missed the vacated area
         }
 
         // Overrides what the header's X button does. Default is close(); pass
@@ -181,7 +196,9 @@ public class UniversalThemes {
     }
 
     public static RoundedDialog createRoundedDialogShell(Component parent, String titleText) {
-        Window ownerWindow = SwingUtilities.getWindowAncestor(parent);
+        Window ownerWindow = (parent instanceof Window)
+                ? (Window) parent
+                : SwingUtilities.getWindowAncestor(parent);
         if (!(ownerWindow instanceof JFrame ownerFrame)) {
             throw new IllegalStateException("RoundedDialog requires a JFrame ancestor");
         }
@@ -189,9 +206,18 @@ public class UniversalThemes {
 
         // Blocks clicks to the app behind it, same job OS modality used to do --
         // just a real opaque component now, not a system-level enforcement.
-        JPanel dimOverlay = new JPanel(null);
-        dimOverlay.setOpaque(true);
-        dimOverlay.setBackground(new Color(0, 0, 0, 120));
+        JPanel dimOverlay = new JPanel(null) {
+            @Override
+            protected void paintComponent(Graphics g) {
+                // Non-opaque, so we paint the tint manually -- opaque(true) + an
+                // alpha color is the actual bug: it lies to the RepaintManager about
+                // fully covering this region, which corrupts its dirty-region
+                // tracking once this panel is later removed.
+                g.setColor(new Color(0, 0, 0, 120));
+                g.fillRect(0, 0, getWidth(), getHeight());
+            }
+        };
+        dimOverlay.setOpaque(false);
 
         JPanel shellPanel = new JPanel(new BorderLayout()) {
             @Override protected void paintComponent(Graphics g) {
