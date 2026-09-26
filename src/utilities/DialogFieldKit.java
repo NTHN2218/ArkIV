@@ -33,12 +33,15 @@ public class DialogFieldKit {
         field.setWrapStyleWord(true);
         field.setMargin(new Insets(10, 10, 10, 10));
         field.setBorder(null);
+        //AutoHotKey
         Hotstring.attach(field);
         SelectionWrapper.attach(field);
         CaretNavigation.attach(field);
+        //UniversalThemes
         UniversalThemes.applySelectionTheme(field);
         UniversalThemes.applyCollapseSelectionNavigation(field);
         UniversalThemes.freeCtrlTabFromTraversal(field);
+
         return field;
     }
 
