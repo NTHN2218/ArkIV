@@ -55,9 +55,10 @@
     - [x] Replaced the persistent input area with a dialog for creating main Entries — opens via Ctrl+N when no Entry is selected
     - [x] App opens into the last visited Register
     - [x] Add Taskbar icon for ArkIV
-    - [ ] Anchor input-Areas to the main JFrame
+    - [x] Anchor input-Areas to the main JFrame
     - [x] Redesign JFrame title bar appearance
-    - [ ] hide caret when not in focus 
+    - [x] hide caret when not in focus 
+    - [x] Extend right-click collapse/expand to the whole main entry
 
 
 - [ ] `v10.2`

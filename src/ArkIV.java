@@ -2120,27 +2120,33 @@ public class ArkIV implements ActionListener{
                 createSubEntryButton.addActionListener(e -> createSubEntry());
                 buttonPanel.add(createSubEntryButton);
 
-                addMouseListener(new MouseAdapter() {
+                buttonPanel.add(createSubEntryButton);
+
+                MouseAdapter collapseToggleListener = new MouseAdapter() {
+                    @Override
                     public void mousePressed(MouseEvent e) {
-                        if (SwingUtilities.isRightMouseButton(e)) {
-                            TaskItem.this.isCollapsed = !TaskItem.this.isCollapsed;
-                            Border newOuter = BorderFactory.createMatteBorder(1, 0, TaskItem.this.isCollapsed ? 10 : 0, 0, UniversalThemes.BORDER_COLOR1);
-                            Border currentBorder = getBorder();
-                            Border currentInner;
-                            if (currentBorder instanceof CompoundBorder) {
-                                currentInner = ((CompoundBorder) currentBorder).getInsideBorder();
-                            } else {
-                                currentInner = innerBorder;
-                            }
-                            setBorder(BorderFactory.createCompoundBorder(newOuter, currentInner));
-                            if (TaskItem.this.isCollapsed) hideSubEntries(TaskItem.this);
-                            else showSubEntries(TaskItem.this);
-                            saveTasks();
+                        if (!SwingUtilities.isRightMouseButton(e)) return;
+
+                        TaskItem.this.isCollapsed = !TaskItem.this.isCollapsed;
+                        Border newOuter = BorderFactory.createMatteBorder(1, 0, TaskItem.this.isCollapsed ? 10 : 0, 0, UniversalThemes.BORDER_COLOR1);
+                        Border currentBorder = getBorder();
+                        Border currentInner;
+                        if (currentBorder instanceof CompoundBorder) {
+                            currentInner = ((CompoundBorder) currentBorder).getInsideBorder();
                         } else {
-                            //Do nothing
+                            currentInner = innerBorder;
                         }
+                        setBorder(BorderFactory.createCompoundBorder(newOuter, currentInner));
+                        if (TaskItem.this.isCollapsed) hideSubEntries(TaskItem.this);
+                        else showSubEntries(TaskItem.this);
+                        saveTasks();
                     }
-                });
+                };
+                addMouseListener(collapseToggleListener);
+                leftPanel.addMouseListener(collapseToggleListener);
+                numberAndCheckPanel.addMouseListener(collapseToggleListener);
+                textArea.addMouseListener(collapseToggleListener);
+                buttonPanel.addMouseListener(collapseToggleListener);
             } else {
                 addMouseListener(new MouseAdapter() {
                     public void mousePressed(MouseEvent e) {
