@@ -5,6 +5,9 @@ import java.awt.Font;
 import java.awt.GraphicsEnvironment;
 import javax.swing.JOptionPane;
 
+import java.util.List;
+import java.util.ArrayList;
+
 public class PathResolver {
 
     private static String cachedAssetsPath = null;
@@ -149,6 +152,22 @@ public class PathResolver {
         }
     }
 
+    private static final int[] TASKBAR_ICON_SIZES = {16, 20, 24, 32, 40, 48, 64, 128, 256};
+
+    public static List<File> getTaskbarIconFiles() {
+        File iconDir = new File(getAssetsPath(), "icon");
+        List<File> files = new ArrayList<>();
+        for (int size : TASKBAR_ICON_SIZES) {
+            File f = new File(iconDir, "arkiv_taskbar_" + size + ".png");
+            if (f.isFile()) {
+                files.add(f);
+            } else {
+                System.err.println("Missing icon size: " + f.getAbsolutePath());
+            }
+        }
+        return files;
+    }
+
     public static String getFontDirPath() {
         File fontDir = new File(getAssetsPath(), "fonts");
 
@@ -160,6 +179,8 @@ public class PathResolver {
 
         return fontDir.getAbsolutePath();
     }
+
+
 
     private static Font loadFontFile(String filename) {
         File fontFile = new File(getFontDirPath(), filename);

@@ -15,6 +15,9 @@ import java.util.function.Consumer;
 
 import java.nio.charset.StandardCharsets;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+
 //Data Encryption
 import java.security.spec.KeySpec;
 import javax.crypto.*;
@@ -67,6 +70,8 @@ public class ArkIV implements ActionListener{
     ///== Fields
     ///==============================================================================================================
     private JFrame frame;
+    private JPanel titleBar;
+
     private JPanel taskPanel;
     private JTextField inputField;
     private int taskCounter = 1;
@@ -78,7 +83,6 @@ public class ArkIV implements ActionListener{
     private static final String SECRET_KEY = "dataEncryptKey15";
     private static final String SALT = "dataEncryptSalt7";
     private static final String IV = "dataEncryptIV328";
-    private JTextArea inputArea;
 
     private JPanel sidebarPanel;
 
@@ -109,10 +113,7 @@ public class ArkIV implements ActionListener{
     FileMenu Menu_file = new FileMenu(
             this::saveTasks,
             this::deselectAll,
-            () -> SwingUtilities.invokeLater(() -> {
-                inputArea.requestFocusInWindow();
-                UniversalThemes.flashBorder(inputArea, UniversalThemes.ACCENT_COLOR, UniversalThemes.BORDER_COLOR1, 2);
-            })
+            this::openNewEntryDialog
     );
 
     EditMenu Menu_edit = new EditMenu(
@@ -142,6 +143,18 @@ public class ArkIV implements ActionListener{
     private DefaultMutableTreeNode editingNode = null;
     private JTextField registerRenameField = null;
 
+    private static List<Image> loadIconImages(List<File> files) {
+        List<Image> icons = new ArrayList<>();
+        for (File f : files) {
+            try {
+                icons.add(ImageIO.read(f));
+            } catch (IOException e) {
+                System.err.println("Could not load icon " + f.getName() + ": " + e.getMessage());
+            }
+        }
+        return icons;
+    }
+
     ///==============================================================================================================
     ///== Constructor
     ///==============================================================================================================
@@ -150,15 +163,27 @@ public class ArkIV implements ActionListener{
         PathResolver.ensureAssetsStructure();
 
         registerManager = new RegisterManager();
-        FILE_NAME = registerManager.getRegisterFilePath(registerManager.getDefaultRegister());
+        FILE_NAME = registerManager.getRegisterFilePath(registerManager.getLastVisitedRegister());
 
         frame = new JFrame("ArkIV");
+
+        List<Image> icons = loadIconImages(PathResolver.getTaskbarIconFiles());
+        if (!icons.isEmpty()) {
+            frame.setIconImages(icons);
+        }
+
         frame.getContentPane().setBackground(UniversalThemes.BG_MAIN);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+        frame.setUndecorated(true);
+        frame.setResizable(false);
         frame.setLayout(new BorderLayout());
-        frame.setLocationRelativeTo(null);
-        frame.setResizable(true);
+
+        Rectangle screenBounds = GraphicsEnvironment.getLocalGraphicsEnvironment()
+                .getMaximumWindowBounds(); // taskbar-aware, consistent per-OS
+        frame.setBounds(screenBounds);
+
+        titleBar = createTitleBar();
+        frame.add(titleBar, BorderLayout.NORTH);
 
         // ── Task panel + scroll ──────────────────────────────────────────
         taskPanel = new ScrollableTaskPanel();
@@ -174,69 +199,7 @@ public class ArkIV implements ActionListener{
         UniversalThemes.applyScrollbarTheme(taskScrollPane);
 
         // ── Input area + scroll ──────────────────────────────────────────
-        inputArea = new JTextArea(3, 30);
-        inputArea.setFont(UniversalThemes.getCompositeFont(17));
-        inputArea.setBackground(UniversalThemes.BG_COMPONENT);
-        inputArea.setForeground(UniversalThemes.TXT_PRIMARY);
-        inputArea.setCaretColor(UniversalThemes.ACCENT_COLOR);
-        inputArea.setBorder(BorderFactory.createMatteBorder(1, 0, 1, 1, UniversalThemes.BORDER_COLOR1));
-        inputArea.setLineWrap(true);
-        inputArea.setWrapStyleWord(true);
-        inputArea.setMargin(new Insets(8, 8, 8, 8));
-        Hotstring.attach(inputArea);
-        SelectionWrapper.attach(inputArea);
-        CaretNavigation.attach(inputArea);
-        UniversalThemes.applySelectionTheme(inputArea);
-        UniversalThemes.applyCollapseSelectionNavigation(inputArea);
-        UniversalThemes.freeCtrlTabFromTraversal(inputArea);
 
-
-        JScrollPane inputScroll = new JScrollPane(inputArea);
-        inputScroll.getViewport().setBackground(UniversalThemes.BG_PANEL);
-        inputScroll.setBorder(BorderFactory.createMatteBorder(1, 0, 0, 0, UniversalThemes.BORDER_COLOR1));
-        UniversalThemes.applyScrollbarTheme(inputScroll);
-        inputScroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-        inputScroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-        inputScroll.setMinimumSize(new Dimension(0, 60));
-        inputScroll.setPreferredSize(new Dimension(0, 90));
-
-        // Auto-grow input area
-        inputArea.getDocument().addDocumentListener(new DocumentListener() {
-            public void insertUpdate(DocumentEvent e)  { adjustHeight(); }
-            public void removeUpdate(DocumentEvent e)  { adjustHeight(); }
-            public void changedUpdate(DocumentEvent e) { adjustHeight(); }
-
-            private void adjustHeight() {
-                int rows = inputArea.getLineCount();
-                if (rows > inputArea.getRows()) {
-                    inputArea.setRows(Math.min(rows, 10));
-                    inputScroll.revalidate();
-                }
-            }
-        });
-
-        // Key bindings: Shift+Enter = new line, Enter = submit
-        InputMap im = inputArea.getInputMap(JComponent.WHEN_FOCUSED);
-        ActionMap am = inputArea.getActionMap();
-
-        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, InputEvent.SHIFT_DOWN_MASK), "insert-newline");
-        am.put("insert-newline", new AbstractAction() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                int pos = inputArea.getCaretPosition();
-                String text = inputArea.getText();
-                inputArea.setText(text.substring(0, pos) + "\n" + text.substring(pos));
-                inputArea.setCaretPosition(pos + 1);
-            }
-        });
-
-        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "submit-note");
-        am.put("submit-note", new AbstractAction() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                createTask();
-            }
-        });
 
         // ── Sidebar ──────────────────────────────────────────────────────
         sidebarPanel = new JPanel() {
@@ -263,17 +226,9 @@ public class ArkIV implements ActionListener{
 
 
 
-        // ── Inner split: tasks (top) + input (bottom) ────────────────────
-        JSplitPane innerSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, taskScrollPane, inputScroll);
-        innerSplitPane.setResizeWeight(0.96);   // tasks absorb all extra space
-        innerSplitPane.setDividerSize(0);
-        innerSplitPane.setBorder(null);
-        innerSplitPane.setBackground(UniversalThemes.BG_MAIN);
-        innerSplitPane.setEnabled(false);      // lock divider, input height is fixed
-
-        // ── Outer split: sidebar (left) + inner split (right) ────────────
-        JSplitPane outerSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, sidebarPanel, innerSplitPane);
-        outerSplitPane.setResizeWeight(0.18);
+// ── Outer split: sidebar (left) + task list (right) ──────────────
+        JSplitPane outerSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, sidebarPanel, taskScrollPane);
+        outerSplitPane.setResizeWeight(0.25);
         outerSplitPane.setDividerSize(0);
         outerSplitPane.setBorder(null);
         outerSplitPane.setBackground(UniversalThemes.BG_MAIN);
@@ -329,10 +284,127 @@ public class ArkIV implements ActionListener{
             @Override public void actionPerformed(ActionEvent e) { cycleRegister(-1); }
         });
 
+// ── Collapse All / Expand All (global, works without any entry focused) ──
+        rootIm.put(KeyStroke.getKeyStroke(KeyEvent.VK_OPEN_BRACKET, InputEvent.CTRL_DOWN_MASK), "collapse_all");
+        rootAm.put("collapse_all", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                collapseAll();
+            }
+        });
+
+        rootIm.put(KeyStroke.getKeyStroke(KeyEvent.VK_CLOSE_BRACKET, InputEvent.CTRL_DOWN_MASK), "expand_all");
+        rootAm.put("expand_all", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                expandAll();
+            }
+        });
+
+        rootIm.put(KeyStroke.getKeyStroke(KeyEvent.VK_N, InputEvent.CTRL_DOWN_MASK), "create_entry");
+        rootAm.put("create_entry", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                openNewEntryDialog();
+            }
+        });
+
+        rootIm.put(KeyStroke.getKeyStroke(KeyEvent.VK_UP, InputEvent.CTRL_DOWN_MASK | InputEvent.SHIFT_DOWN_MASK), "scrollToTop");
+        rootAm.put("scrollToTop", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JScrollBar vBar = taskScrollPane.getVerticalScrollBar();
+                vBar.setValue(vBar.getMinimum());
+            }
+        });
+
+        rootIm.put(KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, InputEvent.CTRL_DOWN_MASK | InputEvent.SHIFT_DOWN_MASK), "scrollToBottom");
+        rootAm.put("scrollToBottom", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JScrollBar vBar = taskScrollPane.getVerticalScrollBar();
+                vBar.setValue(vBar.getMaximum());
+            }
+        });
+
         loadTasks();
-        currentRegisterId = registerManager.getDefaultRegisterId();
+        currentRegisterId = registerManager.getLastVisitedRegisterId();
         refreshRegisterList();
         frame.setVisible(true);
+    }
+
+    // ── New method: custom title bar ────────────────────────────────────────
+    private JPanel createTitleBar() {
+        JPanel bar = new JPanel(new BorderLayout());
+        bar.setBackground(UniversalThemes.BG_MAIN);
+        bar.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, UniversalThemes.BORDER_COLOR2));
+        bar.setPreferredSize(new Dimension(0, 25));
+
+        JLabel title = new JLabel("ArkIV");
+        title.setFont(UniversalThemes.FONT_B_14);
+        title.setForeground(UniversalThemes.MD_COLOR_HEADING);
+        title.setBorder(BorderFactory.createEmptyBorder(0, 12, 0, 0));
+        bar.add(title, BorderLayout.WEST);
+
+        JPanel controls = new JPanel(new FlowLayout(FlowLayout.RIGHT, 0, 0));
+        controls.setOpaque(false);
+
+        JButton minimizeButton = createTitleBarButton('-', false);
+        minimizeButton.addActionListener(e -> frame.setState(Frame.ICONIFIED));
+
+        JButton maximizeButton = createTitleBarButton('□', false);
+// No-op: frame is always fullscreen via screenBounds, nothing to toggle
+
+        JButton closeButton = createTitleBarButton('x', true);
+        closeButton.addActionListener(e ->
+                frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING))
+        );
+
+        controls.add(minimizeButton);
+        controls.add(maximizeButton);
+        controls.add(closeButton);
+
+        bar.add(controls, BorderLayout.EAST);
+
+        return bar;
+    }
+
+    private JButton createTitleBarButton(char glyph, boolean isClose) {
+        JButton button = new JButton() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                Graphics2D g2 = (Graphics2D) g.create();
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                g2.setColor(UniversalThemes.TXT_PRIMARY);
+                g2.setStroke(new BasicStroke(1.3f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
+
+                int cx = getWidth() / 2, cy = getHeight() / 2, arm = 4;
+                if (glyph == '-') {
+                    g2.drawLine(cx - arm, cy, cx + arm, cy);
+                } else if (glyph == '□') {
+                    g2.drawRect(cx - arm, cy - arm, arm * 2, arm * 2);
+                } else {
+                    g2.drawLine(cx - arm, cy - arm, cx + arm, cy + arm);
+                    g2.drawLine(cx - arm, cy + arm, cx + arm, cy - arm);
+                }
+                g2.dispose();
+            }
+        };
+        button.setPreferredSize(new Dimension(46, 25));
+        button.setBackground(UniversalThemes.BG_MAIN);
+        button.setBorderPainted(false);
+        button.setFocusable(false);
+        button.setUI(new UniversalThemes.NoPressedButtonUI());
+        button.addMouseListener(new MouseAdapter() {
+            public void mouseEntered(MouseEvent e) {
+                button.setBackground(isClose ? UniversalThemes.BG_DELETE_BTN : UniversalThemes.BORDER_COLOR1);
+            }
+            public void mouseExited(MouseEvent e) {
+                button.setBackground(UniversalThemes.BG_MAIN);
+            }
+        });
+        return button;
     }
 
     ///==============================================================================================================
@@ -1320,6 +1392,7 @@ public class ArkIV implements ActionListener{
 
         // Point at the new register's file and load it
         currentRegisterId = entry.id;
+        registerManager.setLastVisited(entry.id);
         FILE_NAME = registerManager.getRegisterFilePath(entry);
         loadTasks();
 
@@ -1351,10 +1424,9 @@ public class ArkIV implements ActionListener{
         int index = sorted.indexOf(entry);
         boolean isFirst = index == 0;
         boolean isLast = index == sorted.size() - 1;
-        boolean isDefault = entry.id == registerManager.getDefaultRegisterId();
         boolean canDelete = sorted.size() > 1;
 
-        RegisterContextMenu.show(invoker, e.getX(), e.getY(), isFirst, isLast, isDefault, canDelete,
+        RegisterContextMenu.show(invoker, e.getX(), e.getY(), isFirst, isLast, canDelete,
                 new RegisterContextMenu.Handler() {
                     @Override
                     public void onRename() {
@@ -1370,12 +1442,6 @@ public class ArkIV implements ActionListener{
                     @Override
                     public void onMoveDown() {
                         registerManager.reorder(entry.id, 1);
-                        refreshRegisterList();
-                    }
-
-                    @Override
-                    public void onSetDefault() {
-                        registerManager.setDefault(entry.id);
                         refreshRegisterList();
                     }
 
@@ -1417,7 +1483,7 @@ public class ArkIV implements ActionListener{
                     registerManager.deleteRegister(entry.id, false);
 
                     if (wasCurrent) {
-                        RegisterManager.RegisterEntry fallback = registerManager.getDefaultRegister();
+                        RegisterManager.RegisterEntry fallback = registerManager.getLastVisitedRegister();
                         if (fallback == null) {
                             fallback = registerManager.getRegisters().get(0);
                         }
@@ -1455,14 +1521,38 @@ public class ArkIV implements ActionListener{
     ///==============================================================================================================
     ///== Task Lifecycle
     ///==============================================================================================================
-    private void createTask() {
-        String text = inputArea.getText().trim();
-        if (!text.isEmpty()) {
-            boolean added = addTaskFromInput(text);
-            if (added) {
-                inputArea.setText("");
-            }
+
+    private void openNewEntryDialog() {
+        if (countMainEntries() >= 999) {
+            UniversalThemes.showPopup(frame,
+                    "This register already has 999 Entries, which is the maximum allowed.",
+                    "Entry Limit Reached");
+            return;
         }
+
+        UniversalThemes.RoundedDialog rd = UniversalThemes.createRoundedDialogShell(frame, "New Entry");
+
+        JTextArea field = DialogFieldKit.createThemedTextEntryField(null, inputFieldRows, inputFieldColumns);
+        JScrollPane scrollPane = DialogFieldKit.wrapInThemedScrollPane(field, 220);
+        rd.body.add(scrollPane);
+        rd.body.add(Box.createVerticalStrut(18));
+
+        DialogFieldKit.attachAutoGrow(field, rd, 10, false);
+
+        Runnable submit = () -> {
+            String text = field.getText().trim();
+            if (!text.isEmpty()) {
+                rd.close();
+                deselectAll(); // New Entry always creates a top-level Entry
+                addTaskFromInput(text);
+            }
+        };
+
+        DialogFieldKit.bindEnterToSubmit(field, submit);
+        DialogFieldKit.addPrimaryCancelRow(rd, "Create", submit, rd::close);
+
+        rd.show();
+        SwingUtilities.invokeLater(field::requestFocusInWindow);
     }
 
     private void deselectAll() {
@@ -1497,6 +1587,29 @@ public class ArkIV implements ActionListener{
             if (t.isSubtask() && t.getParentId() == parentId) count++;
         }
         return count;
+    }
+
+    private int[] countVisibility() {
+        int collapsed = 0;
+        int expanded = 0;
+        for (TaskItem t : allTasks) {
+            if (!t.isSubtask()) {
+                if (t.isCollapsed()) collapsed++;
+                else expanded++;
+            }
+        }
+        return new int[]{collapsed, expanded};
+    }
+
+    private void toggleVisibility(){
+        int[] visibilityState = countVisibility();
+        int collapsed = visibilityState[0]; //Total number of collapsed main-Entries
+        int expanded = visibilityState[1];  //Total number of expanded main-Entries
+
+        if(collapsed > expanded) //If more collapsed then expand All
+            expandAll();
+        if(expanded > collapsed) //If more expanded then collapse All
+            collapseAll();
     }
 
     private boolean addTaskFromInput(String text) {
@@ -1579,7 +1692,7 @@ public class ArkIV implements ActionListener{
                 renumberAllTasks();
 
             } catch (Exception e) {
-                JOptionPane.showMessageDialog(frame, "Error loading tasks");
+                UniversalThemes.showPopup(frame, "Error loading tasks","Error");
                 e.printStackTrace();
             }
         }
@@ -1938,7 +2051,7 @@ public class ArkIV implements ActionListener{
             textArea.setText(text);
             textArea.setFont(UniversalThemes.getCompositeFont(17));
             textArea.setForeground(UniversalThemes.TXT_PRIMARY);
-            textArea.setCaretColor(UniversalThemes.ACCENT_COLOR);
+            textArea.setCaretColor(cardBg);
             textArea.setOpaque(false);
             textArea.setEditable(false);
             textArea.setBorder(null);

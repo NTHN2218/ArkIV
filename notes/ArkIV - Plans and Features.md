@@ -1,6 +1,5 @@
 
 # v8
-
 ## Registers
 
 - [x] Registers System
@@ -45,28 +44,42 @@
 	- [x] Caret navigation
 	- [x] Jump to start/end of line
 
-- [ ] `v10.1.1` - [[Undo Action]]
-- [ ] `v10.1.2` - Undo Text
+- [ ] `v10.1
+	- [ ] `v10.1.1` [[Undo Action]]
+	- [ ] `v10.1.2` - Undo Text
+    - [x] Key-binds for expand all(ctrl+]) /collapse all(ctrl+[)
+    - [x] Jump scrollbar to top/bottom of the current register
+    - [x] custom MD feature- VIBGYOR color tags
+    - [ ] custom MD feature - [[Right Align]]
+    - [x] Key-binds to activate selectionWrapper when text selected
+    - [x] Replaced the persistent input area with a dialog for creating main Entries — opens via Ctrl+N when no Entry is selected
+    - [x] App opens into the last visited Register
+    - [x] Add Taskbar icon for ArkIV
+    - [ ] Anchor input-Areas to the main JFrame
+    - [x] Redesign JFrame title bar appearance
+    - [ ] hide caret when not in focus 
 
-- [ ] `v10.2` - [[Copy and Paste]]
 
-- [ ] `v10.3` - GitHub integration  
+- [ ] `v10.2`
+	- [ ] [[Copy and Paste]]
+	- [ ] Read Only Mode
+		- [ ] Finish Incomplete [[Unrecognized Registers]] Handling
+
+- [ ] `v10.3` - GitHub integration  (very basic)
 
 ## Mark-Down
 - [ ] Ordered/un-Ordered lists
 	- [ ] Hanging indent 
     - [ ] nested lists
 - [ ] Custom MD features
-	- [ ] right align blocks of text
+	
 
 
 ## Fixes
 - [ ] Fix emoji rendering
 - [ ] Create sub-Entry/Edit input box - Smart Increase height and width based on text size
 
-## UI
-- [ ] Redesign JFrame appearance
-- [ ] Alt + arrow move cursor to start/end of line
+- [ ] Auto close bracket 
 - [ ] Help
     - [ ] Basic User Guide
 	- [ ] Key-Binds

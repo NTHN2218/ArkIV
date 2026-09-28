@@ -17,7 +17,6 @@ public class RegisterContextMenu {
         void onRename();
         void onMoveUp();
         void onMoveDown();
-        void onSetDefault();
         void onCopyPath();
         void onOpenInExplorer();
         void onDelete();
@@ -29,9 +28,7 @@ public class RegisterContextMenu {
         menu.show(invoker, x, y);
     }
 
-    public static void show(Component invoker, int x, int y,
-                            boolean isFirst, boolean isLast, boolean isDefault, boolean canDelete,
-                            Handler handler) {
+    public static void show(Component invoker, int x, int y, boolean isFirst, boolean isLast, boolean canDelete, Handler handler) {
 
         JPopupMenu menu = createRoundedPopup();
 
@@ -46,10 +43,6 @@ public class RegisterContextMenu {
 
         menu.add(buildSeparator());
 
-
-        menu.add(buildItem(isDefault ? "Default" : "Make Default", !isDefault, e -> handler.onSetDefault(), UniversalThemes.TXT_PRIMARY));
-
-        menu.add(buildSeparator());
         menu.add(buildItem("Rename", true, e -> handler.onRename(), UniversalThemes.TXT_PRIMARY));
         menu.add(buildItem("Remove", canDelete, e -> handler.onDelete(), UniversalThemes.BG_DELETE_BTN));
 

@@ -8,8 +8,6 @@
      - When unrecognized, will be placed under respective category.
      - User can open the register and view the contents even when recognized.
      - Contents of unrecognized register cannot be edited, such as rename Entry/Sub, delete Entry/Sub, add Entry/Sub, move Entry/Sub
-     
-     - A glass pane can be used to make all the components non-interactable.
      - When user tries to to click on components a pop-up requests user to recognize that register.
      - The search function will still work as normal inside an unrecognized register.
  3. When Recognized (Updated Version)

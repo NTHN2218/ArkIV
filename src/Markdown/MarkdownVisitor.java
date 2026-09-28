@@ -1,5 +1,6 @@
 package Markdown;
 
+import Markdown.Extensions.ColorTag.ColorSpan;
 import org.commonmark.node.*;
 import org.commonmark.ext.task.list.items.TaskListItemMarker;
 import org.commonmark.node.SourceSpan;
@@ -203,11 +204,18 @@ public class MarkdownVisitor extends AbstractVisitor {
             }
             insertText("]", MarkdownStyles.getCheckboxBracketAttributes());
             insertText(" ");
-        } else {
-            visitChildren(customNode);
+        } else if (customNode instanceof ColorSpan colorSpan) {
+            insertText(colorSpan.getOpeningDelimiter(), MarkdownStyles.getMutedAttributes());
+            SimpleAttributeSet colorAttrs = MarkdownStyles.copyOf(currentAttributes());
+            MarkdownStyles.applyColorTag(colorAttrs, colorSpan.getColorNumber());
+            attributeStack.push(colorAttrs);
+            visitChildren(colorSpan);
+            attributeStack.pop();
+
+            insertText(colorSpan.getClosingDelimiter(), MarkdownStyles.getMutedAttributes());
+        }
+        else{
+                visitChildren(customNode);
+            }
         }
     }
-
-
-
-}

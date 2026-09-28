@@ -15,7 +15,7 @@ public class RegisterManager {
     private final String assetsPath;
     private final File headerFile;
 
-    private int defaultRegisterId = -1;
+    private int lastVisitedRegisterId = -1;
     private List<RegisterEntry> registers = new ArrayList<>();
 
     public static class RegisterEntry {
@@ -48,8 +48,6 @@ public class RegisterManager {
                 while ((line = reader.readLine()) != null) sb.append(line).append("\n");
 
                 JsonObject root = JsonParser.parseString(sb.toString()).getAsJsonObject();
-                defaultRegisterId = root.get("defaultRegisterId").getAsInt();
-
                 registers.clear();
                 for (JsonElement el : root.getAsJsonArray("registers")) {
                     JsonObject obj = el.getAsJsonObject();
@@ -60,16 +58,29 @@ public class RegisterManager {
                             obj.get("order").getAsInt()
                     ));
                 }
+
+                // lastVisitedRegisterId may be absent (old header) or stale
+                // (register deleted outside a running instance) -- fall back
+                // to the first register in order either way.
+                Integer storedId = root.has("lastVisitedRegisterId")
+                        ? root.get("lastVisitedRegisterId").getAsInt() : null;
+                if (storedId != null && getRegisterById(storedId) != null) {
+                    lastVisitedRegisterId = storedId;
+                } else {
+                    List<RegisterEntry> sorted = getRegisters();
+                    lastVisitedRegisterId = sorted.isEmpty() ? -1 : sorted.get(0).id;
+                }
+
             } catch (Exception e) {
                 e.printStackTrace();
-                createFreshHeaderWithDefaultRegister();
+                createFreshHeaderWithFirstRegister();
             }
         } else {
-            createFreshHeaderWithDefaultRegister();
+            createFreshHeaderWithFirstRegister();
         }
     }
 
-    private void createFreshHeaderWithDefaultRegister() {
+    private void createFreshHeaderWithFirstRegister() {
         registers.clear();
 
         // Migration: adopt existing v7/v8 data.json as Register 1 instead of
@@ -79,7 +90,7 @@ public class RegisterManager {
 
         RegisterEntry defaultEntry = new RegisterEntry(1, "Register 1", filename, 0);
         registers.add(defaultEntry);
-        defaultRegisterId = 1;
+        lastVisitedRegisterId = 1;
 
         if (!legacyDataFile.exists()) {
             writeEmptyRegisterFile(filename);
@@ -101,7 +112,7 @@ public class RegisterManager {
 
     public void saveHeader() {
         JsonObject root = new JsonObject();
-        root.addProperty("defaultRegisterId", defaultRegisterId);
+        root.addProperty("lastVisitedRegisterId", lastVisitedRegisterId);
 
         JsonArray arr = new JsonArray();
         for (RegisterEntry r : getRegisters()) { // sorted by order
@@ -134,12 +145,19 @@ public class RegisterManager {
         return null;
     }
 
-    public RegisterEntry getDefaultRegister() {
-        return getRegisterById(defaultRegisterId);
+    public RegisterEntry getLastVisitedRegister() {
+        return getRegisterById(lastVisitedRegisterId);
     }
 
-    public int getDefaultRegisterId() {
-        return defaultRegisterId;
+    public int getLastVisitedRegisterId() {
+        return lastVisitedRegisterId;
+    }
+
+    public void setLastVisited(int id) {
+        if (getRegisterById(id) != null) {
+            lastVisitedRegisterId = id;
+            saveHeader();
+        }
     }
 
     public String getRegisterFilePath(RegisterEntry entry) {
@@ -165,13 +183,6 @@ public class RegisterManager {
         RegisterEntry entry = getRegisterById(id);
         if (entry != null && newName != null && !newName.trim().isEmpty()) {
             entry.name = newName.trim();
-            saveHeader();
-        }
-    }
-
-    public void setDefault(int id) {
-        if (getRegisterById(id) != null) {
-            defaultRegisterId = id;
             saveHeader();
         }
     }
@@ -207,8 +218,8 @@ public class RegisterManager {
         List<RegisterEntry> sorted = getRegisters();
         for (int i = 0; i < sorted.size(); i++) sorted.get(i).order = i;
 
-        if (defaultRegisterId == id) {
-            defaultRegisterId = sorted.isEmpty() ? -1 : sorted.get(0).id;
+        if (lastVisitedRegisterId == id) {
+            lastVisitedRegisterId = sorted.isEmpty() ? -1 : sorted.get(0).id;
         }
 
         saveHeader();

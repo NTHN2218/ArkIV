@@ -48,6 +48,17 @@ public class MarkdownStyles {
             13  // level 6
     };
 
+    private static final Color[] COLOR_TAG_PALETTE = {
+            null,             // index 0 unused (tags are 1-7)
+            UniversalThemes.MD_COLOR_VIOLET,  // ^1
+            UniversalThemes.MD_COLOR_INDIGO,  // ^2
+            UniversalThemes.MD_COLOR_BLUE,    // ^3
+            UniversalThemes.MD_COLOR_GREEN,   // ^4
+            UniversalThemes.MD_COLOR_YELLOW,  // ^5
+            UniversalThemes.MD_COLOR_ORANGE,  // ^6
+            UniversalThemes.MD_COLOR_RED      // ^7
+    };
+
     // add near the top, alongside FONT_FAMILY/BASE_FONT_SIZE
     private static final Color HEADING_ACCENT = deriveHeadingColor(UniversalThemes.ACCENT_COLOR);
 
@@ -103,6 +114,11 @@ public class MarkdownStyles {
 
     public static void applyItalic(MutableAttributeSet attrs) {
         StyleConstants.setItalic(attrs, true);
+    }
+
+    public static void applyColorTag(MutableAttributeSet attrs, int colorNumber) {
+                if (colorNumber < 1 || colorNumber > 7) return; // defensive -- parser never emits out-of-range
+                StyleConstants.setForeground(attrs, COLOR_TAG_PALETTE[colorNumber]);
     }
 
     // ── Utility: safe mutable copy of any attribute set (used for the Visitor's push/pop stack) ──
