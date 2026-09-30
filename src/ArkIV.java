@@ -84,7 +84,13 @@ public class ArkIV implements ActionListener{
     private static final String SALT = "dataEncryptSalt7";
     private static final String IV = "dataEncryptIV328";
 
+    private Rectangle screenBounds = GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds(); // taskbar-aware, consistent per-OS
+    private int screenHeight = screenBounds.height;
+    private int screenWidth = screenBounds.width;
+
+
     private JPanel sidebarPanel;
+    private final int SIDEBAR_WIDTH =  (int)((22.5/100) * screenWidth); // px, tune to taste
 
     // ── Text pane width budget (Phase 1) ────────────────────────────
     private static final int CHECKBOX_COLUMN_WIDTH = 30;       // checkBox.setPreferredSize width
@@ -161,6 +167,7 @@ public class ArkIV implements ActionListener{
     public ArkIV() {
 
         PathResolver.ensureAssetsStructure();
+        System.out.println(SIDEBAR_WIDTH);
 
         registerManager = new RegisterManager();
         FILE_NAME = registerManager.getRegisterFilePath(registerManager.getLastVisitedRegister());
@@ -178,8 +185,6 @@ public class ArkIV implements ActionListener{
         frame.setResizable(false);
         frame.setLayout(new BorderLayout());
 
-        Rectangle screenBounds = GraphicsEnvironment.getLocalGraphicsEnvironment()
-                .getMaximumWindowBounds(); // taskbar-aware, consistent per-OS
         frame.setBounds(screenBounds);
 
         titleBar = createTitleBar();
@@ -227,14 +232,17 @@ public class ArkIV implements ActionListener{
 
 
 // ── Outer split: sidebar (left) + task list (right) ──────────────
-        JSplitPane outerSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, sidebarPanel, taskScrollPane);
-        outerSplitPane.setResizeWeight(0.25);
-        outerSplitPane.setDividerSize(0);
-        outerSplitPane.setBorder(null);
-        outerSplitPane.setBackground(UniversalThemes.BG_MAIN);
-        outerSplitPane.setEnabled(false);
+        Dimension sidebarSize = new Dimension(SIDEBAR_WIDTH, 0);
+        sidebarPanel.setPreferredSize(sidebarSize);
+        sidebarPanel.setMinimumSize(sidebarSize);
+        sidebarPanel.setMaximumSize(new Dimension(SIDEBAR_WIDTH, Integer.MAX_VALUE));
 
-        frame.add(outerSplitPane, BorderLayout.CENTER);
+        JPanel contentPanel = new JPanel(new BorderLayout());
+        contentPanel.setBackground(UniversalThemes.BG_MAIN);
+        contentPanel.add(sidebarPanel, BorderLayout.WEST);
+        contentPanel.add(taskScrollPane, BorderLayout.CENTER);
+
+        frame.add(contentPanel, BorderLayout.CENTER);
 
 // ── Debounced width capture: waits until layout events stop firing
         // before trusting the width, since startup maximize can fire multiple
@@ -301,11 +309,21 @@ public class ArkIV implements ActionListener{
             }
         });
 
+        //Create New Entry in current Register
         rootIm.put(KeyStroke.getKeyStroke(KeyEvent.VK_N, InputEvent.CTRL_DOWN_MASK), "create_entry");
         rootAm.put("create_entry", new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 openNewEntryDialog();
+            }
+        });
+
+        //
+        rootIm.put(KeyStroke.getKeyStroke(KeyEvent.VK_N, InputEvent.CTRL_DOWN_MASK | InputEvent.SHIFT_DOWN_MASK), "create_register");
+        rootAm.put("create_register", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                handleCreateRegister();
             }
         });
 
@@ -2317,6 +2335,8 @@ public class ArkIV implements ActionListener{
                 flickerTimer = null;
             }
         }
+
+
 
         private void resetInnerBorder() {
             Border currentBorder = getBorder();
