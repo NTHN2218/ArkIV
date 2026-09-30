@@ -2398,7 +2398,9 @@ public class ArkIV implements ActionListener{
 
 
         private void createSubEntry() {
-            if (countSubEntries(getId()) >= 999) {
+            final int effectiveParentId = isSubtask ? parentId : id;
+
+            if (countSubEntries(effectiveParentId) >= 999) {
                 UniversalThemes.showPopup(frame,
                         "This Entry already has 999 sub-Entries, which is the maximum allowed.",
                         "Sub-Entry Limit Reached");
@@ -2417,21 +2419,31 @@ public class ArkIV implements ActionListener{
                 String subtaskText = field.getText().trim();
                 if (!subtaskText.isEmpty()) {
                     rd.close();
-                    TaskItem subtask = new TaskItem(taskCounter++, subtaskText, false, true, false, getId());
+
+                    TaskItem subtask = new TaskItem(taskCounter++, subtaskText, false, true, false, effectiveParentId);
                     idToTaskMap.put(subtask.getId(), subtask);
-                    allTasks.add(subtask);
 
                     int insertIndex = -1;
-                    for (int i = 0; i < taskPanel.getComponentCount(); i++) {
-                        Component comp = taskPanel.getComponent(i);
-                        if (comp == TaskItem.this) {
-                            insertIndex = i;
-                        } else if (insertIndex != -1 && comp instanceof TaskItem) {
-                            TaskItem t = (TaskItem) comp;
-                            if (!t.isSubtask() || t.getParentId() != TaskItem.this.id) break;
-                            insertIndex = i;
+
+                    if (isSubtask) {
+                        // Selected item is a sub-entry: new one goes directly below it
+                        allTasks.add(allTasks.indexOf(TaskItem.this) + 1, subtask);
+                        insertIndex = indexOfInPanel(TaskItem.this);
+                    } else {
+                        // Selected item is a main entry: new one goes at the end of its sub-entries
+                        allTasks.add(subtask);
+                        for (int i = 0; i < taskPanel.getComponentCount(); i++) {
+                            Component comp = taskPanel.getComponent(i);
+                            if (comp == TaskItem.this) {
+                                insertIndex = i;
+                            } else if (insertIndex != -1 && comp instanceof TaskItem) {
+                                TaskItem t = (TaskItem) comp;
+                                if (!t.isSubtask() || t.getParentId() != TaskItem.this.id) break;
+                                insertIndex = i;
+                            }
                         }
                     }
+
                     taskPanel.add(subtask, insertIndex + 1);
                     taskPanel.revalidate();
                     taskPanel.repaint();

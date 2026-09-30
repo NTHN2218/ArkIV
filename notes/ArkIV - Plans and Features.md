@@ -59,6 +59,7 @@
     - [x] Redesign JFrame title bar appearance
     - [x] hide caret when not in focus 
     - [x] Extend right-click collapse/expand to the whole main entry
+    - [x] create sibling sub-entry via Ctrl+N on a selected sub-entry
 
 
 - [ ] `v10.2`
