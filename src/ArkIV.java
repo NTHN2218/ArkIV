@@ -597,7 +597,6 @@ public class ArkIV implements ActionListener{
         searchBar.setBackground(UniversalThemes.BG_SIDEBAR);
         searchBar.setForeground(UniversalThemes.TXT_PRIMARY);
         searchBar.setCaretColor(UniversalThemes.ACCENT_COLOR);
-        searchBar.setSelectedTextColor(Color.GREEN);
         searchBar.setFont(UniversalThemes.FONT_R_16);
         searchBar.setBorder(BorderFactory.createMatteBorder(1,1,1,1, UniversalThemes.BORDER_COLOR2));
 
@@ -680,8 +679,8 @@ public class ArkIV implements ActionListener{
 
         JPanel searchButtonsPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 4, 0));
         searchButtonsPanel.setBackground(UniversalThemes.BG_SIDEBAR);
-        searchButtonsPanel.add(searchPrevButton);
-        searchButtonsPanel.add(searchNextButton);
+        //searchButtonsPanel.add(searchPrevButton);
+        //searchButtonsPanel.add(searchNextButton);
         searchRow.add(searchButtonsPanel, BorderLayout.EAST);
 
         JPanel searchWrapper = new JPanel(new BorderLayout());

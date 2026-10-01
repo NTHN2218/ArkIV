@@ -7,6 +7,7 @@ import org.commonmark.parser.Parser;
 
 import Markdown.Extensions.ColorTag.ColorTagExtension;
 import Markdown.Extensions.ColorTag.ColorSpan;
+import Markdown.Extensions.RightAlign.RightAlignExtension;
 
 import java.util.List;
 
@@ -26,7 +27,7 @@ public class MarkdownRenderer {
     // One shared Parser instance -- commonmark's Parser is stateless per-parse-call
     // and safe to reuse across many render() invocations.
     private static final Parser PARSER = Parser.builder()
-            .extensions(List.of(TaskListItemsExtension.create(), ColorTagExtension.create()))
+            .extensions(List.of(TaskListItemsExtension.create(), ColorTagExtension.create(), RightAlignExtension.create()))
             .includeSourceSpans(IncludeSourceSpans.BLOCKS)
             .build();
 
