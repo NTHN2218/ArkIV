@@ -97,11 +97,12 @@ public class ArkIV implements ActionListener{
     private static final int MAIN_ENTRY_BORDER_INSET = 4;      // outer matte(0,0) + inner line(2+2)
     private static final int SUB_ENTRY_BORDER_INSET = 64;      // outer matte(30+30) + inner line(2+2)
     private static final int MAIN_ENTRY_BUTTON_COLUMN_WIDTH = 50; // 40px button + 5+5 FlowLayout hgap
-    private static final int SUB_ENTRY_BUTTON_COLUMN_WIDTH = 0;   // empty buttonPanel for subtasks
+    private static final int SUB_ENTRY_BUTTON_COLUMN_WIDTH = 10;   // empty buttonPanel for subtasks
 
     private int mainEntryTextWidth = -1;
     private int subEntryTextWidth = -1;
     private Timer widthSettleTimer;
+    private boolean startupComplete = false;
 
     private JMenuBar menuBar;
     private JMenu fileMenu, editMenu, settingsMenu, helpMenu;
@@ -261,8 +262,8 @@ public class ArkIV implements ActionListener{
 
                 widthSettleTimer = new Timer(200, ev -> {
                     //System.out.println("[WidthCalc] layout settled, finalizing capture at width=" + taskPanel.getWidth());
-                    computeTextPaneWidths();
                     taskPanel.removeComponentListener(this);
+                    completeStartup();
                 });
                 widthSettleTimer.setRepeats(false);
                 widthSettleTimer.start();
@@ -345,10 +346,13 @@ public class ArkIV implements ActionListener{
             }
         });
 
-        loadTasks();
         currentRegisterId = registerManager.getLastVisitedRegisterId();
         refreshRegisterList();
         frame.setVisible(true);
+
+        Timer startupFallback = new Timer(1500, e -> completeStartup());
+        startupFallback.setRepeats(false);
+        startupFallback.start();
     }
 
     // ── New method: custom title bar ────────────────────────────────────────
@@ -453,6 +457,13 @@ public class ArkIV implements ActionListener{
         //System.out.println("[WidthCalc] reflowed " + reflowedCount + " existing TaskItem(s)");
         taskPanel.revalidate();
         taskPanel.repaint();
+    }
+
+    private void completeStartup() {
+        if (startupComplete) return;
+        startupComplete = true;
+        computeTextPaneWidths(); // sets widths first, so loadTasks renders each entry once
+        loadTasks();
     }
 
     private void createMenuBar() {
@@ -1716,6 +1727,7 @@ public class ArkIV implements ActionListener{
     }
 
     private void saveTasks() {
+        if (!startupComplete) return; // never overwrite the file with an empty not-yet-loaded list
         try {
             JsonArray array = new JsonArray();
             for (TaskItem t : allTasks) {
@@ -2076,7 +2088,7 @@ public class ArkIV implements ActionListener{
             UniversalThemes.applyCollapseSelectionNavigation(textArea);
             UniversalThemes.freeCtrlTabFromTraversal(textArea);
 
-            MarkdownRenderer.render(textArea.getStyledDocument(), rawText);
+            renderMarkdown();
             MarkdownDebug.summary("[TaskItem] Initial render complete for id=" + id);
 
             if (fixedTextWidth > 0) {
@@ -2270,10 +2282,21 @@ public class ArkIV implements ActionListener{
         public boolean isDone() { return checkBox.isSelected(); }
         public String getRawText() { return rawText; }
 
+        private void renderMarkdown() {
+            Insets in = textArea.getInsets();
+            int contentWidth = fixedTextWidth > 0 ? fixedTextWidth - in.left - in.right : -1;
+
+            // Build off-screen, then swap in: avoids incremental view patching on a live document
+            StyledDocument fresh = new DefaultStyledDocument();
+            MarkdownRenderer.render(fresh, rawText, contentWidth);
+            textArea.setDocument(fresh);
+        }
+
         public void applyFixedTextWidth(int width) {
             if (width <= 0) return;
             this.fixedTextWidth = width;
             textArea.setSize(width, Short.MAX_VALUE);
+            renderMarkdown(); // re-render so right-align tab stops use the real width
         }
 
         private void selectThisTask() {
@@ -2377,7 +2400,7 @@ public class ArkIV implements ActionListener{
                 String newText = field.getText(); // preserve whitespace/newlines, don't trim here
                 if (!newText.trim().isEmpty()) {
                     rawText = newText;
-                    Markdown.MarkdownRenderer.render(textArea.getStyledDocument(), rawText);
+                    renderMarkdown();
                     MarkdownDebug.summary("[TaskItem] Re-rendered after edit for id=" + id);
                     if (!checkBox.isSelected()) {
                         textArea.setForeground(UniversalThemes.TXT_PRIMARY);

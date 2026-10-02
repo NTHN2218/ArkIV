@@ -4,11 +4,11 @@ public class MarkdownDebug {
 
     // Master switch -- when false, NO markdown-related logs print at all,
     // regardless of VERBOSE. Flip on only when actively working on/debugging markdown.
-    public static boolean ACTIVE = false;
+    public static boolean ACTIVE = true;
 
     // When ACTIVE is true, this controls density: false = summary lines only,
     // true = full per-insert [MD] trace layered on top.
-    public static boolean VERBOSE = false;
+    public static boolean VERBOSE = true;
 
     private MarkdownDebug() {}
 

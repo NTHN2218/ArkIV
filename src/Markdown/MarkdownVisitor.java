@@ -1,6 +1,7 @@
 package Markdown;
 
 import Markdown.Extensions.ColorTag.ColorSpan;
+import Markdown.Extensions.RightAlign.RightAlign;
 import org.commonmark.node.*;
 import org.commonmark.ext.task.list.items.TaskListItemMarker;
 import org.commonmark.node.SourceSpan;
@@ -11,19 +12,34 @@ import java.util.List;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.SimpleAttributeSet;
+import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
+import javax.swing.text.TabSet;
+import javax.swing.text.TabStop;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
 
 public class MarkdownVisitor extends AbstractVisitor {
 
+    // Swing sizes the right-tab gap from integer-rounded widths but lays the row out with float
+    // widths, so a stop exactly at the view width overflows by a fraction of a pixel and the
+    // last word wraps. Pull the stop in a few px so the row always fits. Raise (more negative)
+    // if wrapping still happens, lower toward 0 if the gap to the edge looks too big.
+    private static final int RIGHT_EDGE_ADJUST_PX = -4;
+
     private final StyledDocument doc;
     private final Deque<SimpleAttributeSet> attributeStack = new ArrayDeque<>();
+    private final int rightEdgePx; // <= 0 means unknown -> right-align spans render inline
     private int insertOffset;
 
     public MarkdownVisitor(StyledDocument doc) {
+        this(doc, -1);
+    }
+
+    public MarkdownVisitor(StyledDocument doc, int contentWidthPx) {
         this.doc = doc;
+        this.rightEdgePx = contentWidthPx;
         this.insertOffset = 0;
         attributeStack.push(MarkdownStyles.getPlainAttributes());
     }
@@ -137,8 +153,8 @@ public class MarkdownVisitor extends AbstractVisitor {
     }
 
     // checks the actual raw source line gap between two specific items, rather than
-// commonmark's isTight() which reports looseness for the WHOLE list if a blank
-// line appears anywhere in it -- we want per-gap accuracy, not a list-wide flag.
+    // commonmark's isTight() which reports looseness for the WHOLE list if a blank
+    // line appears anywhere in it -- we want per-gap accuracy, not a list-wide flag.
     private boolean hasBlankLineBetween(Node a, Node b) {
         List<SourceSpan> aSpans = a.getSourceSpans();
         List<SourceSpan> bSpans = b.getSourceSpans();
@@ -213,9 +229,32 @@ public class MarkdownVisitor extends AbstractVisitor {
             attributeStack.pop();
 
             insertText(colorSpan.getClosingDelimiter(), MarkdownStyles.getMutedAttributes());
-        }
-        else{
-                visitChildren(customNode);
-            }
+        } else if (customNode instanceof RightAlign rightAlign) {
+            visitRightAlign(rightAlign);
+        } else {
+            visitChildren(customNode);
         }
     }
+
+    // ::text:: -- a "\t" before the span plus a single right-aligned TabStop on the paragraph
+    // pushes everything after the tab flush against the right edge. The parser guarantees the
+    // span is the last thing on its line, so "everything after the tab" is exactly the span.
+    private void visitRightAlign(RightAlign rightAlign) {
+        if (rightEdgePx > 0) {
+            int tabOffset = insertOffset;
+            insertText("\t", currentAttributes(), "tab");
+            applyRightTabStop(tabOffset);
+        }
+
+        insertText(rightAlign.getOpeningDelimiter(), MarkdownStyles.getMutedAttributes());
+        visitChildren(rightAlign);
+        insertText(rightAlign.getClosingDelimiter(), MarkdownStyles.getMutedAttributes());
+    }
+
+    private void applyRightTabStop(int offsetInParagraph) {
+        SimpleAttributeSet paragraphAttrs = new SimpleAttributeSet();
+        TabStop stop = new TabStop(rightEdgePx + RIGHT_EDGE_ADJUST_PX, TabStop.ALIGN_RIGHT, TabStop.LEAD_NONE);
+        StyleConstants.setTabSet(paragraphAttrs, new TabSet(new TabStop[]{stop}));
+        doc.setParagraphAttributes(offsetInParagraph, 1, paragraphAttrs, false);
+    }
+}

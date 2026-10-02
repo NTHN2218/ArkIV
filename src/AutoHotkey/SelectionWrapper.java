@@ -65,6 +65,13 @@ public class SelectionWrapper {
                 KeyStroke.getKeyStroke(KeyEvent.VK_B, InputEvent.CTRL_DOWN_MASK | InputEvent.ALT_DOWN_MASK),
                 "**"
         );
+        /*
+        Right-align
+        */
+        WRAP_REGISTRY.put(
+                KeyStroke.getKeyStroke(KeyEvent.VK_R, InputEvent.CTRL_DOWN_MASK | InputEvent.ALT_DOWN_MASK),
+                "::"
+        );
     }
 
     public static void attach(JTextArea area) {

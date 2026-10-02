@@ -6,12 +6,12 @@ import org.commonmark.parser.IncludeSourceSpans;
 import org.commonmark.parser.Parser;
 
 import Markdown.Extensions.ColorTag.ColorTagExtension;
-import Markdown.Extensions.ColorTag.ColorSpan;
 import Markdown.Extensions.RightAlign.RightAlignExtension;
 
 import java.util.List;
 
 import javax.swing.text.BadLocationException;
+import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyledDocument;
 
 /**
@@ -27,23 +27,38 @@ public class MarkdownRenderer {
     // One shared Parser instance -- commonmark's Parser is stateless per-parse-call
     // and safe to reuse across many render() invocations.
     private static final Parser PARSER = Parser.builder()
-            .extensions(List.of(TaskListItemsExtension.create(), ColorTagExtension.create(), RightAlignExtension.create()))
+            .extensions(List.of(
+                    TaskListItemsExtension.create(),
+                    ColorTagExtension.create(),
+                    RightAlignExtension.create()))
             .includeSourceSpans(IncludeSourceSpans.BLOCKS)
             .build();
 
+    /** No known width: right-align spans (::text::) render inline, with no tab/alignment. */
     public static void render(StyledDocument doc, String rawText) {
+        render(doc, rawText, -1);
+    }
+
+    /**
+     * @param contentWidthPx usable pixel width of the text view (pane width minus its insets),
+     *                       used as the right-align tab-stop position. <= 0 means "unknown".
+     */
+    public static void render(StyledDocument doc, String rawText, int contentWidthPx) {
         MarkdownDebug.log("[MarkdownRenderer] render() called. rawText length = "
-                + (rawText != null ? rawText.length() : 0));
+                + (rawText != null ? rawText.length() : 0) + ", contentWidthPx = " + contentWidthPx);
 
         if (rawText == null) rawText = "";
 
         clearDocument(doc);
+        // doc.remove() leaves one surviving empty paragraph that keeps its old attributes
+        // (including a stale right-align TabSet from a previous width) -- reset it.
+        doc.setParagraphAttributes(0, 1, SimpleAttributeSet.EMPTY, true);
 
         Node astRoot = PARSER.parse(rawText);
         MarkdownDebug.log("[MarkdownRenderer] Parsed AST root: " + astRoot.getClass().getSimpleName());
         long startNanos = System.nanoTime();
 
-        MarkdownVisitor visitor = new MarkdownVisitor(doc);
+        MarkdownVisitor visitor = new MarkdownVisitor(doc, contentWidthPx);
         astRoot.accept(visitor);
 
         appendTrailingBlankLines(doc, rawText);
@@ -76,8 +91,6 @@ public class MarkdownRenderer {
             }
         }
     }
-
-
 
     private static void clearDocument(StyledDocument doc) {
         int length = doc.getLength();
