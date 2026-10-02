@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "README.md",
+                "file": "notes/ArkIV - Plans and Features.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "README"
+              "title": "ArkIV - Plans and Features"
             }
           }
         ]
@@ -189,5 +189,8 @@
     }
   },
   "active": "a4072fefdde5d1ea",
-  "lastOpenFiles": []
+  "lastOpenFiles": [
+    "README.md",
+    "notes/ArkIV - Plans and Features.md"
+  ]
 }

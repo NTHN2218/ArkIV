@@ -37,32 +37,41 @@
 		- [x] Ordered list
 		- [x] Task list
 
-# v10
 
-- [x] `v10.0` 
+
+	# v10.0
 	- [x] Selection Wrapper
 	- [x] Caret navigation
 	- [x] Jump to start/end of line
 
-- [ ] `v10.1
-	- [ ] `v10.1.1` [[Undo Action]]
-	- [ ] `v10.1.2` - Undo Text
-    - [x] Key-binds for expand all(ctrl+]) /collapse all(ctrl+[)
-    - [x] Jump scrollbar to top/bottom of the current register
-    - [x] custom MD feature- VIBGYOR color tags
-    - [ ] custom MD feature - [[Right Align]]
-    - [x] Key-binds to activate selectionWrapper when text selected
-    - [x] Replaced the persistent input area with a dialog for creating main Entries — opens via Ctrl+N when no Entry is selected
-    - [x] App opens into the last visited Register
-    - [x] Add Taskbar icon for ArkIV
-    - [x] Anchor input-Areas to the main JFrame
-    - [x] Redesign JFrame title bar appearance
-    - [x] hide caret when not in focus 
-    - [x] Extend right-click collapse/expand to the whole main entry
-    - [x] create sibling sub-entry via Ctrl+N on a selected sub-entry
+	# V10.1
+	- `Mark-Down`
+		- [x] custom MD feature - [[Right Align]]
+		- [x] custom MD feature- VIBGYOR color tags
+    - `Key-Binds`
+	    - [x] Key-binds for expand all/collapse all
+	    - [x] Key-binds to apply **bold, italic, color tags, right align** while editing
+    - `App Appearance`
+	    - [x] Add Taskbar icon for ArkIV
+	    - [x] Redesign JFrame title bar appearance
+	    - [x] Anchor dialog input-Areas to the main JFrame
+	-  `User Interface`
+		- [x] create main-Entry through dialog input-Areas with *Ctrl+N*
+		- [x] create sibling sub-Entry through a selected sub-Entry with *Ctrl+N*
+    
+    
+		- [ ] Jump scrollbar to top/bottom of the current register
+		- [ ] 
+		- [ ] App opens into the last visited Register
+		- [ ] 
+		- [x] hide caret when not in focus 
+		- [x] Extend right-click collapse/expand to the whole main entry
+		- [ ] 
 
 
 - [ ] `v10.2`
+	- [ ] `v10.1.1` [[Undo Action]]
+	- [ ] `v10.1.2` - Undo Text
 	- [ ] [[Copy and Paste]]
 	- [ ] Read Only Mode
 		- [ ] Finish Incomplete [[Unrecognized Registers]] Handling
