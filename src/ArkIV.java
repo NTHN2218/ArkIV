@@ -150,6 +150,8 @@ public class ArkIV implements ActionListener{
     private DefaultMutableTreeNode editingNode = null;
     private JTextField registerRenameField = null;
 
+    private Component previousFocus;
+
     private static List<Image> loadIconImages(List<File> files) {
         List<Image> icons = new ArrayList<>();
         for (File f : files) {
@@ -162,13 +164,14 @@ public class ArkIV implements ActionListener{
         return icons;
     }
 
+
+
     ///==============================================================================================================
     ///== Constructor
     ///==============================================================================================================
     public ArkIV() {
 
         PathResolver.ensureAssetsStructure();
-        System.out.println(SIDEBAR_WIDTH);
 
         registerManager = new RegisterManager();
         FILE_NAME = registerManager.getRegisterFilePath(registerManager.getLastVisitedRegister());
@@ -252,7 +255,6 @@ public class ArkIV implements ActionListener{
             @Override
             public void componentResized(ComponentEvent e) {
                 int width = taskPanel.getWidth();
-                //System.out.println("[WidthCalc] componentResized fired, taskPanel width=" + width);
                 if (width <= 0) return;
 
                 if (widthSettleTimer != null && widthSettleTimer.isRunning()) {
@@ -1807,8 +1809,7 @@ public class ArkIV implements ActionListener{
     ///== Sub-Entries
     ///==============================================================================================================
     private void hideSubEntries(TaskItem parent) {
-        //System.out.println("[Move] hideSubEntries CALLED for entry " + parent.getId());
-        //new Exception("trace").printStackTrace();
+
         for (TaskItem task : allTasks) {
             if (task.isSubtask() && task.getParentId() == parent.getId()) {
                 taskPanel.remove(task);
@@ -1943,6 +1944,22 @@ public class ArkIV implements ActionListener{
     // only thing stopping it is getMinimumSpan() reporting "can't shrink,"
     // which tells FlowView's layout not to bother trying. ──────────────────
     private static class WrapLabelView extends LabelView {
+
+        //Used to curve the BG around inline codes in MD
+        int curveFactor = 10;
+        @Override
+        public void paint(Graphics g, Shape a) {
+            if (getAttributes().containsAttribute(Markdown.MarkdownStyles.INLINE_CODE, Boolean.TRUE)) {
+                Rectangle r = (a instanceof Rectangle) ? (Rectangle) a : a.getBounds();
+                Graphics2D g2 = (Graphics2D) g.create();
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                g2.setColor(UniversalThemes.MD_COLOR_CODE_BG);
+                g2.fillRoundRect(r.x, r.y + 1, r.width, r.height - 2, curveFactor, curveFactor);
+                g2.dispose();
+            }
+            super.paint(g, a); // text on top
+        }
+
         public WrapLabelView(Element elem) { super(elem); }
 
         @Override
@@ -2020,9 +2037,7 @@ public class ArkIV implements ActionListener{
             this.rawText = text;
 
             setLayout(new BorderLayout());
-            Color cardBg = isSubtask
-                    ? UniversalThemes.BG_PANEL
-                    : UniversalThemes.BG_PANEL;
+            Color cardBg = UniversalThemes.BG_PANEL;
 
             setBackground(cardBg);
 
@@ -2095,9 +2110,6 @@ public class ArkIV implements ActionListener{
                 textArea.setSize(fixedTextWidth, Short.MAX_VALUE);
             }
 
-            if (done) {
-
-            }
 
 
 
@@ -2186,6 +2198,27 @@ public class ArkIV implements ActionListener{
 
             add(leftPanel, BorderLayout.CENTER);
             add(buttonPanel, BorderLayout.EAST);
+
+            // Double-click anywhere on the body selects the entry (same as ticking the checkbox)
+            MouseAdapter doubleClickSelect = new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    if (SwingUtilities.isLeftMouseButton(e) && e.getClickCount() == 2) {
+                        textArea.select(0, 0); // drop the word-highlight the text pane makes on double-click
+                        if (!isSelected) {
+                            checkBox.setSelected(true);
+                            selectThisTask();
+                        } else {
+                            deselectThisTask();
+                        }
+                    }
+                }
+            };
+            addMouseListener(doubleClickSelect);
+            leftPanel.addMouseListener(doubleClickSelect);
+            buttonPanel.addMouseListener(doubleClickSelect);
+            numberLabel.addMouseListener(doubleClickSelect);
+            textArea.addMouseListener(doubleClickSelect);
 
 
             //Shortcuts for convenience
@@ -2282,6 +2315,8 @@ public class ArkIV implements ActionListener{
         public boolean isDone() { return checkBox.isSelected(); }
         public String getRawText() { return rawText; }
 
+
+
         private void renderMarkdown() {
             Insets in = textArea.getInsets();
             int contentWidth = fixedTextWidth > 0 ? fixedTextWidth - in.left - in.right : -1;
@@ -2333,7 +2368,7 @@ public class ArkIV implements ActionListener{
             Border flickerBorder = BorderFactory.createLineBorder(UniversalThemes.ACCENT_COLOR, 2);
 
             flickerTimer = new Timer(300, null); // 300 ms delay for slower flicker
-            final int[] count = {0};
+            final int[] count = {1};
             flickerTimer.addActionListener(ev -> {
                 if (!isSelected) {
                     // Stop flickering if deselected
@@ -2348,6 +2383,7 @@ public class ArkIV implements ActionListener{
                 }
                 count[0]++;
             });
+            setBorder(BorderFactory.createCompoundBorder(outerBorder, flickerBorder));
             flickerTimer.start();
         }
 
@@ -2405,7 +2441,7 @@ public class ArkIV implements ActionListener{
                     if (!checkBox.isSelected()) {
                         textArea.setForeground(UniversalThemes.TXT_PRIMARY);
                     }
-                    deselectThisTask();
+                    //deselectThisTask();
                     saveTasks();
                     rd.close();
                 } else {

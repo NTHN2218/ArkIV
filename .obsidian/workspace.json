@@ -190,7 +190,20 @@
   },
   "active": "a4072fefdde5d1ea",
   "lastOpenFiles": [
+    "out/production/ArkIV/AutoHotkey/SelectionWrapper.class",
+    "src/AutoHotkey/SelectionWrapper.java~",
+    "out/production/ArkIV/utilities/UniversalThemes.class",
+    "out/production/ArkIV/utilities/UniversalThemes$20.class",
+    "out/production/ArkIV/utilities/UniversalThemes$19.class",
+    "out/production/ArkIV/utilities/UniversalThemes$18.class",
+    "out/production/ArkIV/utilities/UniversalThemes$17.class",
+    "out/production/ArkIV/utilities/UniversalThemes$16.class",
+    "out/production/ArkIV/utilities/UniversalThemes$15.class",
+    "out/production/ArkIV/utilities/UniversalThemes$14.class",
+    "out/production/ArkIV/utilities/UniversalThemes$13.class",
     "README.md",
-    "notes/ArkIV - Plans and Features.md"
+    "notes/ArkIV - Plans and Features.md",
+    "notes/v8/Registers.md",
+    "notes/v8/Register Navigation.md"
   ]
 }

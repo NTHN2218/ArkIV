@@ -34,7 +34,8 @@ public class UniversalThemes {
     public static final Color BORDER_COLOR2   = new Color(0x6A6A6A);
 
 
-    public static final Color ACCENT_COLOR    = new Color(0x2fafbc);  //0xE67E22
+    //public static final Color ACCENT_COLOR    = new Color(0x2fafbc);
+    public static final Color ACCENT_COLOR    = new Color(0x1EABCA);
     public static final Color ACCENT_COLOR_DARK = new Color(0x2b929d);  //0xC66A1A
     public static final Color SEARCH_HIGHLIGHT_COLOR = new Color(0x2b929d); // distinct from ACCENT_COLOR
 
@@ -54,7 +55,9 @@ public class UniversalThemes {
     public static final Color MD_COLOR_HEADING = new Color(0x0fb6d6);
     //public static final Color MD_COLOR_BOLD = new Color(0x94A5F2);
     public static final Color MD_COLOR_BOLD = new Color(0xE5E5E5);
-
+    // Inline code (Obsidian-style chip)
+    public static final Color MD_COLOR_CODE_FG = new Color(0x0fbfe2);     // 0x0fb6d6
+    public static final Color MD_COLOR_CODE_BG = new Color(0x1C2D35);    // blended with ACCENT_COLOR, BG_PANEL and BG_COMPONENT
 
 
     // VIBGYOR Color Tag palette (^1..^7) -- tuned for readability on BG_MAIN/BG_PANEL,
@@ -141,6 +144,7 @@ public class UniversalThemes {
         private final ComponentAdapter resizeListener;
         private Runnable onCloseRequest;
         private boolean showing = false;
+        private Component previousFocus;
 
         RoundedDialog(JFrame ownerFrame, JLayeredPane layeredPane, JPanel dimOverlay, JPanel shellPanel, JPanel body) {
             this.ownerFrame = ownerFrame;
@@ -157,6 +161,7 @@ public class UniversalThemes {
         // Recompute size/position -- call after adding content that changes
         // preferred size (e.g. an auto-growing text area).
         public void show() {
+            previousFocus = KeyboardFocusManager.getCurrentKeyboardFocusManager().getFocusOwner();
             if (showing) return;
             showing = true;
             layeredPane.add(dimOverlay, Integer.valueOf(JLayeredPane.MODAL_LAYER));
@@ -202,6 +207,11 @@ public class UniversalThemes {
             layeredPane.repaint();
             ownerFrame.repaint(); // force a full repaint in case the RepaintManager's
             // dirty-region tracking still missed the vacated area
+            SwingUtilities.invokeLater(() -> {
+                if (previousFocus != null && previousFocus.isShowing()) {
+                    previousFocus.requestFocusInWindow();
+                }
+            });
         }
 
         // Overrides what the header's X button does. Default is close(); pass
@@ -927,7 +937,7 @@ public class UniversalThemes {
         rd.body.add(buttonRow);
 
         rd.show();
-        SwingUtilities.invokeLater(cancelButton::requestFocusInWindow);
+        SwingUtilities.invokeLater(actionButton::requestFocusInWindow);
     }
 
     ///==============================================================================================================

@@ -23,32 +23,25 @@ public class SelectionWrapper {
         /*
         VIBGYOR color tags
          */
-        WRAP_REGISTRY.put(
-                KeyStroke.getKeyStroke(KeyEvent.VK_1, InputEvent.CTRL_DOWN_MASK | InputEvent.ALT_DOWN_MASK),
+        WRAP_REGISTRY.put(KeyStroke.getKeyStroke(KeyEvent.VK_1, InputEvent.CTRL_DOWN_MASK | InputEvent.ALT_DOWN_MASK),
                 "^1"
         );
-        WRAP_REGISTRY.put(
-                KeyStroke.getKeyStroke(KeyEvent.VK_2, InputEvent.CTRL_DOWN_MASK | InputEvent.ALT_DOWN_MASK),
+        WRAP_REGISTRY.put(KeyStroke.getKeyStroke(KeyEvent.VK_2, InputEvent.CTRL_DOWN_MASK | InputEvent.ALT_DOWN_MASK),
                 "^2"
         );
-        WRAP_REGISTRY.put(
-                KeyStroke.getKeyStroke(KeyEvent.VK_3, InputEvent.CTRL_DOWN_MASK | InputEvent.ALT_DOWN_MASK),
+        WRAP_REGISTRY.put(KeyStroke.getKeyStroke(KeyEvent.VK_3, InputEvent.CTRL_DOWN_MASK | InputEvent.ALT_DOWN_MASK),
                 "^3"
         );
-        WRAP_REGISTRY.put(
-                KeyStroke.getKeyStroke(KeyEvent.VK_4, InputEvent.CTRL_DOWN_MASK | InputEvent.ALT_DOWN_MASK),
+        WRAP_REGISTRY.put(KeyStroke.getKeyStroke(KeyEvent.VK_4, InputEvent.CTRL_DOWN_MASK | InputEvent.ALT_DOWN_MASK),
                 "^4"
         );
-        WRAP_REGISTRY.put(
-                KeyStroke.getKeyStroke(KeyEvent.VK_5, InputEvent.CTRL_DOWN_MASK | InputEvent.ALT_DOWN_MASK),
+        WRAP_REGISTRY.put(KeyStroke.getKeyStroke(KeyEvent.VK_5, InputEvent.CTRL_DOWN_MASK | InputEvent.ALT_DOWN_MASK),
                 "^5"
         );
-        WRAP_REGISTRY.put(
-                KeyStroke.getKeyStroke(KeyEvent.VK_6, InputEvent.CTRL_DOWN_MASK | InputEvent.ALT_DOWN_MASK),
+        WRAP_REGISTRY.put(KeyStroke.getKeyStroke(KeyEvent.VK_6, InputEvent.CTRL_DOWN_MASK | InputEvent.ALT_DOWN_MASK),
                 "^6"
         );
-        WRAP_REGISTRY.put(
-                KeyStroke.getKeyStroke(KeyEvent.VK_7, InputEvent.CTRL_DOWN_MASK | InputEvent.ALT_DOWN_MASK),
+        WRAP_REGISTRY.put(KeyStroke.getKeyStroke(KeyEvent.VK_7, InputEvent.CTRL_DOWN_MASK | InputEvent.ALT_DOWN_MASK),
                 "^7"
         );
 
@@ -56,22 +49,24 @@ public class SelectionWrapper {
         Emphasis
          */
         //Italic
-        WRAP_REGISTRY.put(
-                KeyStroke.getKeyStroke(KeyEvent.VK_I, InputEvent.CTRL_DOWN_MASK | InputEvent.ALT_DOWN_MASK),
+        WRAP_REGISTRY.put(KeyStroke.getKeyStroke(KeyEvent.VK_I, InputEvent.CTRL_DOWN_MASK | InputEvent.ALT_DOWN_MASK),
                 "*"
         );
         //Bold
-        WRAP_REGISTRY.put(
-                KeyStroke.getKeyStroke(KeyEvent.VK_B, InputEvent.CTRL_DOWN_MASK | InputEvent.ALT_DOWN_MASK),
+        WRAP_REGISTRY.put(KeyStroke.getKeyStroke(KeyEvent.VK_B, InputEvent.CTRL_DOWN_MASK | InputEvent.ALT_DOWN_MASK),
                 "**"
         );
-        /*
-        Right-align
-        */
-        WRAP_REGISTRY.put(
-                KeyStroke.getKeyStroke(KeyEvent.VK_R, InputEvent.CTRL_DOWN_MASK | InputEvent.ALT_DOWN_MASK),
+
+        //Right-align
+        WRAP_REGISTRY.put(KeyStroke.getKeyStroke(KeyEvent.VK_R, InputEvent.CTRL_DOWN_MASK | InputEvent.ALT_DOWN_MASK),
                 "::"
         );
+
+        //Inline Code
+        WRAP_REGISTRY.put(KeyStroke.getKeyStroke(KeyEvent.VK_BACK_QUOTE, InputEvent.CTRL_DOWN_MASK | InputEvent.ALT_DOWN_MASK),
+                "`"
+        );
+
     }
 
     public static void attach(JTextArea area) {

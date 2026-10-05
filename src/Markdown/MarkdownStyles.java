@@ -121,6 +121,14 @@ public class MarkdownStyles {
                 StyleConstants.setForeground(attrs, COLOR_TAG_PALETTE[colorNumber]);
     }
 
+    public static final Object INLINE_CODE = "inlineCode"; // marker attribute key
+
+    public static void applyInlineCode(MutableAttributeSet attrs) {
+        StyleConstants.setForeground(attrs, UniversalThemes.MD_COLOR_CODE_FG);
+        StyleConstants.setBold(attrs, true);
+        attrs.addAttribute(INLINE_CODE, Boolean.TRUE);
+    }
+
     // ── Utility: safe mutable copy of any attribute set (used for the Visitor's push/pop stack) ──
 
     public static SimpleAttributeSet copyOf(javax.swing.text.AttributeSet base) {

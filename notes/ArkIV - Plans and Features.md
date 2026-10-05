@@ -1,17 +1,21 @@
 
-# v8
-## Registers
+- [ ] `v8`
+	- `Registers`
+		- [x] [[Data Storage]]
+		- [x] [[Registers]]
+		- [x] [[Unrecognized Registers]]
+	-  `User Interface`
+		- [x] Navigation Tree for Registers - [[Register Navigation]]
+	- `User Experience`
+		- [x] Improve Delete Confirmation Popup UI
+		- [x] Scroll Bar moves to and aligns to same line when a new task-item gets created
 
-- [x] Registers System
-	- [x] [[Data Storage]]
-	- [x] [[UI Layout - Registers 1]]
-	- [x] [[Unrecognized Registers]]
-- [x] Navigation Tree Registers - [[UI Layout - Registers 2]]
-- [x] Improve Delete Confirmation Popup UI
-- [x] Scroll Bar moves to and re-aligns to same line when a new Entry/Sub-Entry gets created
 
+- [ ] `v9`
+	- `UI Features`
+	- `Mark-Down`
+	- `Precautions`
 
-# v9
 ## UI Features
 
 - [x] Change selection highlight color 
@@ -39,37 +43,39 @@
 
 
 
-	# v10.0
-	- [x] Selection Wrapper
-	- [x] Caret navigation
-	- [x] Jump to start/end of line
-
-	# V10.1
+- [ ] `v10.0`
+	- `Utilities`
+		- [x] Selection Wrapper (bold, italic)
+		- [x] Caret navigation - start/end of words or lines
+- [ ] `v10.1`
 	- `Mark-Down`
-		- [x] custom MD feature - [[Right Align]]
-		- [x] custom MD feature- VIBGYOR color tags
+		- [x] Inline Code
+		- [x] [[Right Align]] (custom)
+		- [x] VIBGYOR color tags (custom)
+	- `Register`
+		- [x] App opens into the last visited Register
     - `Key-Binds`
-	    - [x] Key-binds for expand all/collapse all
+	    - [x] Key-binds for expand all/collapse all 
 	    - [x] Key-binds to apply **bold, italic, color tags, right align** while editing
+	    - [x] Create main-Entry through dialog input-Area with *Ctrl+N*
+	    - [x] Create sibling sub-Entry through a selected sub-Entry with *Ctrl+N*
+	    - [x] Jump scrollbar to top/bottom of the current register through a key-bind
     - `App Appearance`
-	    - [x] Add Taskbar icon for ArkIV
-	    - [x] Redesign JFrame title bar appearance
+	    - [x] Add taskbar icon for ArkIV
+	    - [x] Implement custom JFrame title bar 
 	    - [x] Anchor dialog input-Areas to the main JFrame
-	-  `User Interface`
-		- [x] create main-Entry through dialog input-Areas with *Ctrl+N*
-		- [x] create sibling sub-Entry through a selected sub-Entry with *Ctrl+N*
-    
-    
-		- [ ] Jump scrollbar to top/bottom of the current register
-		- [ ] 
-		- [ ] App opens into the last visited Register
-		- [ ] 
-		- [x] hide caret when not in focus 
-		- [x] Extend right-click collapse/expand to the whole main entry
-		- [ ] 
+	- `Behaviour`
+		- [x] Hide caret when not in editing mode
+		- [x] Double left-click anywhere on task-item body to select that task-item
+		- [x] Right-click anywhere on Entry's body to collapse/expand Entry
+		- [x] task-item's flicker starts immediately after getting selected
+	- `Fixes`
+		- [x] Return focus to selected task after closing an input-Area dialog
+		- [x] Saving an Edit no longer deselects the selected task-item
 
 
-- [ ] `v10.2`
+
+- [ ] `v11.1`
 	- [ ] `v10.1.1` [[Undo Action]]
 	- [ ] `v10.1.2` - Undo Text
 	- [ ] [[Copy and Paste]]
@@ -95,5 +101,5 @@
     - [ ] Basic User Guide
 	- [ ] Key-Binds
     - [ ] Hot Strings
-    
+
 

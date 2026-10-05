@@ -236,6 +236,30 @@ public class MarkdownVisitor extends AbstractVisitor {
         }
     }
 
+    @Override
+    public void visit(Code code) {
+        String literal = code.getLiteral();
+        String ticks = "`".repeat(longestBacktickRun(literal) + 1);
+
+        SimpleAttributeSet chip = MarkdownStyles.copyOf(currentAttributes());
+        MarkdownStyles.applyInlineCode(chip);
+
+        insertText(ticks, MarkdownStyles.getMutedAttributes());
+        insertText(" ", chip);          // left padding, carries the background
+        insertText(literal, chip);
+        insertText(" ", chip);          // right padding
+        insertText(ticks, MarkdownStyles.getMutedAttributes());
+    }
+
+    private int longestBacktickRun(String s) {
+        int max = 0, run = 0;
+        for (int i = 0; i < s.length(); i++) {
+            run = (s.charAt(i) == '`') ? run + 1 : 0;
+            max = Math.max(max, run);
+        }
+        return max;
+    }
+
     // ::text:: -- a "\t" before the span plus a single right-aligned TabStop on the paragraph
     // pushes everything after the tab flush against the right edge. The parser guarantees the
     // span is the last thing on its line, so "everything after the tab" is exactly the span.

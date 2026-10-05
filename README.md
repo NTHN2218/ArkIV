@@ -37,3 +37,4 @@ However, since there is no strict format on how the data has to typed in, the us
 - **Live Markdown**: headings, bold, italic, lists and task lists render right in the card, with the syntax markers faded out instead of hidden.
 - **Editor niceties**: hotstrings, key binds, Obsidian-style selection wrapping, and JetBrains-style caret navigation.
 - **Custom dark UI**: rounded dialogs, themed scrollbars and checkboxes, all hand-painted in Swing with JetBrains Mono.
+
