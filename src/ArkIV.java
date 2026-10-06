@@ -26,10 +26,7 @@ import javax.crypto.spec.*;
 //Package - utilities
 import AutoHotkey.CaretNavigation;
 import AutoHotkey.SelectionWrapper;
-import utilities.DialogFieldKit;
-import utilities.PathResolver;
-import utilities.UniversalFactory;
-import utilities.UniversalThemes;
+import utilities.*;
 
 //Mouse
 import java.awt.event.MouseEvent;
@@ -67,7 +64,7 @@ import javax.swing.Icon;
 public class ArkIV implements ActionListener{
 
     ///==============================================================================================================
-    ///== Fields
+    ///Fields
     ///==============================================================================================================
     private JFrame frame;
     private JPanel titleBar;
@@ -206,8 +203,8 @@ public class ArkIV implements ActionListener{
         taskScrollPane.getVerticalScrollBar().setUnitIncrement(35);
         taskScrollPane.getViewport().setBackground(UniversalThemes.BG_MAIN);
         UniversalThemes.applyScrollbarTheme(taskScrollPane);
+        AutoScroller.attach(taskScrollPane);
 
-        // ── Input area + scroll ──────────────────────────────────────────
 
 
         // ── Sidebar ──────────────────────────────────────────────────────

@@ -23,26 +23,9 @@ These are 2 major steps to display markdown features:
     - In ArkIVv9, the markdown  source syntax characters(**, #, -, - [ ]) stay visible, but are de-emphasized(dimmed).
     - This version will not implement WYSIWYG(What You See Is What You Get) style like Typora, Obsidian, etc. because then the JTextpane's displayed text length =/= raw text length. This will require an offset mapping layer to properly render the strings, which is complex to code.
     - Rendering must be performed when programs starts, user switches between registers and entry/sub-entry is created or altered in any way.
-    - tasklist items (- [ ]) render as styled text, not interactive embedded JCheckBox widgets, for v9. Real embedded checkboxes were explicitly deferred because they reintroduce a scoped version of the offset-mapping problem.
+    - task-list items (- [ ]) render as styled text, not interactive embedded JCheckBox widgets, for v9. Real embedded checkboxes were explicitly deferred because they reintroduce a scoped version of the offset-mapping problem.
 
 
-
-
-problems noticed
-- Empty lines dont get rendered
-
-
-
-upgrades
-
-**This version will not implement WYSIWYG(What You See Is What You Get) style like**
-
-89c2fd
-b1bdfc
-9ebffd
-92b9f3
-d3bafd
-dbb9fc
 
 
 
