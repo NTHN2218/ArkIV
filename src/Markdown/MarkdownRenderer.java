@@ -6,6 +6,7 @@ import org.commonmark.parser.IncludeSourceSpans;
 import org.commonmark.parser.Parser;
 
 import Markdown.Extensions.ColorTag.ColorTagExtension;
+import Markdown.Extensions.ColorTag.ColorTagPreprocessor;
 import Markdown.Extensions.RightAlign.RightAlignExtension;
 
 import java.util.List;
@@ -54,7 +55,12 @@ public class MarkdownRenderer {
         // (including a stale right-align TabSet from a previous width) -- reset it.
         doc.setParagraphAttributes(0, 1, SimpleAttributeSet.EMPTY, true);
 
-        Node astRoot = PARSER.parse(rawText);
+        // Rewrite user-facing |v|...|v| color-tag syntax into the internal ^1...^1 syntax
+        // right before parsing -- a local variable only. The caller's original rawText (what
+        // gets persisted and what reopens in the edit dialog) is never touched.
+        String parseText = ColorTagPreprocessor.preprocess(rawText);
+
+        Node astRoot = PARSER.parse(parseText);
         MarkdownDebug.log("[MarkdownRenderer] Parsed AST root: " + astRoot.getClass().getSimpleName());
         long startNanos = System.nanoTime();
 

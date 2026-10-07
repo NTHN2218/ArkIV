@@ -80,7 +80,9 @@ public class ColorTagDelimiterProcessor implements DelimiterProcessor {
         stripLeadingChar(closeDigitNode);
 
         int colorNumber = openDigit - '0';
-        String delimiterLabel = "^" + colorNumber;
+        // Displayed marker is the user-facing letter form ("|v|"), not the internal digit
+        // form ("^1") -- the person typing never sees the ^-syntax at all, only this label.
+        String delimiterLabel = "|" + VibgyorMapping.letterFor(colorNumber) + "|";
         Node colorSpan = new ColorSpan(colorNumber, delimiterLabel);
 
         SourceSpans sourceSpans = new SourceSpans();
