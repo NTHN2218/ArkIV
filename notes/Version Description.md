@@ -14,7 +14,7 @@
 -  `v9`
 	- `Mark-Down`
 		- [x] Convert Entries/sub-Entries from JTextArea -> JTextPane to enable MD rendering
-		-  [[Parsing and Rendering]]
+		- [[Parsing and Rendering]]
 			- [x] Headings
 			- [x] Bold 
 			- [x] Italic
@@ -65,7 +65,8 @@
 	- `Fixes`
 		- [x] Return focus to selected task after closing an input-Area dialog
 		- [x] Saving an Edit no longer deselects the selected task-item
-		- [ ] Redesign color tag syntax
+		- [x] Redesign color tag syntax
+        - [ ] Redesign right align syntax
 
 
 - [ ] `v11.1`

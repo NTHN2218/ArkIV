@@ -24,25 +24,25 @@ public class SelectionWrapper {
         VIBGYOR color tags
          */
         WRAP_REGISTRY.put(KeyStroke.getKeyStroke(KeyEvent.VK_1, InputEvent.CTRL_DOWN_MASK | InputEvent.ALT_DOWN_MASK),
-                "^1"
+                "|v|"
         );
         WRAP_REGISTRY.put(KeyStroke.getKeyStroke(KeyEvent.VK_2, InputEvent.CTRL_DOWN_MASK | InputEvent.ALT_DOWN_MASK),
-                "^2"
+                "|i|"
         );
         WRAP_REGISTRY.put(KeyStroke.getKeyStroke(KeyEvent.VK_3, InputEvent.CTRL_DOWN_MASK | InputEvent.ALT_DOWN_MASK),
-                "^3"
+                "|b|"
         );
         WRAP_REGISTRY.put(KeyStroke.getKeyStroke(KeyEvent.VK_4, InputEvent.CTRL_DOWN_MASK | InputEvent.ALT_DOWN_MASK),
-                "^4"
+                "|g|"
         );
         WRAP_REGISTRY.put(KeyStroke.getKeyStroke(KeyEvent.VK_5, InputEvent.CTRL_DOWN_MASK | InputEvent.ALT_DOWN_MASK),
-                "^5"
+                "|y|"
         );
         WRAP_REGISTRY.put(KeyStroke.getKeyStroke(KeyEvent.VK_6, InputEvent.CTRL_DOWN_MASK | InputEvent.ALT_DOWN_MASK),
-                "^6"
+                "|o|"
         );
         WRAP_REGISTRY.put(KeyStroke.getKeyStroke(KeyEvent.VK_7, InputEvent.CTRL_DOWN_MASK | InputEvent.ALT_DOWN_MASK),
-                "^7"
+                "|r|"
         );
 
         /*
@@ -59,7 +59,7 @@ public class SelectionWrapper {
 
         //Right-align
         WRAP_REGISTRY.put(KeyStroke.getKeyStroke(KeyEvent.VK_R, InputEvent.CTRL_DOWN_MASK | InputEvent.ALT_DOWN_MASK),
-                "::"
+                ">>"
         );
 
         //Inline Code

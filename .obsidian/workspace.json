@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "notes/v9/Parsing and Rendering.md",
+                "file": "notes/Glossary.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "Parsing and Rendering"
+              "title": "Glossary"
             }
           },
           {
@@ -204,8 +204,9 @@
   },
   "active": "a4072fefdde5d1ea",
   "lastOpenFiles": [
-    "notes/ArkIV - version description.md",
+    "notes/Glossary.md~",
     "notes/v9/Parsing and Rendering.md",
+    "notes/ArkIV - version description.md",
     "notes/v11/undoAction - bug diagnosis.md",
     "README.md",
     "notes/v10/Copy-Paste-v1.md",
