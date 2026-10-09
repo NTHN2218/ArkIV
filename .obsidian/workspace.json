@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "notes/Glossary.md",
+                "file": "notes/Shortcuts.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "Glossary"
+              "title": "Shortcuts"
             }
           },
           {
@@ -204,22 +204,23 @@
   },
   "active": "a4072fefdde5d1ea",
   "lastOpenFiles": [
-    "notes/Glossary.md~",
+    "notes/Version Description.md~",
+    "out/production/ArkIV/ArkIV.class",
+    "out/production/ArkIV/ArkIV$TaskItem.class",
+    "out/production/ArkIV/ArkIV$TaskItem$13.class",
+    "out/production/ArkIV/ArkIV$TaskItem$12.class",
+    "out/production/ArkIV/ArkIV$TaskItem$11.class",
+    "out/production/ArkIV/ArkIV$TaskItem$10.class",
+    "out/production/ArkIV/ArkIV$TaskItem$9.class",
+    "out/production/ArkIV/ArkIV$TaskItem$8.class",
+    "out/production/ArkIV/ArkIV$TaskItem$7.class",
+    "out/production/ArkIV/ArkIV$TaskItem$6.class",
+    "notes/Glossary.md",
     "notes/v9/Parsing and Rendering.md",
     "notes/ArkIV - version description.md",
     "notes/v11/undoAction - bug diagnosis.md",
     "README.md",
     "notes/v10/Copy-Paste-v1.md",
-    "out/production/ArkIV/AutoHotkey/SelectionWrapper.class",
-    "src/AutoHotkey/SelectionWrapper.java~",
-    "out/production/ArkIV/utilities/UniversalThemes.class",
-    "out/production/ArkIV/utilities/UniversalThemes$20.class",
-    "out/production/ArkIV/utilities/UniversalThemes$19.class",
-    "out/production/ArkIV/utilities/UniversalThemes$18.class",
-    "out/production/ArkIV/utilities/UniversalThemes$17.class",
-    "out/production/ArkIV/utilities/UniversalThemes$16.class",
-    "out/production/ArkIV/utilities/UniversalThemes$15.class",
-    "out/production/ArkIV/utilities/UniversalThemes$14.class",
     "notes/v8/Registers.md",
     "notes/v8/Register Navigation.md"
   ]

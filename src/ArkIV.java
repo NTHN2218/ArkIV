@@ -47,6 +47,7 @@ import Registers.RegisterContextMenu;
 //Package Markdown
 import Markdown.MarkdownRenderer;
 import Markdown.MarkdownDebug;
+import Markdown.WrapEditorKit;
 
 // Package AutoHotkeys
 import AutoHotkey.Hotstring;
@@ -345,6 +346,16 @@ public class ArkIV implements ActionListener{
             }
         });
 
+        rootIm.put(KeyStroke.getKeyStroke(KeyEvent.VK_F1, 0), "help");
+        rootAm.put("help", new AbstractAction() {
+            @Override public void actionPerformed(ActionEvent e) { HelpDialog.show(frame); }
+        });
+
+        rootIm.put(KeyStroke.getKeyStroke(KeyEvent.VK_W, InputEvent.CTRL_DOWN_MASK), "close_dialog");
+        rootAm.put("close_dialog", new AbstractAction() {
+            @Override public void actionPerformed(ActionEvent e) { UniversalThemes.RoundedDialog.closeTopDialog(); }
+        });
+
         currentRegisterId = registerManager.getLastVisitedRegisterId();
         refreshRegisterList();
         frame.setVisible(true);
@@ -484,6 +495,7 @@ public class ArkIV implements ActionListener{
         createFileMenu();
         createEditMenu();
         createSettingsMenu();
+        createHelpMenu();
 
         int menuHeight = menuBar.getPreferredSize().height;
         menuBar.setMaximumSize(new Dimension(Integer.MAX_VALUE, menuHeight));
@@ -569,6 +581,19 @@ public class ArkIV implements ActionListener{
         preferences.setActionCommand("Preferences");
 
         settingsMenu.add(preferences);
+    }
+
+    private void createHelpMenu() {
+        helpMenu.addMenuListener(new javax.swing.event.MenuListener() {
+            @Override public void menuSelected(javax.swing.event.MenuEvent e) {
+                SwingUtilities.invokeLater(() -> {
+                    MenuSelectionManager.defaultManager().clearSelectedPath();
+                    HelpDialog.show(frame);
+                });
+            }
+            @Override public void menuDeselected(javax.swing.event.MenuEvent e) {}
+            @Override public void menuCanceled(javax.swing.event.MenuEvent e) {}
+        });
     }
 
     @Override
@@ -1936,71 +1961,6 @@ public class ArkIV implements ActionListener{
         }
     }
 
-    // ── Forces mid-word breaks for unbroken long tokens. LabelView's own
-    // breakView() already knows how to break at a character boundary — the
-    // only thing stopping it is getMinimumSpan() reporting "can't shrink,"
-    // which tells FlowView's layout not to bother trying. ──────────────────
-    private static class WrapLabelView extends LabelView {
-
-        //Used to curve the BG around inline codes in MD
-        int curveFactor = 10;
-        @Override
-        public void paint(Graphics g, Shape a) {
-            if (getAttributes().containsAttribute(Markdown.MarkdownStyles.INLINE_CODE, Boolean.TRUE)) {
-                Rectangle r = (a instanceof Rectangle) ? (Rectangle) a : a.getBounds();
-                Graphics2D g2 = (Graphics2D) g.create();
-                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-                g2.setColor(UniversalThemes.MD_COLOR_CODE_BG);
-                g2.fillRoundRect(r.x, r.y + 1, r.width, r.height - 2, curveFactor, curveFactor);
-                g2.dispose();
-            }
-            super.paint(g, a); // text on top
-        }
-
-        public WrapLabelView(Element elem) { super(elem); }
-
-        @Override
-        public float getMinimumSpan(int axis) {
-            switch (axis) {
-                case View.X_AXIS:
-                    return 0;
-                case View.Y_AXIS:
-                    return super.getMinimumSpan(axis);
-                default:
-                    throw new IllegalStateException("Invalid axis: " + axis);
-            }
-        }
-    }
-
-    private static class WrapColumnFactory implements ViewFactory {
-        @Override
-        public View create(Element elem) {
-            String kind = elem.getName();
-            if (kind != null) {
-                switch (kind) {
-                    case AbstractDocument.ContentElementName:
-                        return new WrapLabelView(elem);
-                    case AbstractDocument.ParagraphElementName:
-                        return new ParagraphView(elem);
-                    case AbstractDocument.SectionElementName:
-                        return new BoxView(elem, View.Y_AXIS);
-                    case StyleConstants.ComponentElementName:
-                        return new ComponentView(elem);
-                    case StyleConstants.IconElementName:
-                        return new IconView(elem);
-                }
-            }
-            return new LabelView(elem);
-        }
-    }
-
-    private static class WrapEditorKit extends StyledEditorKit {
-        private final ViewFactory factory = new WrapColumnFactory();
-        @Override
-        public ViewFactory getViewFactory() {
-            return factory;
-        }
-    }
 
     ///==============================================================================================================
     ///== Entry Point

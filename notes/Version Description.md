@@ -46,12 +46,19 @@
 		- [x] VIBGYOR color tags (custom)
 	- `Register`
 		- [x] App opens into the last visited Register
+    - `Help`
+        - [ ] Focus Help dialog when open for Ctrl+Tab and Ctrl+Shift+Tab
+        - [ ] General Use
+        - [ ] Key Binds
+        - [x] Mark Down
+        - [ ] Hot String
     - `Key-Binds`
 	    - [x] Key-binds for expand all/collapse all 
 	    - [x] Key-binds to apply **bold, italic, color tags, right align** while editing
 	    - [x] Create main-Entry through dialog input-Area with *Ctrl+N*
 	    - [x] Create sibling sub-Entry through a selected sub-Entry with *Ctrl+N*
 	    - [x] Jump scrollbar to top/bottom of the current register through a key-bind
+        - [x] Close any open dialog with *Ctrl+W*
     - `App Appearance`
 	    - [x] Add taskbar icon for ArkIV
 	    - [x] Implement custom JFrame title bar 
@@ -66,7 +73,8 @@
 		- [x] Return focus to selected task after closing an input-Area dialog
 		- [x] Saving an Edit no longer deselects the selected task-item
 		- [x] Redesign color tag syntax
-        - [ ] Redesign right align syntax
+        - [x] Redesign right align syntax
+        - [ ] Reduce delay before task-items are rendered
 
 
 - [ ] `v11.1`

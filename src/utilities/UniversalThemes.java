@@ -146,6 +146,16 @@ public class UniversalThemes {
         private boolean showing = false;
         private Component previousFocus;
 
+        private static final java.util.Deque<RoundedDialog> OPEN = new java.util.ArrayDeque<>();
+
+        /** Closes the most recently opened dialog. Returns false if none are open. */
+        public static boolean closeTopDialog() {
+            RoundedDialog top = OPEN.peek();
+            if (top == null) return false;
+            top.requestClose(); // same path as the X button, so each dialog's own cleanup runs
+            return true;
+        }
+
         RoundedDialog(JFrame ownerFrame, JLayeredPane layeredPane, JPanel dimOverlay, JPanel shellPanel, JPanel body) {
             this.ownerFrame = ownerFrame;
             this.layeredPane = layeredPane;
@@ -164,6 +174,7 @@ public class UniversalThemes {
             previousFocus = KeyboardFocusManager.getCurrentKeyboardFocusManager().getFocusOwner();
             if (showing) return;
             showing = true;
+            OPEN.push(this);
             layeredPane.add(dimOverlay, Integer.valueOf(JLayeredPane.MODAL_LAYER));
             layeredPane.add(shellPanel, Integer.valueOf(JLayeredPane.MODAL_LAYER.intValue() + 1));
             layeredPane.moveToFront(shellPanel); // guarantee z-order regardless of add-order
@@ -200,6 +211,7 @@ public class UniversalThemes {
         public void close() {
             if (!showing) return;
             showing = false;
+            OPEN.remove(this);
             ownerFrame.removeComponentListener(resizeListener);
             layeredPane.remove(shellPanel);
             layeredPane.remove(dimOverlay);
@@ -219,7 +231,9 @@ public class UniversalThemes {
         public void setOnCloseRequest(Runnable r) { this.onCloseRequest = r; }
 
         void requestClose() { onCloseRequest.run(); }
+
     }
+
 
     public static RoundedDialog createRoundedDialogShell(Component parent, String titleText) {
         Window ownerWindow = (parent instanceof Window)
