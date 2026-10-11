@@ -214,7 +214,26 @@ public class HelpDialog {
     private JComponent buildMarkdownPanel() {
         return HelpTable.build(HelpContent.MARKDOWN, bodyWidth);
     }
-    private JComponent buildKeybindsPanel()   { return placeholder(); }
+    private JComponent buildKeybindsPanel() {
+        JPanel box = new JPanel();
+        box.setLayout(new BoxLayout(box, BoxLayout.Y_AXIS));
+        box.setOpaque(false);
+
+        JLabel note = new JLabel("<html><div style='width:" + bodyWidth + "px'>"
+                + "Some keys change meaning when an Entry is selected. "
+                + "Tick its checkbox or double-click it to select; Esc deselects.</div></html>");
+        note.setFont(UniversalThemes.FONT_R_14);
+        note.setForeground(UniversalThemes.TXT_SECONDARY);
+
+        for (JComponent c : new JComponent[]{
+                note,
+                HelpTable.build(HelpKeybinds.MAIN, bodyWidth)}) {
+            c.setAlignmentX(Component.LEFT_ALIGNMENT);
+            c.setMaximumSize(c.getPreferredSize());
+            box.add(c);
+        }
+        return box;
+    }
     private JComponent buildHotstringsPanel() { return placeholder(); }
     private JComponent buildGeneralPanel()    { return placeholder(); }
 

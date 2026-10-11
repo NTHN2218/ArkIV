@@ -294,7 +294,7 @@ public class ArkIV implements ActionListener{
         });
 
 // ── Collapse All / Expand All (global, works without any entry focused) ──
-        rootIm.put(KeyStroke.getKeyStroke(KeyEvent.VK_OPEN_BRACKET, InputEvent.CTRL_DOWN_MASK), "collapse_all");
+        rootIm.put(KeyStroke.getKeyStroke(KeyEvent.VK_UP, InputEvent.CTRL_DOWN_MASK), "collapse_all");
         rootAm.put("collapse_all", new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -302,7 +302,7 @@ public class ArkIV implements ActionListener{
             }
         });
 
-        rootIm.put(KeyStroke.getKeyStroke(KeyEvent.VK_CLOSE_BRACKET, InputEvent.CTRL_DOWN_MASK), "expand_all");
+        rootIm.put(KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, InputEvent.CTRL_DOWN_MASK), "expand_all");
         rootAm.put("expand_all", new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -2245,9 +2245,10 @@ public class ArkIV implements ActionListener{
             am.put("moveUp", new AbstractAction() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    if (isSelected) {
+                    if (isSelected)
                         moveTaskUp();
-                    }
+                    else
+                        collapseAll();
                 }
             });
 
@@ -2256,9 +2257,10 @@ public class ArkIV implements ActionListener{
             am.put("moveDown", new AbstractAction() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    if (isSelected) {
+                    if (isSelected)
                         moveTaskDown();
-                    }
+                    else
+                        expandAll();
                 }
             });
 

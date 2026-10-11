@@ -33,16 +33,16 @@ public final class HelpContent {
             new Kind[]{Kind.TEXT, Kind.CODE, Kind.RENDERED},
             new double[]{0.20, 0.38, 0.42},
             List.of(
-                    new Group("Text style",
-                            row("Bold", "**text**"),
-                            row("Italic", "*text*"),
-                            row("Inline code", "`text`")),
-
                     new Group("Headings",
                             row("Heading 1", "# Heading"),
                             row("Heading 2", "## Heading"),
                             row("Heading 3", "### Heading")
                     ),
+
+                    new Group("Text style",
+                            row("Bold", "**text**"),
+                            row("Italic", "*text*"),
+                            row("Inline code", "`text`")),
 
                     new Group("Lists",
                             row("Bullet-list", "- point 1\n- point 2"),
