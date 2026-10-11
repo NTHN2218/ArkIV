@@ -285,12 +285,16 @@ public class ArkIV implements ActionListener{
 
         rootIm.put(KeyStroke.getKeyStroke(KeyEvent.VK_TAB, InputEvent.CTRL_DOWN_MASK), "nextRegister");
         rootAm.put("nextRegister", new AbstractAction() {
-            @Override public void actionPerformed(ActionEvent e) { cycleRegister(1); }
+            @Override public void actionPerformed(ActionEvent e) {
+                if (UniversalThemes.RoundedDialog.isAnyOpen()) return; //Prevents global actions from firing when a dialog is already open
+                cycleRegister(1); }
         });
 
         rootIm.put(KeyStroke.getKeyStroke(KeyEvent.VK_TAB, InputEvent.CTRL_DOWN_MASK | InputEvent.SHIFT_DOWN_MASK), "prevRegister");
         rootAm.put("prevRegister", new AbstractAction() {
-            @Override public void actionPerformed(ActionEvent e) { cycleRegister(-1); }
+            @Override public void actionPerformed(ActionEvent e) {
+                if (UniversalThemes.RoundedDialog.isAnyOpen()) return; //Prevents global actions from firing when a dialog is already open
+                cycleRegister(-1); }
         });
 
 // ── Collapse All / Expand All (global, works without any entry focused) ──
@@ -298,6 +302,7 @@ public class ArkIV implements ActionListener{
         rootAm.put("collapse_all", new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                if (UniversalThemes.RoundedDialog.isAnyOpen()) return; //Prevents global actions from firing when a dialog is already open
                 collapseAll();
             }
         });
@@ -306,6 +311,7 @@ public class ArkIV implements ActionListener{
         rootAm.put("expand_all", new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                if (UniversalThemes.RoundedDialog.isAnyOpen()) return; //Prevents global actions from firing when a dialog is already open
                 expandAll();
             }
         });
@@ -315,6 +321,7 @@ public class ArkIV implements ActionListener{
         rootAm.put("create_entry", new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                if (UniversalThemes.RoundedDialog.isAnyOpen()) return; //Prevents global actions from firing when a dialog is already open
                 openNewEntryDialog();
             }
         });
@@ -324,6 +331,7 @@ public class ArkIV implements ActionListener{
         rootAm.put("create_register", new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                if (UniversalThemes.RoundedDialog.isAnyOpen()) return; //Prevents global actions from firing when a dialog is already open
                 handleCreateRegister();
             }
         });
@@ -332,6 +340,7 @@ public class ArkIV implements ActionListener{
         rootAm.put("scrollToTop", new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                if (UniversalThemes.RoundedDialog.isAnyOpen()) return; //Prevents global actions from firing when a dialog is already open
                 JScrollBar vBar = taskScrollPane.getVerticalScrollBar();
                 vBar.setValue(vBar.getMinimum());
             }
@@ -341,6 +350,7 @@ public class ArkIV implements ActionListener{
         rootAm.put("scrollToBottom", new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                if (UniversalThemes.RoundedDialog.isAnyOpen()) return; //Prevents global actions from firing when a dialog is already open
                 JScrollBar vBar = taskScrollPane.getVerticalScrollBar();
                 vBar.setValue(vBar.getMaximum());
             }
@@ -348,12 +358,19 @@ public class ArkIV implements ActionListener{
 
         rootIm.put(KeyStroke.getKeyStroke(KeyEvent.VK_F1, 0), "help");
         rootAm.put("help", new AbstractAction() {
-            @Override public void actionPerformed(ActionEvent e) { HelpDialog.show(frame); }
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (UniversalThemes.RoundedDialog.isAnyOpen()) return; //Prevents global actions from firing when a dialog is already open
+                HelpDialog.show(frame); }
         });
 
         rootIm.put(KeyStroke.getKeyStroke(KeyEvent.VK_W, InputEvent.CTRL_DOWN_MASK), "close_dialog");
         rootAm.put("close_dialog", new AbstractAction() {
-            @Override public void actionPerformed(ActionEvent e) { UniversalThemes.RoundedDialog.closeTopDialog(); }
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                //Only takes action if a dialog is already open, hence no guard against like the other gloabal actions
+                UniversalThemes.RoundedDialog.closeTopDialog();
+            }
         });
 
         currentRegisterId = registerManager.getLastVisitedRegisterId();
@@ -2224,6 +2241,7 @@ public class ArkIV implements ActionListener{
             am.put("Find", new AbstractAction() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
+                    if (UniversalThemes.RoundedDialog.isAnyOpen()) return; //Prevents global actions from firing when a dialog is already open
                     searchBar.requestFocus();
                     UniversalThemes.flashBorder(searchBar, UniversalThemes.ACCENT_COLOR, UniversalThemes.BORDER_COLOR2, 1);
                 }

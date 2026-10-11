@@ -74,7 +74,7 @@
 		- [x] Saving an Edit no longer deselects the selected task-item
 		- [x] Redesign color tag syntax
         - [x] Redesign right align syntax
-        - [ ] Focus dialog when opened, forbid actions in the background (Ctrl+Tab, Ctrl+Shift+Tab)
+        - [x] Block global key-bind actions when a dialog is open
         - [ ] Reduce delay before task-items are rendered
         - [ ] Remove Auto-Scroll cursor anchor image when active
         - [ ] When Auto-Scroll is active, scroll to top key-bind opens last register in list

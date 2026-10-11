@@ -149,6 +149,8 @@ public class UniversalThemes {
         private static final java.util.Deque<RoundedDialog> OPEN = new java.util.ArrayDeque<>();
 
         /** Closes the most recently opened dialog. Returns false if none are open. */
+        public static boolean isAnyOpen() { return !OPEN.isEmpty(); }
+
         public static boolean closeTopDialog() {
             RoundedDialog top = OPEN.peek();
             if (top == null) return false;
