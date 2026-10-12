@@ -1,9 +1,9 @@
-package utilities;
+package Menu.Help;
 
-import utilities.HelpContent.Group;
-import utilities.HelpContent.Kind;
-import utilities.HelpContent.Row;
-import utilities.HelpContent.Table;
+import Menu.Help.Help_Markdown.Group;
+import Menu.Help.Help_Markdown.Kind;
+import Menu.Help.Help_Markdown.Row;
+import Menu.Help.Help_Markdown.Table;
 
 import java.util.List;
 
@@ -13,16 +13,16 @@ import java.util.List;
  *  - MAIN: everything else, grouped by where it works (2 columns)
  * Data only -- layout is HelpTable's job.
  */
-public final class HelpKeybinds {
+public final class Help_Keybinds {
 
-    private HelpKeybinds() {}
+    private Help_Keybinds() {}
 
     private static Row row(String... cells) { return new Row(cells); }
 
 
     public static final Table MAIN = new Table(
             new String[]{"Action", "Key-Bind"},
-            new Kind[]{Kind.CODE, Kind.TEXT},
+            new Kind[]{Kind.TEXT, Kind.CODE},
             new double[]{0.40, 0.60},
             List.of(
                     new Group("Mouse Actions",

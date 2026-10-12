@@ -47,11 +47,11 @@
 	- `Register`
 		- [x] App opens into the last visited Register
     - `Help`
-        - [ ] Focus Help dialog when open for Ctrl+Tab and Ctrl+Shift+Tab
-        - [ ] General Use
-        - [ ] Key Binds
+        - [x] Assign next Tab and prev Tab key-binds for Help dialog
+        - [x] General Use
+        - [x] Key Binds
         - [x] Mark Down
-        - [ ] Hot String
+        - [x] Hot String
     - `Key-Binds`
 	    - [x] Key-binds for expand all/collapse all 
 	    - [x] Key-binds to apply **bold, italic, color tags, right align** while editing
@@ -75,17 +75,19 @@
 		- [x] Redesign color tag syntax
         - [x] Redesign right align syntax
         - [x] Block global key-bind actions when a dialog is open
-        - [ ] Reduce delay before task-items are rendered
-        - [ ] Remove Auto-Scroll cursor anchor image when active
-        - [ ] When Auto-Scroll is active, scroll to top key-bind opens last register in list
+
 
 
 - [ ] `v11.1`
-	- [ ] `v10.1.1` [[Undo Action]]
+	- [ ] Make ArkIV crash proof
+    - [ ] `v10.1.1` [[Undo Action]]
 	- [ ] `v10.1.2` - Undo Text
 	- [ ] [[Copy-Paste-v1]]
 	- [ ] Read Only Mode
 		- [ ] Finish Incomplete [[Unrecognized Registers]] Handling
+    - [ ] Reduce delay before task-items are rendered
+    - [ ] Remove Auto-Scroll cursor anchor image when active
+    - [ ] When Auto-Scroll is active, scroll to top key-bind opens last register in list
 
 - [ ] `v10.3` - GitHub integration  (very basic)
 

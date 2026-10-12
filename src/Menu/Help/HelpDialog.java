@@ -1,4 +1,6 @@
-package utilities;
+package Menu.Help;
+
+import utilities.UniversalThemes;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;
@@ -75,17 +77,18 @@ public class HelpDialog {
         cardPanel.add(buildSection(SECTIONS[0],buildGeneralPanel() ), SECTIONS[0]);
         cardPanel.add(buildSection(SECTIONS[1], buildKeybindsPanel()), SECTIONS[1]);
         cardPanel.add(buildSection(SECTIONS[2], buildMarkdownPanel()), SECTIONS[2]);
-        cardPanel.add(buildSection(SECTIONS[3], buildGeneralPanel()), SECTIONS[3]);
+        cardPanel.add(buildSection(SECTIONS[3], buildHotstringsPanel()), SECTIONS[3]);
         content.add(cardPanel, BorderLayout.CENTER);
 
         rd.body.add(content);
 
         // ── Keyboard: Esc closes, Up/Down switch section ──
         content.setFocusable(true);
+        UniversalThemes.freeCtrlTabFromTraversal(content);
         InputMap im = content.getInputMap(JComponent.WHEN_FOCUSED);
         ActionMap am = content.getActionMap();
-        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_UP, 0), "helpPrev");
-        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, 0), "helpNext");
+        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_TAB, InputEvent.CTRL_DOWN_MASK), "helpNext");
+        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_TAB, InputEvent.CTRL_DOWN_MASK | InputEvent.SHIFT_DOWN_MASK), "helpPrev");
 
         am.put("helpPrev", new AbstractAction() {
             @Override public void actionPerformed(ActionEvent e) { select(selectedIndex - 1); }
@@ -212,30 +215,28 @@ public class HelpDialog {
 
     // ── Section bodies -- FILL THESE IN ──────────────────────────────────────
     private JComponent buildMarkdownPanel() {
-        return HelpTable.build(HelpContent.MARKDOWN, bodyWidth);
+        return HelpTable.build(Help_Markdown.MARKDOWN, bodyWidth);
     }
     private JComponent buildKeybindsPanel() {
         JPanel box = new JPanel();
         box.setLayout(new BoxLayout(box, BoxLayout.Y_AXIS));
         box.setOpaque(false);
 
-        JLabel note = new JLabel("<html><div style='width:" + bodyWidth + "px'>"
-                + "Some keys change meaning when an Entry is selected. "
-                + "Tick its checkbox or double-click it to select; Esc deselects.</div></html>");
-        note.setFont(UniversalThemes.FONT_R_14);
-        note.setForeground(UniversalThemes.TXT_SECONDARY);
 
         for (JComponent c : new JComponent[]{
-                note,
-                HelpTable.build(HelpKeybinds.MAIN, bodyWidth)}) {
+                HelpTable.build(Help_Keybinds.MAIN, bodyWidth)}) {
             c.setAlignmentX(Component.LEFT_ALIGNMENT);
             c.setMaximumSize(c.getPreferredSize());
             box.add(c);
         }
         return box;
     }
-    private JComponent buildHotstringsPanel() { return placeholder(); }
-    private JComponent buildGeneralPanel()    { return placeholder(); }
+    private JComponent buildHotstringsPanel() {
+        return HelpTable.build(Help_Hotstrings.TABLE, bodyWidth);
+    }
+    private JComponent buildGeneralPanel()    {
+        return HelpTable.build(Help_General.TABLE, bodyWidth);
+    }
 
     private JComponent placeholder() {
         JPanel p = new JPanel(new BorderLayout());

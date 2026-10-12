@@ -16,7 +16,6 @@ import java.util.function.Consumer;
 import java.nio.charset.StandardCharsets;
 
 import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
 
 //Data Encryption
 import java.security.spec.KeySpec;
@@ -24,8 +23,7 @@ import javax.crypto.*;
 import javax.crypto.spec.*;
 
 //Package - utilities
-import AutoHotkey.CaretNavigation;
-import AutoHotkey.SelectionWrapper;
+import Menu.Help.HelpDialog;
 import utilities.*;
 
 //Mouse
@@ -50,7 +48,6 @@ import Markdown.MarkdownDebug;
 import Markdown.WrapEditorKit;
 
 // Package AutoHotkeys
-import AutoHotkey.Hotstring;
 
 
 //Register System: Navigation Tree

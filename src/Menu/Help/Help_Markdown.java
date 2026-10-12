@@ -1,4 +1,4 @@
-package utilities;
+package Menu.Help;
 
 import java.util.List;
 
@@ -11,9 +11,9 @@ import java.util.List;
  *  - RENDERED: shows the previous CODE cell run through MarkdownRenderer. Takes NO cell of its own,
  *              so a Markdown row is just row("Bold", "**text**").
  */
-public final class HelpContent {
+public final class Help_Markdown {
 
-    private HelpContent() {}
+    private Help_Markdown() {}
 
     public enum Kind { TEXT, CODE, RENDERED }
 
@@ -60,7 +60,7 @@ public final class HelpContent {
                             row("Red",    "|r|text|r|"),
 
                             row("", ""),
-                            row("Right-align", "left >>right>>")
+                            row("Right-align", "Left >>Right>>")
                     )
             ));
 }

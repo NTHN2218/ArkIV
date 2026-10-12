@@ -1,12 +1,13 @@
-package utilities;
+package Menu.Help;
 
 import Markdown.MarkdownRenderer;
-import utilities.HelpContent.Group;
-import utilities.HelpContent.Kind;
-import utilities.HelpContent.Row;
-import utilities.HelpContent.Table;
+import Menu.Help.Help_Markdown.Group;
+import Menu.Help.Help_Markdown.Row;
+import Menu.Help.Help_Markdown.Table;
 
 import Markdown.WrapEditorKit;
+import utilities.PathResolver;
+import utilities.UniversalThemes;
 
 import javax.swing.*;
 import javax.swing.text.BadLocationException;
