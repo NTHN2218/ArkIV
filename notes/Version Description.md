@@ -160,7 +160,7 @@
 		- [x] *Ctrl+E* edit, *Delete* delete, *Ctrl+N* create sub-Entry, *Esc* deselect (on the selected task-item)
 		- [x] *Ctrl+Up* / *Ctrl+Down* move the selected task-item
 	- `Fixes`
-		- [x] Delete confirmation text uses "Entry"/"sub-Entries"
+		- [x] Delete confirmation text uses "Entry"/"sub-Entries"  
 
 -  `v8`
 	- `Registers`
@@ -250,7 +250,13 @@
 		- [ ] Finish Incomplete [[Unrecognized Registers]] Handling
     - [ ] Reduce delay before task-items are rendered
     - [ ] Remove Auto-Scroll cursor anchor image when active
-    - [ ] When Auto-Scroll is active, scroll to top key-bind opens last register in list
+    - [ ] When Auto-Scroll is active, scroll to top key-bind opens last register in list (needs fixing)
+    - [ ] Ctrl+Alt+R types in **r̥** , it must be prevented when in App
+    - [ ] Ctrl+Alt+4 types in **₹** , it must be prevented when in App
+	- [ ] Ctrl+Alt+I types in **ī** , it must be prevented when in App
+    - [ ] figure out precedence of markdown tags, establish one if inconsistent
+	- [ ] **(), [], {}** inside a right align does not get rendered
+    - [ ] create a key-bind for show in system explorer cos why not
 
 - [ ] `v10.3` - GitHub integration  (very basic)
 
