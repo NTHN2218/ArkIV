@@ -1,4 +1,167 @@
 
+-  `v1`
+	- `Entries`
+		- [x] Create main-Entry from the input field at the bottom with *Enter*
+		- [x] Create sub-Entry from a main-Entry's `Create Subtask` button (through a dialog)
+		- [x] Edit an Entry/sub-Entry through a dialog
+		- [x] Delete an Entry/sub-Entry
+		- [x] Mark an Entry/sub-Entry as done with a checkbox (strikethrough + gray text)
+		- [x] Only main-Entries can have sub-Entries
+	- `Data Storage`
+		- [x] Auto-save to `data.txt` after every add/edit/delete/toggle
+		- [x] Load saved task-items on startup
+		- [x] Resume ID counter from the highest saved ID
+		- [x] Storage format: `ID|DONE|TEXT|ISSUBTASK`, one task-item per line
+	- `Presentation`
+		- [x] Fixed-size task-items (760x60) with a bottom border separator
+		- [x] Main-Entries on white, sub-Entries on gray with left indent
+		- [x] Scrollable task list with an always-visible vertical scrollbar
+		- [x] Larger font (Segoe UI, 20) for task-items and input field
+		- [x] Fixed-size, non-resizable window (870x670)
+	- `Precautions`
+		- [x] Error dialogs on file load/save failure
+
+-  `v2`
+	- `Entries`
+        - [x] Task text is multi-line (JLabel -> JTextArea)
+        - [x] Edit through a dialog with a multi-line input-Area
+        - [x] *Enter* saves the edit, *Shift+Enter* adds a new line
+        - [x] Create sub-Entry through a dialog with a multi-line input-Area
+        - [x] New main-Entries are added to the top of the list
+    - `Data Storage`
+		- [x] Encrypt saved data with AES/CBC + PBKDF2 key derivation
+		- [x] Save to `data_2.txt` as a single Base64 string
+		- [x] Plain `ID|DONE|TEXT|ISSUBTASK` format kept inside the encryption
+	- `Presentation`
+		- [x] Task-items grow with their text (min height 60)
+		- [x] Strikethrough for done task-items with Unicode combining characters instead of HTML
+		- [x] Thicker borders separating main-Entries and sub-Entries
+		- [x] Resizable window (1000x800), centered on screen
+	- `Interaction`
+		- [x] Faster scrolling (35px per step)
+		- [x] Light gray viewport background
+		- [x] Scrollbar starts at the top on load
+	- `Fixes`
+		- [x] New sub-Entry is inserted directly under its main-Entry
+		- [x] Deleting a main-Entry also deletes its sub-Entries
+		- [x] Task text with `<...>` is no longer stripped on save
+		- [x] Long task text is no longer cut off
+		- [x] Delete confirmation pop-ups for Entries and sub-Entries
+
+-  `v3`
+	- `Entries`
+		- [x] Sub-Entries are linked to their main-Entry by a parent ID
+		- [x] Collapse/expand a main-Entry's sub-Entries with a right-click on the main-Entry
+		- [x] New sub-Entry is inserted after the last sub-Entry of its main-Entry
+		- [x] New main-Entries are added to the bottom of the list
+	- `Data Storage`
+		- [x] Save to `data_3.txt`
+		- [x] Storage format: `ID|PARENTID|TEXT|DONE|ISSUBTASK|ISCOLLAPSED`
+		- [x] Collapsed/expanded state of each main-Entry is saved and restored on startup
+		- [x] Load builds main-Entries first, then places sub-Entries under their parents (expanded ones only)
+	- `Presentation`
+		- [x] Collapsed main-Entries get extra bottom spacing
+		- [x] Minimum task-item height raised to 80
+	- `Fixes`
+		- [x] Sub-Entries are tied to their main-Entry by ID, so they no longer depend on list position
+		- [x] Delete uses the parent ID to find a main-Entry's sub-Entries, including collapsed (hidden) ones
+
+-  `v4`
+	- `Key-Binds`
+		- [x] Bottom input-Area: *Enter* creates the Entry, *Shift+Enter* adds a new line
+		- [x] Edit and Create sub-Entry input-Areas use the same key-binds
+	- `Presentation`
+		- [x] Bottom input field is now a multi-line input-Area (JTextField -> JTextArea in a scroll pane)
+		- [x] All input-Areas start at 3 rows and grow with the text up to 10 rows, then scroll
+		- [x] Edit dialog gets a minimum size of 600x200
+	- `Data Storage`
+		- [x] Save to `data_4.txt`
+		- [x] Escape `|` and line breaks in task text before saving, restore them on load
+	- `Fixes`
+		- [x] `|` in task text no longer corrupts the storage format
+		- [x] Multi-line Entries save and load correctly
+-  `v5`
+	- `Interaction`
+		- [x] Select a task-item by clicking anywhere on it (checkbox ticks with it)
+		- [x] Only one task-item selected at a time
+		- [x] Unticking the checkbox deselects the task-item
+		- [x] Selected task-item flickers with a black inner border
+		- [x] Checkbox now marks the selected task-item instead of done (strikethrough/gray no longer applied on load)
+	- `Key-Binds`
+		- [x] Move the selected task-item up/down with *Ctrl+Shift+W* / *Ctrl+Shift+S*
+		- [x] Moving keeps the task-item selected, so it can be repeated
+	- `Entries`
+		- [x] Reorder main-Entries among main-Entries, and sub-Entries within their own main-Entry
+		- [x] Moving an open main-Entry collapses it first
+		- [x] Saving an Edit with empty text asks to delete the task-item
+	- `Data Storage`
+		- [x] Saved order is restored on load for main-Entries and sub-Entries (no more sorting sub-Entries by ID)
+		- [x] Clear selection and save when the window is closed
+	- `Presentation`
+		- [x] 2px inner border on task-items to carry the flicker
+		- [x] Edit dialog resizes as the text grows (up to 10 rows)
+	- `Fixes`
+		- [x] Edit no longer trims whitespace and new lines from the text
+		- [x] Task lists are cleared before loading, so a reload can't duplicate task-items
+
+-  `v6`
+	- `Utilities`
+		- [x] `UniversalThemes`: shared colors, fonts, button hover/press effect, scrollbar theme and pop-ups
+		- [x] `AssetPathResolver`: finds the `assets` folder from a JAR or from the IDE (backtracks up the folders)
+	- `Presentation`
+		- [x] Dark theme across the window, task-items, input-Areas, dialogs and scrollbars
+		- [x] Teal accent color for the caret, flicker border, buttons and scrollbar thumb
+		- [x] Main-Entries and sub-Entries use different dark card shades
+		- [x] Themed thin vertical scrollbar (12px) with an accent thumb
+		- [x] Edit/Delete/Create sub-Entry text buttons replaced with icon buttons (✎ 🗑️ ➕) with hover/press effect
+		- [x] Themed Yes/No pop-up for delete confirmation and the empty-edit prompt
+		- [x] Window opens maximized
+		- [x] Flicker border changed from black to the accent color
+		- [x] "Edit Task:" and "Enter Subtask:" labels removed from the dialogs
+		- [x] Bottom input-Area height reduced (120 -> 90), task-item minimum height reduced (80 -> 68)
+		- [x] Collapsed main-Entry spacing reduced (20 -> 10)
+	- `Data Storage`
+		- [x] Data file moved to `assets/data.txt` (no more per-version `data_N.txt`)
+	- `Precautions`
+		- [x] Throws a clear error if the `assets` folder or `data.txt` is missing
+	- `Fixes`
+		- [x] Editing a selected task-item no longer saves strikethrough characters into the text
+
+-  `v7`
+	- `Menu`
+		- [x] Menu bar (File, Edit, Settings, Help) at the top of a new left sidebar
+		- [x] `File` > New Entry: focuses the bottom input-Area and flashes its border
+		- [x] `File` > Exit: deselects, saves and closes
+		- [x] `Edit` > Collapse All / Expand All
+		- [x] Themed menus and menu items (`UniversalFactory`)
+		- [x] Menu logic split into `FileMenu`, `EditMenu`, `SettingsMenu` and `Help` classes, which call back into ArkIV
+	- `Search`
+		- [x] Search bar in the sidebar with search, previous and next buttons
+		- [x] Case-insensitive match on Entry/sub-Entry text, ordered by where the match sits in the text
+		- [x] *Enter* in the search bar runs the search, then steps to the next match
+		- [x] Previous/next wrap around, and are disabled when there are no results
+		- [x] Matched task-item gets a highlight border and is scrolled into view
+		- [x] A match inside a collapsed Entry expands it
+		- [x] Editing the search text clears the old results and highlight
+	- `Data Storage`
+		- [x] Save to `assets/data.json` with Gson (`ID`, `parentID`, `TXT`, `isDone`, `isSub`, `isCollapsed`)
+		- [x] Pretty-printed JSON replaces the pipe-delimited format, so no more escaping `|` and line breaks
+	- `Utilities`
+		- [x] `AssetPathResolver` renamed to `PathResolver`, now also resolves `data.json`
+		- [x] `UniversalFactory`: menu, menu-item and text-field builders
+		- [x] `UniversalThemes`: menu theme, custom checkbox, composite emoji font, border flash
+	- `Presentation`
+		- [x] Left sidebar (about 22% of the width) beside the task list
+		- [x] Edit and Delete icon buttons removed, only the drawn `+` create sub-Entry button remains on main-Entries
+		- [x] Custom-painted checkbox with an accent fill and tick
+		- [x] Task-item and input-Area text use a composite font for symbol/emoji support
+		- [x] Collapse All/Expand All use the themed 10px collapsed spacing
+	- `Key-Binds`
+		- [x] *Ctrl+E* edit, *Delete* delete, *Ctrl+N* create sub-Entry, *Esc* deselect (on the selected task-item)
+		- [x] *Ctrl+Up* / *Ctrl+Down* move the selected task-item
+	- `Fixes`
+		- [x] Delete confirmation text uses "Entry"/"sub-Entries"
+
 -  `v8`
 	- `Registers`
 		- [x] [[Data Storage]]

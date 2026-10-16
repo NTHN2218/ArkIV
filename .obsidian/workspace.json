@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "notes/Shortcuts.md",
+                "file": "notes/Version Description.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "Shortcuts"
+              "title": "Version Description"
             }
           },
           {
@@ -204,6 +204,7 @@
   },
   "active": "a4072fefdde5d1ea",
   "lastOpenFiles": [
+    "notes/Shortcuts.md",
     "notes/Version Description.md~",
     "out/production/ArkIV/ArkIV.class",
     "out/production/ArkIV/ArkIV$TaskItem.class",
@@ -214,7 +215,6 @@
     "out/production/ArkIV/ArkIV$TaskItem$9.class",
     "out/production/ArkIV/ArkIV$TaskItem$8.class",
     "out/production/ArkIV/ArkIV$TaskItem$7.class",
-    "out/production/ArkIV/ArkIV$TaskItem$6.class",
     "notes/Glossary.md",
     "notes/v9/Parsing and Rendering.md",
     "notes/ArkIV - version description.md",

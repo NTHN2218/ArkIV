@@ -235,7 +235,18 @@ public class HelpDialog {
         return HelpTable.build(Help_Hotstrings.TABLE, bodyWidth);
     }
     private JComponent buildGeneralPanel()    {
-        return HelpTable.build(Help_General.TABLE, bodyWidth);
+        JPanel box = new JPanel();
+        box.setLayout(new BoxLayout(box, BoxLayout.Y_AXIS));
+        box.setOpaque(false);
+
+        for (JComponent c : new JComponent[]{
+                HelpTable.build(Help_General.GLOSSARY, bodyWidth),
+                HelpTable.build(Help_General.TABLE, bodyWidth)}) {
+            c.setAlignmentX(Component.LEFT_ALIGNMENT);
+            c.setMaximumSize(c.getPreferredSize());
+            box.add(c);
+        }
+        return box;
     }
 
     private JComponent placeholder() {

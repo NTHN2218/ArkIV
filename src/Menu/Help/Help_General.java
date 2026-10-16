@@ -17,15 +17,44 @@ public final class Help_General {
 
     private static Row row(String... cells) { return new Row(cells); }
 
+    public static final Table GLOSSARY = new Table(
+            new String[]{"Term", "Menaing"},
+            new Kind[]{Kind.TEXT, Kind.CODE},
+            new double[]{0.20, 0.80},
+            List.of(
+                    new Group("",
+                            row("Register",
+                                    "- 1st level of hierarchy in App\n"+
+                                    "- It is saved as its own file"
+                            ),
+                            row("Entry",
+                                    "- 2nd level of hierarchy in App\n"+
+                                    "- Highest level of hierarchy in a Register"
+                            ),
+                            row("sub-Entry",
+                                    "- 3rd level of hierarchy in App\n"+
+                                    "- Lowest level of hierarchy in a Register"
+                            ),
+                            row("task-item",
+                                    "- Collective term for Entry and sub-Entry"
+                            ),
+
+                            row("","")
+                    )
+
+            )
+
+    );
+
     public static final Table TABLE = new Table(
             new String[]{"Topic", "Details"},
-            new Kind[]{Kind.TEXT, Kind.CODE},
+            new Kind[]{Kind.TEXT, Kind.TEXT},
             new double[]{0.20, 0.80},
             List.of(
                     new Group("Getting started",
                             row("What is ArkIV",
-                                    "A personal organizer. Notes and to-dos are Entries, optionally with sub-Entries under them, "
-                                            + "kept in Registers (separate lists)."),
+                                    "A personal organizer. Notes and to-dos are Entries, optionally with sub-Entries under them, " +
+                                            "kept in Registers (separate lists)."),
                             row("Add an Entry",
                                     "Press Ctrl+N (or File > New Entry), type, and press Enter. Shift+Enter adds a new line."),
                             row("Add a sub-Entry",
@@ -81,8 +110,6 @@ public final class Help_General {
                     ),
 
                     new Group("Good to know",
-                            row("Autosave",
-                                    "Every change is saved immediately. There is no Save button."),
                             row("Backup",
                                     "Each register is a file in ArkIV's assets folder. Use git and GitHub or similar software to Backup your data."),
                             row("Limits",
